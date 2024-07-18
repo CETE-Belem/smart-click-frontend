@@ -65,7 +65,14 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .solaris-background {
+    background: linear-gradient(243deg, #F6B042 -0.32%, #96B562 48.62%, #1C5790 100.35%);
   }
 }

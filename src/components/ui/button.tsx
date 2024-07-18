@@ -30,12 +30,12 @@ const Button = forwardRef(({ children, className, disabled, asChild, success, in
   }
 
   return (
-    <Component disabled={disabled || loading || invalid || success || thank} className={cn("bg-[#1C5790] text-white text-base font-semibold px-8 py-2 rounded-2xl transition-colors disabled:opacity-50 disabled:pointer-events-none hover:bg-[#12406B] active:bg-[#0B243B]", {
+    <Component disabled={disabled || loading || invalid || success || thank} className={cn("bg-[#1C5790] text-white flex justify-center items-center text-base font-semibold px-8 py-2 rounded-3xl transition-colors disabled:opacity-50 disabled:pointer-events-none hover:bg-[#12406B] active:bg-[#0B243B]", {
       "bg-[#96B562] disabled:opacity-100": success,
       "disabled:opacity-100": loading || thank,
       "bg-[#FF2244]": invalid,
-      "bg-transparent border border-[#1C5790] text-[#1C5790] hover:bg-[#12406B] active:bg-[#12406B]": variant === "outline",
-      "bg-transparent px-2 text-[#1C5790] hover:text-[#013B6E] hover:underline hover:bg-transparent active:bg-transparent active:text-[#111111] active:underline": variant === 'link'
+      "bg-transparent border border-[#1C5790] text-[#1C5790] hover:bg-[#12406B] hover:text-white active:bg-[#12406B]": variant === "outline",
+      "bg-transparent underline px-0 text-[#1C5790] hover:text-[#013B6E] hover:underline hover:bg-transparent active:bg-transparent active:text-[#111111] active:underline": variant === 'link'
     }, className)} ref={ref} {...props}>
       {buttonChildren()}
     </Component>
