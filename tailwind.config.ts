@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       colors: {
+        "solaris-primary": "var(--solaris-primary)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
