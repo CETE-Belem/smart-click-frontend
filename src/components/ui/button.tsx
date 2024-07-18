@@ -4,9 +4,9 @@ import { forwardRef, Ref } from 'react'
 import { ButtonHTMLAttributes } from "react";
 import { ImSpinner2 } from "react-icons/im";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean, loading?: boolean, success?: boolean, invalid?: boolean, thank?: boolean }
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean, loading?: boolean, success?: boolean, invalid?: boolean, thank?: boolean, variant?: "primary" | "outline" }
 
-const Button = forwardRef(({ children, className, disabled, asChild, success, invalid, thank, loading, ...props }: ButtonProps, ref: Ref<HTMLButtonElement>) => {
+const Button = forwardRef(({ children, className, disabled, asChild, success, invalid, thank, loading, variant, ...props }: ButtonProps, ref: Ref<HTMLButtonElement>) => {
   const Component = asChild ? Slot : "button"
 
   function buttonChildren() {
@@ -34,6 +34,7 @@ const Button = forwardRef(({ children, className, disabled, asChild, success, in
       "bg-[#96B562] disabled:opacity-100": success,
       "disabled:opacity-100": loading || thank,
       "bg-[#FF2244]": invalid,
+      "bg-transparent border border-[#1C5790] text-[#1C5790] hover:bg-[#12406B] active:bg-[#12406B]": variant === "outline"
     }, className)} ref={ref} {...props}>
       {buttonChildren()}
     </Component>
