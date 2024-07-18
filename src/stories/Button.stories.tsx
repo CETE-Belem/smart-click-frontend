@@ -83,3 +83,10 @@ export const OutlineInvalid: Story = {
         invalid: true
     }
 }
+
+export const Link: Story = {
+    args: {
+        children: "Teste",
+        variant: "link"
+    }
+}
