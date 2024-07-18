@@ -52,3 +52,34 @@ export const Thank: Story = {
         thank: true
     }
 }
+
+export const Outline: Story = {
+    args: {
+        children: "Teste",
+        variant: "outline"
+    }
+}
+
+export const OutlineLoading: Story = {
+    args: {
+        children: "Teste",
+        variant: "outline",
+        loading: true
+    }
+}
+
+export const OutlineSuccess: Story = {
+    args: {
+        children: "Teste",
+        variant: "outline",
+        success: true
+    }
+}
+
+export const OutlineInvalid: Story = {
+    args: {
+        children: "Teste",
+        variant: "outline",
+        invalid: true
+    }
+}
