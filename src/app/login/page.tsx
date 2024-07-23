@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import { authAction } from "@/action/auth.action";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Login() {
     const [loading, setLoading] = useState<boolean>(false)
@@ -79,13 +80,17 @@ export default function Login() {
                                     trigger("captcha")
                                 }}
                             />
-                            <Button className="w-full" disabled={!isValid} loading={loading}>Acessar</Button>
+                            <Button type="submit" className="w-full" disabled={!isValid} loading={loading}>Acessar</Button>
                         </form>
                         <Button variant="link" className="text-xs">Esqueceu sua senha?</Button>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="opacity-70 text-sm">Não tem uma conta?</span>
-                        <Button variant="outline">Criar conta</Button>
+                        <Button variant="outline" asChild>
+                            <Link href="/register">
+                                Criar conta
+                            </Link>
+                        </Button>
                     </div>
                 </div>
             </div>
