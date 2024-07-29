@@ -33,7 +33,7 @@ export default function Register() {
     }, [setFocus])
 
     async function onSubmit(data: RegisterSchemaType) {
-        router.prefetch("/dashboard")
+        router.prefetch("/confirm-email")
         setLoading(true)
         const response = await registerAction(data).finally(() => {
             setLoading(false)
@@ -45,7 +45,7 @@ export default function Register() {
                 description: response.message,
                 variant: "success"
             })
-            router.push("/dashboard")
+            router.push("/confirm-email?email=" + data.email)
         } else {
             toast({
                 title: "Erro",

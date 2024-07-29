@@ -35,7 +35,7 @@ const Input = forwardRef(
         return (
             <label className="relative flex flex-col gap-[10px]">
                 <span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}</span>
-                <div className='flex items-center gap-3 w-full rounded-3xl px-3 bg-[#BBBBBB33] border border-[#888]'>
+                <div className='flex items-center gap-3 w-full rounded-3xl px-3 bg-[#BBBBBB33]'>
                     <input
                         className={cn(
                             'w-full bg-transparent py-3 font-semibold text-[#999999] text-sm outline-none placeholder:text-[#999999] placeholder:font-semibold ',
