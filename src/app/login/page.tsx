@@ -82,7 +82,13 @@ export default function Login() {
                             />
                             <Button type="submit" className="w-full" disabled={!isValid} loading={loading}>Acessar</Button>
                         </form>
-                        <Button variant="link" className="text-xs">Esqueceu sua senha?</Button>
+                        <div className="flex justify-start">
+                            <Button variant="link" className="text-xs" asChild>
+                                <Link href="/recover-password/email">
+                                    Esqueceu sua senha?
+                                </Link>
+                            </Button>
+                        </div>
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="opacity-70 text-sm">Não tem uma conta?</span>

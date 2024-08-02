@@ -2,7 +2,6 @@
 
 import { api } from "@/lib/axios";
 import { ConfirmEmailType, ConfirmEmail } from "@/schemas/confirm-email.schema";
-import { cookies } from "next/headers";
 
 export async function confirmEmail(
   formData: ConfirmEmailType,
