@@ -93,6 +93,7 @@ export default function Register() {
                             }
                             {...register("password")} />
                         <Input type="password" placeholder="Digite sua senha novamente" label="Confirmar senha" {...register("confirmPassword")} />
+                        <Input type="text" placeholder="Digite o número da sua unidade consumidora" label="Número da Unidade Consumidora" {...register("consumerUnityNumber")} />
                         <Turnstile
                             sitekey={process.env.NEXT_PUBLIC_TURNSTILE_KEY as string}
                             theme="light"
