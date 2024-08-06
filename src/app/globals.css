@@ -17,7 +17,7 @@
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
-    --muted-foreground: 0 0% 45.1%;
+    --muted-foreground: 240 1% 35%;
     --accent: 0 0% 96.1%;
     --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
@@ -74,5 +74,8 @@
 @layer utilities {
   .solaris-background {
     background: linear-gradient(243deg, #F6B042 -0.32%, #96B562 48.62%, #1C5790 100.35%);
+  }
+  .solaris-background-header {
+    background: linear-gradient(243deg, #F6B042 -0.32%, #96B562 100.35%);
   }
 }
