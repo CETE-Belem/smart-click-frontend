@@ -88,9 +88,7 @@ function getPaginationItems(totalPages: number, currentPage: number): (number | 
   const pages: (number | string)[] = [];
 
   if (startPage > 1) {
-    if (startPage > 2) {
       pages.push('...');
-    }
   }
 
   for (let i = startPage; i <= endPage; i++) {
@@ -98,7 +96,7 @@ function getPaginationItems(totalPages: number, currentPage: number): (number | 
   }
 
   if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
+    if (endPage < totalPages) {
       pages.push('...');
     }
   }

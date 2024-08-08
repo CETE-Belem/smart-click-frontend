@@ -31,27 +31,27 @@ export const columns: ColumnDef<Equipments>[] = [
   {
     accessorKey: "name",
     header: "Nome",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="text-xs">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "description",
     header: "Descrição",
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("description")}</div>
+      <div className="text-xs text-black/50">{row.getValue("description")}</div>
     ),
   },
   {
     accessorKey: "macAddress",
     header: "MAC",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("macAddress")}</div>;
+      return <div className="text-xs text-black/50">{row.getValue("macAddress")}</div>;
     },
   },
   {
     accessorKey: "consumerUnit",
     header: "Unidade Consumidora",
     cell: ({ row }) => {
-      return <div className="font-medium">{row.getValue("consumerUnit")}</div>;
+      return <div className="text-xs">{row.getValue("consumerUnit")}</div>;
     },
   },
   {
