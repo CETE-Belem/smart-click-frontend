@@ -3,6 +3,7 @@ import ColoredLogo from "../../../public/images/colored-logo.svg"
 import Image from "next/image";
 import { Building, HomeIcon } from "lucide-react";
 import SidebarMenuItem from "./components/SidebarMenuItem";
+import Header from "./components/Header";
 
 export default function DashboardLayout(props: {children: React.ReactNode}) {
   return (
@@ -15,13 +16,14 @@ export default function DashboardLayout(props: {children: React.ReactNode}) {
           <SidebarMenuItem href="/dashboard" label="Dashboard">
             <HomeIcon height={24} width={24} />
           </SidebarMenuItem>
-          <SidebarMenuItem href="/consumer-unit" label="Unidades Consumidoras">
+          <SidebarMenuItem href="/dashboard/consumer-unit" label="Unidades Consumidoras">
             <Building height={24} width={24} />
           </SidebarMenuItem>
         </div>
       </aside>
       <div className="w-full h-full">
         <ScrollArea className="flex flex-col h-[calc(100vh-11rem)]">
+          <Header />
           {props.children}
         </ScrollArea>
       </div>
