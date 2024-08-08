@@ -1,46 +1,58 @@
-import { cn } from '@/lib/utils';
-import { Slot } from '@radix-ui/react-slot'
-import { forwardRef, Ref } from 'react'
-import { ButtonHTMLAttributes } from "react";
-import { ImSpinner2 } from "react-icons/im";
+import * as React from "react"
+import { Slot } from "@radix-ui/react-slot"
+import { cva, type VariantProps } from "class-variance-authority"
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { asChild?: boolean, loading?: boolean, success?: boolean, invalid?: boolean, thank?: boolean, variant?: "primary" | "outline" | "link" }
+import { cn } from "@/lib/utils"
 
-const Button = forwardRef(({ children, className, disabled, asChild, success, invalid, thank, loading, variant, ...props }: ButtonProps, ref: Ref<HTMLButtonElement>) => {
-  const Component = asChild ? Slot : "button"
-
-  function buttonChildren() {
-    if (loading) {
-      return <ImSpinner2 className="animate-spin" />
-    }
-
-    if (thank) {
-      return "Obrigado!"
-    }
-
-    if (success) {
-      return "Sucesso!"
-    }
-
-    if (invalid) {
-      return "Erro!"
-    }
-
-    return children
+const buttonVariants = cva(
+  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
+        solar: "bg-[#1C5790] text-white flex justify-center items-center text-base font-semibold px-5 py-3 rounded-3xl transition-colors disabled:opacity-50 disabled:pointer-events-none hover:bg-[#12406B] active:bg-[#0B243B]",
+        "solar-destructive": "rounded-3xl px-14 py-3 gap-2 disabled:bg-transparent disabled:border-[#EB7575] disabled:border disabled:text-[#EB7575] bg-[#FF0026] text-white hover:bg-[#FF2244]"
+      },
+      size: {
+        default: "h-12 px-5 py-3",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-14 rounded-md px-8",
+        icon: "h-10 w-10",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
   }
+)
 
-  return (
-    <Component disabled={disabled || loading || invalid || success || thank} className={cn("bg-[#1C5790] text-white flex justify-center items-center text-base font-semibold px-8 py-2 rounded-3xl transition-colors disabled:opacity-50 disabled:pointer-events-none hover:bg-[#12406B] active:bg-[#0B243B]", {
-      "bg-[#96B562] disabled:opacity-100": success,
-      "disabled:opacity-100": loading || thank,
-      "bg-[#FF2244]": invalid,
-      "bg-transparent border border-[#1C5790] text-[#1C5790] hover:bg-[#12406B] hover:text-white active:bg-[#12406B]": variant === "outline",
-      "bg-transparent underline px-0 text-[#1C5790] hover:text-[#013B6E] hover:underline hover:bg-transparent active:bg-transparent active:text-[#111111] active:underline": variant === 'link'
-    }, className)} ref={ref} {...props}>
-      {buttonChildren()}
-    </Component>
-  )
-})
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
+  asChild?: boolean
+}
 
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    return (
+      <Comp
+        className={cn(buttonVariants({ variant, size, className }))}
+        ref={ref}
+        {...props}
+      />
+    )
+  }
+)
 Button.displayName = "Button"
-export default Button
+
+export { Button, buttonVariants }

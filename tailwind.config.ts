@@ -76,6 +76,10 @@ const config = {
       gridTemplateColumns: {
         dashboard: "300px 1fr",
       },
+      boxShadow: {
+        pager:
+          "0px 14px 4px 0px rgba(0, 0, 0, 0.00), 0px 9px 4px 0px rgba(0, 0, 0, 0.01), 0px 5px 3px 0px rgba(0, 0, 0, 0.05), 0px 2px 2px 0px rgba(0, 0, 0, 0.09), 0px 1px 1px 0px rgba(0, 0, 0, 0.10);",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -1,5 +1,5 @@
 "use client";
-import { Building, ChevronsRight, HomeIcon } from "lucide-react";
+import { Briefcase, Building, ChevronsRight, HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -19,6 +19,10 @@ const headerInfoData: HeaderInfoData = {
     title: "Unidades Consumidoras",
     icon: <Building size={24} />,
   },
+  "/dashboard/equipments": {
+    title: "Equipamentos",
+    icon: <Briefcase size={24} />,
+  },
 };
 
 export default function HeaderInfo() {
@@ -27,8 +31,8 @@ export default function HeaderInfo() {
   const finalLinksArray = filteredPathname.map((item, index, array) => {
     const currentLinkArray = array.slice(0, index + 1);
     return {
-      title: headerInfoData[`/${currentLinkArray.join("/")}`].title,
-      icon: headerInfoData[`/${currentLinkArray.join("/")}`].icon,
+      title: headerInfoData[`/${currentLinkArray.join("/")}`]?.title,
+      icon: headerInfoData[`/${currentLinkArray.join("/")}`]?.icon,
     };
   });
   const lastRoute = finalLinksArray[finalLinksArray.length - 1];

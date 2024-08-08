@@ -7,6 +7,7 @@ import { IconType } from 'react-icons'
 interface InputProps
     extends InputHTMLAttributes<HTMLInputElement> {
     label?: string
+    labelClassName?: string
     iterativeIcon?: ReactNode
 }
 
@@ -27,18 +28,19 @@ const Input = forwardRef(
         {
             label,
             className,
+            labelClassName,
             iterativeIcon,
             ...props
         }: InputProps,
         ref: Ref<HTMLInputElement>,
     ) => {
         return (
-            <label className="relative flex flex-col gap-[10px]">
-                <span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}</span>
-                <div className='flex items-center gap-3 w-full rounded-3xl px-3 bg-[#BBBBBB33]'>
+            <label className={cn("relative flex flex-col gap-[10px]", labelClassName)}>
+                { label && (<span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}</span>)}
+                <div className='flex items-center gap-3 w-full rounded-3xl px-5 bg-[#BBBBBB33]'>
                     <input
                         className={cn(
-                            'w-full bg-transparent py-3 font-semibold text-[#999999] text-sm outline-none placeholder:text-[#999999] placeholder:font-semibold ',
+                            'h-12 w-full bg-transparent py-3 font-semibold text-[#999999] text-sm outline-none placeholder:text-[#999999] placeholder:font-semibold ',
                             className,
                         )}
                         ref={ref}

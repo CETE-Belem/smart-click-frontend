@@ -1,9 +1,9 @@
 "use client"
 
-import Button from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const router = useRouter()
@@ -14,7 +14,7 @@ export default function Home() {
 
   return (
     <div className="h-screen w-screen solaris-background grid place-items-center">
-      <Button asChild>
+      <Button variant="solar" asChild>
         <Link href="/login">
           Fazer Login
         </Link>
