@@ -29,6 +29,10 @@ export default function Pagination({
 }: PaginationProps) {
   const pages = Math.floor(totalCount / perPage) || 1;
 
+  if(totalCount <= perPage) {
+    return null;
+  }
+
   return (
     <div className={cn("flex items-center justify-center", className)}>
       <PaginationRoot>

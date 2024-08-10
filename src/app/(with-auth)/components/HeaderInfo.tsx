@@ -44,9 +44,8 @@ export default function HeaderInfo() {
         <div className="flex gap-4 items-center">
           {finalLinksArray.map((item, index) => {
             return (
-              <>
+              <div key={index} className="flex gap-2 items-center">
                 <div
-                  key={index}
                   className="flex gap-2 items-center text-sm text-white"
                 >
                   {item.icon}
@@ -61,7 +60,7 @@ export default function HeaderInfo() {
                 {index !== finalLinksArray.length - 1 && (
                   <ChevronsRight size={22} className="text-white" />
                 )}
-              </>
+              </div>
             );
           })}
         </div>

@@ -6,15 +6,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { flexRender, Table as TableType } from "@tanstack/react-table";
+import { flexRender, getCoreRowModel, RowModel, Table as TableType, useReactTable } from "@tanstack/react-table";
 import { columns } from "./columns";
 import { Equipments } from "./types/equipments";
 
 interface EquipmentsDataTableProps {
-  table: TableType<Equipments>;
+  equipments: Equipments[];
+  setRowSelection: (rowSelection: any) => void;
+  rowSelection: {};
 }
 
-export default function EquipmentsDataTable({table}: EquipmentsDataTableProps) {
+export default function EquipmentsDataTable({ equipments, setRowSelection, rowSelection}: EquipmentsDataTableProps) {
+
+  const table = useReactTable({
+    data: equipments,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    onRowSelectionChange: setRowSelection,
+    manualPagination: true,
+    state: {
+      rowSelection,
+    },
+  });
+
   return (
     <Table>
           <TableHeader className="bg-[#F5F5F5] border-b-8 border-white">

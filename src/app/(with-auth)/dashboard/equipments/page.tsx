@@ -16,117 +16,48 @@ import {
 
 import Input from "@/components/ui/input";
 import { columns } from "./columns";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Equipments } from "./types/equipments";
 import EquipmentsDataTable from "./data-table";
 import { Button } from "@/components/ui/button";
 import Pagination from "@/components/pagination";
-
-const data: Equipments[] = [
-  {
-    id: "m5gr84i9",
-    name: "Equipment 1",
-    description: "Equipment 1 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 1",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 2",
-    description: "Equipment 2 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 2",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 3",
-    description: "Equipment 3 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 3",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 4",
-    description: "Equipment 4 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 4",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 5",
-    description: "Equipment 5 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 5",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 6",
-    description: "Equipment 6 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 6",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 7",
-    description: "Equipment 7 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 7",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 8",
-    description: "Equipment 8 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 8",
-  },
-  {
-    id: "m5gr84i9",
-    name: "Equipment 9",
-    description: "Equipment 9 description",
-    macAddress: "00:00:00:00:00:00",
-    consumerUnit: "Consumer Unit 9",
-  },
-];
+import { useRouter, useSearchParams } from "next/navigation";
+import { getEquipmentsAction } from "../../../../action/get-equipments.action";
 
 export default function EquipmentsPage() {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
-    []
-  );
   const [rowSelection, setRowSelection] = useState({});
-
-  const [pageIndex, setPageIndex] = useState(20);
   const perPage = 10;
-  const [totalCount, setTotalCount] = useState(200);
+  const [totalCount, setTotalCount] = useState(0);
+  const [equipments, setEquipments] = useState<Equipments[]>([]);
 
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
+  const pageIndex = searchParams.get("page") ? parseInt(searchParams.get("page") as string) : 1;
 
-  const table = useReactTable({
-    data,
-    columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-    },
-  });
+  function handlePageChange(pageIndex: number) {
+    router.push(`?page=${pageIndex}`);
+  }
+
+  useEffect(() => {
+    async function fetchEquipments() {
+      const response = await getEquipmentsAction(pageIndex, perPage);
+      setTotalCount(response.totalEquipments);
+      setEquipments(response.equipments);
+    }
+
+    fetchEquipments();
+  }, []);
 
   return (
     <div className="w-full py-4">
       <div className="flex items-center w-full gap-3">
         <Input
           placeholder="Pesquisar..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
+          // value={(table.getColumn("nome")?.getFilterValue() as string) ?? ""}
+          // onChange={(event) =>
+          //   table.getColumn("nome")?.setFilterValue(event.target.value)
+          // }
           labelClassName="w-full"
         />
         <Button variant="solar" className="w-full">
@@ -145,9 +76,9 @@ export default function EquipmentsPage() {
         <h3 className="text-sm font-bold text-black/50 my-5">
           TODOS OS EQUIPAMENTOS ({totalCount})
         </h3>
-        <EquipmentsDataTable table={table} />
+        <EquipmentsDataTable equipments={equipments} rowSelection={rowSelection} setRowSelection={setRowSelection}  />
       </div>
-      <Pagination className="my-4" totalCount={totalCount} perPage={perPage} pageIndex={pageIndex} onPageChange={(index) => { setPageIndex(index)}} />
+      <Pagination className="my-4" totalCount={totalCount} perPage={perPage} pageIndex={pageIndex} onPageChange={(index) => { handlePageChange(index)}} />
     </div>
   );
 }

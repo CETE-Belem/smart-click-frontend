@@ -29,31 +29,31 @@ export const columns: ColumnDef<Equipments>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "name",
+    accessorKey: "nome",
     header: "Nome",
-    cell: ({ row }) => <div className="text-xs">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="text-xs">{row.getValue("nome")}</div>,
   },
   {
-    accessorKey: "description",
+    accessorKey: "descricao",
     header: "Descrição",
     cell: ({ row }) => (
-      <div className="text-xs text-black/50">{row.getValue("description")}</div>
+      <div className="text-xs text-black/50">{row.getValue("descricao")}</div>
     ),
   },
   {
-    accessorKey: "macAddress",
+    accessorKey: "mac",
     header: "MAC",
     cell: ({ row }) => {
-      return <div className="text-xs text-black/50">{row.getValue("macAddress")}</div>;
+      return <div className="text-xs text-black/50">{row.getValue("mac")}</div>;
     },
   },
-  {
-    accessorKey: "consumerUnit",
-    header: "Unidade Consumidora",
-    cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("consumerUnit")}</div>;
-    },
-  },
+  // {
+  //   accessorKey: "consumerUnit",
+  //   header: "Unidade Consumidora",
+  //   cell: ({ row }) => {
+  //     return <div className="text-xs">{row.getValue("consumerUnit")}</div>;
+  //   },
+  // },
   {
     id: "actions",
     enableHiding: false,
