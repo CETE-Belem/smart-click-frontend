@@ -1,7 +1,7 @@
 "use client"
 
 import Input, { InputIcon } from "@/components/ui/input"
-import Button from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import Turnstile from "react-turnstile"
 import Image from "next/image"
 import WhiteLogo from "public/images/white-logo.svg"
@@ -108,11 +108,11 @@ export default function Register() {
                                 trigger("captcha")
                             }}
                         />
-                        <Button className="w-full" disabled={!isValid} loading={loading}>Cadastrar</Button>
+                        <Button variant="solar" className="w-full" disabled={!isValid} loading={loading}>Cadastrar</Button>
                     </form>
                     <div className="flex justify-between items-center">
                         <span className="opacity-70 text-sm">Já tem uma conta?</span>
-                        <Button variant="outline">
+                        <Button variant="solar-outline">
                             <Link href="/login">
                                 Fazer login
                             </Link>

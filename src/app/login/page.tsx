@@ -1,7 +1,7 @@
 "use client"
 
 import Input from "@/components/ui/input";
-import Button from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import Turnstile from "react-turnstile";
 import Image from "next/image";
 import WhiteLogo from "public/images/white-logo.svg"
@@ -80,7 +80,7 @@ export default function Login() {
                                     trigger("captcha")
                                 }}
                             />
-                            <Button type="submit" className="w-full" disabled={!isValid} loading={loading}>Acessar</Button>
+                            <Button variant="solar" type="submit" className="w-full" disabled={!isValid} loading={loading}>Acessar</Button>
                         </form>
                         <div className="flex justify-start">
                             <Button variant="link" className="text-xs" asChild>
@@ -92,7 +92,7 @@ export default function Login() {
                     </div>
                     <div className="flex justify-between items-center">
                         <span className="opacity-70 text-sm">Não tem uma conta?</span>
-                        <Button variant="outline" asChild>
+                        <Button variant="solar-outline" asChild>
                             <Link href="/register">
                                 Criar conta
                             </Link>

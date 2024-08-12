@@ -1,5 +1,5 @@
 "use client";
-import { Briefcase, Building, ChevronsRight, HomeIcon } from "lucide-react";
+import { Briefcase, Building, ChevronsRight, HomeIcon, Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,6 +23,10 @@ const headerInfoData: HeaderInfoData = {
     title: "Equipamentos",
     icon: <Briefcase size={24} />,
   },
+  "/dashboard/equipments/new": {
+    title: "Novo Equipamento",
+    icon: <Plus size={24} />,
+  },
 };
 
 export default function HeaderInfo() {
@@ -33,6 +37,7 @@ export default function HeaderInfo() {
     return {
       title: headerInfoData[`/${currentLinkArray.join("/")}`]?.title,
       icon: headerInfoData[`/${currentLinkArray.join("/")}`]?.icon,
+      url: `/${currentLinkArray.join("/")}`,
     };
   });
   const lastRoute = finalLinksArray[finalLinksArray.length - 1];
@@ -52,7 +57,7 @@ export default function HeaderInfo() {
                   {index === finalLinksArray.length - 1 ? (
                     <p className="text-sm">{item.title}</p>
                   ) : (
-                    <Link href={`/${item.title.toLowerCase()}`}>
+                    <Link href={`${item.url}`}>
                       <p className="text-sm hover:underline">{item.title}</p>
                     </Link>
                   )}

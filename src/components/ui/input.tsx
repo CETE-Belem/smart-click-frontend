@@ -37,16 +37,25 @@ const Input = forwardRef(
         return (
             <label className={cn("relative flex flex-col gap-[10px]", labelClassName)}>
                 { label && (<span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}</span>)}
-                <div className='flex items-center gap-3 w-full rounded-3xl px-5 bg-[#BBBBBB33]'>
+                <div className='flex items-center w-full rounded-3xl bg-[#BBBBBB33] shadow-input'>
                     <input
                         className={cn(
-                            'h-12 w-full bg-transparent py-3 font-semibold text-[#999999] text-sm outline-none placeholder:text-[#999999] placeholder:font-semibold ',
+                            'h-12 w-full bg-transparent p-3 font-semibold text-[#999999] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40',
+                            {
+                                "pr-1": iterativeIcon
+                            },
                             className,
                         )}
                         ref={ref}
                         {...props}
                     />
-                    {iterativeIcon}
+                    {
+                        iterativeIcon && (
+                            <div className='mr-3 flex items-center justify-center'>
+                                {iterativeIcon}
+                            </div>
+                        )
+                    }
                 </div>
             </label>
         )

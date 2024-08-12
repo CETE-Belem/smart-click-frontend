@@ -1,7 +1,7 @@
 "use client";
 
 import Input from "@/components/ui/input";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Turnstile from "react-turnstile";
 import Image from "next/image";
 import WhiteLogo from "public/images/white-logo.svg";
@@ -120,6 +120,7 @@ export default function ConfirmEmail() {
                 type="submit"
                 className="w-full"
                 loading={loading}
+                variant="solar"
               >
                 Confirmar conta
               </Button>

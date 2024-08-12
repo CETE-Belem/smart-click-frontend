@@ -1,6 +1,8 @@
 import type { NextRequest } from "next/server";
 import { verifyAuth } from "../src/lib/auth";
 
+const noNeedAuth = ["/login", "/no-permission", "/register", "/confirm-email"];
+
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
@@ -8,7 +10,7 @@ export async function middleware(request: NextRequest) {
     return Response.redirect(new URL("/dashboard", request.url));
   }
 
-  if (!token && request.nextUrl.pathname != "/login") {
+  if (!token && noNeedAuth.includes(request.nextUrl.pathname) === false) {
     return Response.redirect(new URL("/login", request.url));
   }
 

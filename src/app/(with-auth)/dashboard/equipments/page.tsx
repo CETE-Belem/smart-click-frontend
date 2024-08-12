@@ -8,11 +8,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  CirclePlus,
-  Filter,
-  Trash2,
-} from "lucide-react";
+import { CirclePlus, Filter, Trash2 } from "lucide-react";
 
 import Input from "@/components/ui/input";
 import { columns } from "./columns";
@@ -21,33 +17,58 @@ import { Equipments } from "./types/equipments";
 import EquipmentsDataTable from "./data-table";
 import { Button } from "@/components/ui/button";
 import Pagination from "@/components/pagination";
-import { useRouter, useSearchParams } from "next/navigation";
-import { getEquipmentsAction } from "../../../../action/get-equipments.action";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
+  getEquipmentsAction,
+  GetEquipmentsResponse,
+} from "../../../../action/get-equipments.action";
+import Link from "next/link";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useCookies } from "next-client-cookies";
+import { apiClient } from "@/lib/axios-client";
 
 export default function EquipmentsPage() {
   const [rowSelection, setRowSelection] = useState({});
-  const perPage = 10;
   const [totalCount, setTotalCount] = useState(0);
-  const [equipments, setEquipments] = useState<Equipments[]>([]);
+  const cookies = useCookies();
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
-  const pageIndex = searchParams.get("page") ? parseInt(searchParams.get("page") as string) : 1;
+  const pageIndex = searchParams.get("page")
+    ? parseInt(searchParams.get("page") as string)
+    : 1;
+
+  const perPage = searchParams.get("limit")
+    ? parseInt(searchParams.get("limit") as string)
+    : 10;
 
   function handlePageChange(pageIndex: number) {
-    router.push(`?page=${pageIndex}`);
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageIndex.toString());
+    params.set("limit", perPage.toString());
+
+    router.replace(`${pathname}?${params.toString()}`);
   }
 
-  useEffect(() => {
-    async function fetchEquipments() {
-      const response = await getEquipmentsAction(pageIndex, perPage);
-      setTotalCount(response.totalEquipments);
-      setEquipments(response.equipments);
-    }
-
-    fetchEquipments();
-  }, []);
+  const { data, isLoading } = useQuery<GetEquipmentsResponse>({
+    queryKey: ["equipments", pageIndex, perPage],
+    queryFn: async () => {
+      const token = cookies.get("token");
+      const response = await apiClient.get<GetEquipmentsResponse>(
+        `/equipments?page=${pageIndex}&limit=${perPage}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setTotalCount(response.data.totalEquipments);
+      return response.data;
+    },
+    placeholderData: keepPreviousData,
+  });
 
   return (
     <div className="w-full py-4">
@@ -60,10 +81,12 @@ export default function EquipmentsPage() {
           // }
           labelClassName="w-full"
         />
-        <Button variant="solar" className="w-full">
-          <CirclePlus size={24} className="mr-2" />
-          <p className="text-sm text-white">Novo Equipamento</p>
-        </Button>
+        <Link href="/dashboard/equipments/new">
+          <Button variant="solar" className="w-full">
+            <CirclePlus size={24} className="mr-2" />
+            <p className="text-sm text-white">Novo Equipamento</p>
+          </Button>
+        </Link>
         <Button variant="solar" className="min-w-12 min-h-12 p-0 m-0">
           <Filter size={24} className="fill-white stroke-none" />
         </Button>
@@ -72,13 +95,31 @@ export default function EquipmentsPage() {
           <p>Excluir</p>
         </Button>
       </div>
-      <div>
-        <h3 className="text-sm font-bold text-black/50 my-5">
-          TODOS OS EQUIPAMENTOS ({totalCount})
-        </h3>
-        <EquipmentsDataTable equipments={equipments} rowSelection={rowSelection} setRowSelection={setRowSelection}  />
-      </div>
-      <Pagination className="my-4" totalCount={totalCount} perPage={perPage} pageIndex={pageIndex} onPageChange={(index) => { handlePageChange(index)}} />
+      {isLoading ? (
+        <div className="w-full flex items-center justify-center mt-10">Carregando...</div>
+      ) : (
+        <>
+          <div>
+            <h3 className="text-sm font-bold text-black/50 my-5">
+              TODOS OS EQUIPAMENTOS ({totalCount})
+            </h3>
+            <EquipmentsDataTable
+              equipments={data?.equipments ?? []}
+              rowSelection={rowSelection}
+              setRowSelection={setRowSelection}
+            />
+          </div>
+          <Pagination
+            className="my-4"
+            totalCount={totalCount}
+            perPage={perPage}
+            pageIndex={pageIndex}
+            onPageChange={(index) => {
+              handlePageChange(index);
+            }}
+          />
+        </>
+      )}
     </div>
   );
 }
