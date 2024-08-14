@@ -89,14 +89,14 @@ export default function NewEquipmentPage() {
   }
 
   return (
-    <div className="grid grid-cols-3 p-14 gap-9">
-      <div className="flex flex-col w-full space-y-6 col-span-2">
-        <h1 className="text-3xl font-bold text-secondary-foreground">
+    <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
+      <div className="flex flex-col items-center lg:items-start w-full space-y-6 col-span-1">
+        <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
           <span className="text-solaris-primary">Cadastrar</span> novo
           equipamento
         </h1>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
+          <form className="w-full max-w-[500px]" onSubmit={form.handleSubmit(onSubmit)}>
             <div className="space-y-6">
               <FormField
                 control={form.control}
@@ -113,7 +113,7 @@ export default function NewEquipmentPage() {
                   </FormItem>
                 )}
               />
-              <div className="flex flex-col lg:grid lg:grid-cols-3 lg:gap-5 lg:max-w-[500px]">
+              <div className="flex flex-row flex-wrap gap-3 w-full sm:gap-5">
                 <FormField
                   control={form.control}
                   name="mac"
@@ -165,7 +165,7 @@ export default function NewEquipmentPage() {
                   control={form.control}
                   name="subGroup"
                   render={({ field }) => (
-                    <FormItem className="max-w-24">
+                    <FormItem className="max-w-24 w-full">
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -212,12 +212,12 @@ export default function NewEquipmentPage() {
                   </FormItem>
                 )}
               />
-              <div className="flex flex-col lg:grid lg:grid-cols-2 lg:max-w-80 lg:gap-5">
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
                 <FormField
                   control={form.control}
                   name="uf"
                   render={({ field }) => (
-                    <FormItem className="max-w-40">
+                    <FormItem className="max-w-40 w-full">
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
@@ -253,7 +253,7 @@ export default function NewEquipmentPage() {
                   control={form.control}
                   name="city"
                   render={({ field }) => (
-                    <FormItem className="max-w-40">
+                    <FormItem className="max-w-40 w-full">
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -279,12 +279,12 @@ export default function NewEquipmentPage() {
                   )}
                 />
               </div>
-              <div className="flex flex-col lg:grid lg:grid-cols-2 lg:max-w-80 lg:gap-5">
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
                 <FormField
                   control={form.control}
                   name="monitoredPhases"
                   render={({ field }) => (
-                    <FormItem className="max-w-40">
+                    <FormItem className="max-w-40 w-full">
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
@@ -309,13 +309,13 @@ export default function NewEquipmentPage() {
                   control={form.control}
                   name="ratedVoltage"
                   render={({ field }) => (
-                    <FormItem className="max-w-40">
+                    <FormItem className="max-w-40 w-full">
                       <FormControl>
                         <Input
                           {...field}
                           type="number"
-                          label="Tensão nominal"
-                          placeholder="127V"
+                          label="Tensão nominal (V)"
+                          placeholder="127"
                         />
                       </FormControl>
                     </FormItem>
@@ -337,11 +337,15 @@ export default function NewEquipmentPage() {
       </div>
       <div className="flex justify-center items-start w-full h-full">
         <Image
-          className="w-full h-auto"
+          className="w-full h-auto max-w-[500px]"
           src={NewEquipmentImage}
           alt="New Equipment"
         />
       </div>
+      <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
+          <span className="text-solaris-primary">Cadastrar</span> novo
+          equipamento
+        </h1>
     </div>
   );
 }

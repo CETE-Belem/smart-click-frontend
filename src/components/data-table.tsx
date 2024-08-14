@@ -14,6 +14,7 @@ import {
   Table as TableType,
   useReactTable,
 } from "@tanstack/react-table";
+import NoResult from "./no-result";
 
 interface DataTableProps<T> {
   data: T[];
@@ -79,8 +80,8 @@ export default function DataTable<T>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+              <TableCell colSpan={columns.length} className="h-64 py-6 text-center">
+                <NoResult />
               </TableCell>
             </TableRow>
           )}

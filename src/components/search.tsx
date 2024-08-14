@@ -2,6 +2,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Input from "./ui/input";
 import { useState } from "react";
 import { useDebouncedCallback } from 'use-debounce';
+import { Search } from "lucide-react";
 
 export type SearchInputProps = {
   placeholder?: string;
@@ -42,6 +43,7 @@ export default function SearchInput({placeholder = "Pesquisar...", onSearch}: Se
       placeholder={placeholder} 
       labelClassName="w-full" 
       onChange={(e) => debounced(e.target.value)}
+      iterativeIcon={<Search size={20} />}
     />
   )
 }
