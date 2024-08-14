@@ -1,3 +1,6 @@
+import { Concessionaire } from "./concessionaire";
+import { ConsumerUnit } from "./unidade-consumidora";
+
 export type Equipments = {
   cod_equipamento: string;
   cod_concessionaria: string;
@@ -13,4 +16,6 @@ export type Equipments = {
   subgrupo: string;
   fases_monitoradas: string;
   mac: string;
+  unidade_consumidora: ConsumerUnit;
+  concessionaria: Concessionaire;
 };

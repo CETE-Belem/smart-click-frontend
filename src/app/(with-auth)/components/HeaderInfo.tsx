@@ -1,30 +1,40 @@
 "use client";
-import { Briefcase, Building, ChevronsRight, HomeIcon, Plus } from "lucide-react";
+import {
+  Briefcase,
+  Building,
+  ChevronsRight,
+  HomeIcon,
+  Menu,
+  Plus,
+  Route,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Routes } from "@/enums/Routes.enum";
+import MobileMenu from "./MobileMenu";
 
-interface HeaderInfoData {
-  [key: string]: {
+type HeaderInfoData = {
+  [key in Routes]: {
     title: string;
+    subtitle: string;
     icon: JSX.Element;
   };
-}
+};
 
 const headerInfoData: HeaderInfoData = {
-  "/dashboard": {
-    title: "Dashboard",
-    icon: <HomeIcon size={24} />,
-  },
-  "/dashboard/consumer-unit": {
+  [Routes.ConsumerUnit]: {
     title: "Unidades Consumidoras",
+    subtitle: "Unidades Consumidoras",
     icon: <Building size={24} />,
   },
-  "/dashboard/equipments": {
+  [Routes.Equipments]: {
     title: "Equipamentos",
+    subtitle: "Equipamentos",
     icon: <Briefcase size={24} />,
   },
-  "/dashboard/equipments/new": {
-    title: "Novo Equipamento",
+  [Routes.EquipmentsNew]: {
+    title: "Equipamentos",
+    subtitle: "Cadastrar equipamento",
     icon: <Plus size={24} />,
   },
 };
@@ -34,9 +44,12 @@ export default function HeaderInfo() {
   const filteredPathname = pathname.split("/").filter((item) => item !== "");
   const finalLinksArray = filteredPathname.map((item, index, array) => {
     const currentLinkArray = array.slice(0, index + 1);
+    const routeKey = `/${currentLinkArray.join("/")}` as Routes;
+    const { title, icon, subtitle } = headerInfoData[routeKey];
     return {
-      title: headerInfoData[`/${currentLinkArray.join("/")}`]?.title,
-      icon: headerInfoData[`/${currentLinkArray.join("/")}`]?.icon,
+      title,
+      icon,
+      subtitle,
       url: `/${currentLinkArray.join("/")}`,
     };
   });
@@ -44,31 +57,48 @@ export default function HeaderInfo() {
   const headerTitle = lastRoute.title;
   return (
     <>
-      <div className="flex flex-col gap-6">
-        <h1 className="text-4xl font-bold text-white">{headerTitle}</h1>
-        <div className="flex gap-4 items-center">
-          {finalLinksArray.map((item, index) => {
-            return (
-              <div key={index} className="flex gap-2 items-center">
-                <div
-                  className="flex gap-2 items-center text-sm text-white"
-                >
-                  {item.icon}
-                  {index === finalLinksArray.length - 1 ? (
-                    <p className="text-sm">{item.title}</p>
-                  ) : (
-                    <Link href={`${item.url}`}>
-                      <p className="text-sm hover:underline">{item.title}</p>
-                    </Link>
+      <div className="flex flex-col gap-5 lg:gap-6">
+        <MobileMenu />
+        {finalLinksArray.length > 1 ? (
+          <h1 className="text-3xl lg:text-4xl font-bold text-white">
+            {headerTitle}
+          </h1>
+        ) : (
+          <div className="text-white flex gap-2 items-center justify-center">
+            {finalLinksArray[0].icon}
+            <h1 className="text-3xl lg:text-4xl font-bold text-white">
+              {headerTitle}
+            </h1>
+          </div>
+        )}
+        {finalLinksArray.length > 1 && (
+          <div className="flex gap-4 items-center">
+            {finalLinksArray.map((item, index) => {
+              return (
+                <div key={index} className="flex gap-2 items-center">
+                  <div className="flex gap-2 items-center text-sm text-white">
+                    {item.icon}
+                    {index === finalLinksArray.length - 1 ? (
+                      <p className="text-sm">{item.title}</p>
+                    ) : (
+                      <Link
+                        className="focus:outline-none focus:ring-1 focus:ring-ring rounded-sm focus:ring-offset-2 focus:ring-offset-transparent"
+                        href={`${item.url}`}
+                      >
+                        <p className="text-sm hover:underline">
+                          {item.subtitle}
+                        </p>
+                      </Link>
+                    )}
+                  </div>
+                  {index !== finalLinksArray.length - 1 && (
+                    <ChevronsRight size={22} className="text-white" />
                   )}
                 </div>
-                {index !== finalLinksArray.length - 1 && (
-                  <ChevronsRight size={22} className="text-white" />
-                )}
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </div>
     </>
   );

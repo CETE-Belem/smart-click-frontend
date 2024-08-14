@@ -21,7 +21,14 @@ export const NewEquipmentSchema = z.object({
   monitoredPhases: z.enum(["MONOFASE", "BIFASE", "TRIFASE"], {
     message: "Fase inválida",
   }),
-  ratedVoltage: z.number(),
+  ratedVoltage: z.string().refine((value) => {
+    const number = Number(value);
+    return number >= 0 && number <= 999;
+  }, "Tensão inválida"),
+  subGroup: z
+    .string()
+    .min(1)
+    .max(10, "O subgrupo deve ter no máximo 10 caracteres"),
 });
 
 export type NewEquipmentSchemaType = z.infer<typeof NewEquipmentSchema>;

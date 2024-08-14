@@ -15,15 +15,15 @@ export default function SidebarMenuItem({ children, label, href}: SidebarMenuIte
   const pathname = usePathname();
   return (
     <Link href={href} className={cn("h-14 flex gap-y-7 px-10 py-2 items-center", {
-      "bg-solaris-primary": pathname === href
+      "bg-solaris-primary": pathname.startsWith(href)
     })}>
       <Slot className={cn("stroke-muted-foreground", {
-        "stroke-white": pathname === href
+        "stroke-white": pathname.startsWith(href)
       })}>
         {children}
       </Slot>
       <span className={cn("ml-4 text-sm text-muted-foreground", {
-        "text-white": pathname === href
+        "text-white": pathname.startsWith(href)
       })}>{label}</span>
     </Link>
   );

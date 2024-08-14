@@ -13,6 +13,7 @@ import { authAction } from "@/action/auth.action";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { Routes } from "@/enums/Routes.enum";
 
 export default function Login() {
     const [loading, setLoading] = useState<boolean>(false)
@@ -30,7 +31,7 @@ export default function Login() {
     }, [setFocus])
 
     async function onSubmit(data: AuthSchemaType) {
-        router.prefetch("/dashboard")
+        router.prefetch(Routes.Equipments)
         setLoading(true)
         const response = await authAction(data).finally(() => {
             setLoading(false)
@@ -42,7 +43,7 @@ export default function Login() {
                 description: response.message,
                 variant: "success"
             })
-            router.push("/dashboard")
+            router.push(Routes.Equipments)
         } else {
             toast({
                 title: "Erro",

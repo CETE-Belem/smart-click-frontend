@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 import { ChevronLeft, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface PaginationProps {
   pageIndex: number;
@@ -16,18 +17,32 @@ interface PaginationProps {
   perPage: number;
   className?: string;
   showPages?: number;
-  onPageChange: (pageIndex: number) => Promise<void> | void;
 }
 
 export default function Pagination({
   pageIndex,
   totalCount,
   perPage,
-  onPageChange,
   className,
-  showPages = 5,
 }: PaginationProps) {
-  const pages = Math.floor(totalCount / perPage) || 1;
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const pages = Math.ceil(totalCount / perPage) || 1;
+  const query = searchParams.get("query") ?? "";
+
+  
+  function handlePageChange(pageIndex: number) {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", pageIndex.toString());
+    params.set("limit", perPage.toString());
+    
+    if(query) {
+      params.set("query", query);
+    }
+
+    router.replace(`${pathname}?${params.toString()}`);
+  }
 
   if(totalCount <= perPage) {
     return null;
@@ -41,7 +56,7 @@ export default function Pagination({
             {pageIndex !== 1 && (
               <PaginationLink
                 className="flex items-center justify-center p-2 rounded-full w-7 h-7 cursor-pointer bg-[#F5F5F5] shadow-pager"
-                onClick={() => onPageChange(1)}
+                onClick={() => handlePageChange(1)}
               >
                 <span className="sr-only">Primeira Página</span>
                 <ChevronsLeft className="h-3 w-3" />
@@ -55,7 +70,7 @@ export default function Pagination({
                   page === pageIndex && "bg-solaris-primary text-white",
                   page !== pageIndex && page !== "..."
                 )}
-                onClick={() => page !== "..." && onPageChange(Number(page))}
+                onClick={() => page !== "..." && handlePageChange(Number(page))}
               >
                 {page === "..." ? (
                   <PaginationEllipsis className="cursor-default"/>
@@ -67,7 +82,7 @@ export default function Pagination({
             {pages > pageIndex && (
               <PaginationLink
                 className="flex items-center justify-center p-2 rounded-full w-7 h-7 cursor-pointer bg-[#F5F5F5] shadow-pager"
-                onClick={() => onPageChange(pages)}
+                onClick={() => handlePageChange(pages)}
               >
                 <span className="sr-only">Última Página</span>
                 <ChevronsRight className="h-3 w-3" />

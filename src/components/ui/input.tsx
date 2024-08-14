@@ -40,7 +40,7 @@ const Input = forwardRef(
                 <div className='flex items-center w-full rounded-3xl bg-[#BBBBBB33] shadow-input'>
                     <input
                         className={cn(
-                            'h-12 w-full bg-transparent p-3 font-semibold text-[#999999] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40',
+                            'h-12 w-full bg-transparent p-3 font-semibold text-[#58585A] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40',
                             {
                                 "pr-1": iterativeIcon
                             },
