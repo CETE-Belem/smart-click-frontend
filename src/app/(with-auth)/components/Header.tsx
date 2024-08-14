@@ -9,12 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logoutAction } from "@/action/logout.action";
-import useUser from "@/hooks/useUser";
 import { useQueryClient } from "@tanstack/react-query";
+import useUserStore from "@/store/user.store";
 
 //TODO: Transform in a composing component
 export default function Header() {
-  const { user, loading } = useUser();
+  const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   return (
     <div className="h-fit lg:h-[9.813rem] solaris-background-header">

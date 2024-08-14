@@ -14,8 +14,10 @@ import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Routes } from "@/enums/Routes.enum";
+import useUserStore from "@/store/user.store";
 
 export default function Login() {
+    const setUser = useUserStore((state) => state.setUser)
     const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter()
     const { toast } = useToast()
@@ -43,6 +45,7 @@ export default function Login() {
                 description: response.message,
                 variant: "success"
             })
+            response.user && setUser(response.user)
             router.push(Routes.Equipments)
         } else {
             toast({

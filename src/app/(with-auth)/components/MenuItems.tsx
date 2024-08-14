@@ -2,11 +2,11 @@ import React from "react";
 import { Briefcase, Building } from "lucide-react";
 import SidebarMenuItem from "./SidebarMenuItem";
 import { Routes } from "@/enums/Routes.enum";
-import useUser from "@/hooks/useUser";
 import { Role } from "@/enums/Role.enum";
+import useUserStore from "@/store/user.store";
 
 export default function MenuItems() {
-  const { user, loading } = useUser();
+  const user = useUserStore((state) => state.user);
   return (
     <>
       <SidebarMenuItem href={Routes.Equipments} label="Equipamentos">
