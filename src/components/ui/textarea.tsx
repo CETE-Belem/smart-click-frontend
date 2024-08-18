@@ -23,17 +23,22 @@ const textAreaVariants = cva(
 
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement>, VariantProps<typeof textAreaVariants> {
-    label?: string
+    label?: string,
+    invalid?: boolean,
   }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, label, variant, ...props }, ref) => {
+  ({ className, label, variant, invalid, required, ...props }, ref) => {
     return (
       <div className="grid w-full gap-4">
-        <Label className="text-base font-medium text-black/50" htmlFor="message">{label}</Label>
+        <Label className="text-base font-medium text-black/50" htmlFor="message">
+          {label}
+          {required && (<span className='text-[#FF0000]'>*</span>)}
+        </Label>
         <textarea
           className={cn(
             textAreaVariants({ variant, className }),
+            invalid && "border-[#FF0000] border",
           )}
           ref={ref}
           {...props}

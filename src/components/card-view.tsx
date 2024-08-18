@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/enums/Routes.enum";
 import { Equipments } from "@/types/equipments";
-import { PenBoxIcon } from "lucide-react";
+import { LoaderCircle, PenBoxIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import NoResult from "./no-result";
@@ -10,6 +10,7 @@ interface CardViewProps<T extends Record<string, any>> {
   accessorKey: keyof T;
   data: T[];
   columns: CardColumnDef<T>[];
+  isLoading?: boolean;
 }
 
 export interface CardColumnDef<T> {
@@ -20,6 +21,7 @@ export default function CardView<T extends Record<string, any>>({
   data,
   columns,
   accessorKey,
+  isLoading,
 }: CardViewProps<T>) {
   return (
     <div className="flex flex-col w-full sm:hidden gap-3">
@@ -54,7 +56,15 @@ export default function CardView<T extends Record<string, any>>({
           </div>
         ))
       ) : (
-        <NoResult />
+        <>
+          {isLoading ? (
+            <div className="flex justify-center items-center">
+              <LoaderCircle className="w-8 h-8 mr-2 animate-spin text-solaris-primary" />
+            </div>
+          ) : (
+            <NoResult />
+          )}
+        </>
       )}
     </div>
   );

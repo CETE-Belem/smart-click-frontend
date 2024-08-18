@@ -15,7 +15,7 @@ export const verifyAuth = async (
     const publicKey = await importSPKI(process.env.JWT_PUBLIC_KEY, "RS256");
     const { role, userId } = (await jwtVerify<AuthToken>(token, publicKey))
       .payload;
-    return { role, userId };
+    return { role: role.toUpperCase(), userId };
   } catch (e) {
     console.error(e);
     return { role: undefined, userId: undefined };

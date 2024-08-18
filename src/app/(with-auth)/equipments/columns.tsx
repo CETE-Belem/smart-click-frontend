@@ -1,11 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { Equipments } from "../../../types/equipments";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { CardColumnDef } from "../../../components/card-view";
+import Link from "next/link";
+import { useToast } from "@/components/ui/use-toast";
+import { api } from "@/lib/axios";
+import { apiClient } from "@/lib/axios-client";
+import { useCookies } from "next-client-cookies";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAlert } from "@/providers/alert.provider";
 
 export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
   {
@@ -31,13 +44,75 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
     accessorKey: "unidade_consumidora",
     header: "Unidade Consumidora",
     cell: ({ row }) => {
-      return <div className="text-xs">{(row.getValue("unidade_consumidora") as ConsumerUnit)?.numero}</div>;
+      return (
+        <div className="text-xs">
+          {(row.getValue("unidade_consumidora") as ConsumerUnit)?.numero}
+        </div>
+      );
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
+      function Delete() {
+        const { openAlert } = useAlert();
+        const { toast } = useToast();
+        const cookies = useCookies();
+        const queryClient = useQueryClient();
+
+        async function handleDelete() {
+          try {
+            const confirmed = await openAlert({
+              title: "Excluir equipamento",
+              description: `Tem certeza que deseja excluir o equipamento ${row.original.nome}?`,
+              confirmText: "Sim",
+              cancelText: "Não",
+            });
+
+            if(!confirmed) return;
+            
+            const response = await apiClient.delete(`/equipments/${row.original.cod_equipamento}`, {
+              headers: {
+                Authorization: `Bearer ${cookies.get("token")}`,
+              },
+            });
+
+            if(response.status === 200) {
+              queryClient.invalidateQueries({ queryKey: ["equipments"] });
+              toast({
+                title: "Equipamento excluído com sucesso",
+                description: `O equipamento ${row.original.nome} foi excluído com sucesso`,
+                variant: "destructive",
+              })
+            }else{
+              toast({
+                title: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
+                description: response.data.message,
+                variant: "destructive",
+              });
+            }
+          } catch (error) {
+            console.log(error)
+            toast({
+              title: "Erro ao excluir equipamento",
+              description: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
+              variant: "destructive",
+            });
+          }
+        }
+
+        return (
+          <DropdownMenuItem onClick={handleDelete}>
+            <Trash2
+              size={16}
+              className="mr-2 text-red-600 hover:text-red-600"
+            />
+            <span className="text-red-600 hover:text-red-600">Excluir</span>
+          </DropdownMenuItem>
+        );
+      }
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -48,14 +123,13 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem>
-              <Edit size={16} className="mr-2" />
-              Editar
-            </DropdownMenuItem>
-            <DropdownMenuItem className="text-red-600">
-              <Trash2 size={16} className="mr-2" />
-              Excluir
-            </DropdownMenuItem>
+            <Link href={`/equipments/${row.original.cod_equipamento}`}>
+              <DropdownMenuItem>
+                <Edit size={16} className="mr-2" />
+                Editar
+              </DropdownMenuItem>
+            </Link>
+            <Delete />
           </DropdownMenuContent>
         </DropdownMenu>
       );
@@ -70,21 +144,17 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
     ),
   },
   {
-    cell: ({ data }) => (
-      <p className="text-xs">{data.descricao}</p>
-    ),
+    cell: ({ data }) => <p className="text-xs">{data.descricao}</p>,
   },
   {
-    cell: ({ data }) => (
-      <p className="text-xs">{data.mac}</p>
-    ),
+    cell: ({ data }) => <p className="text-xs">{data.mac}</p>,
   },
   {
     cell: ({ data }) => (
       <div className="flex gap-1 items-center justify-start">
-        <span className="w-1 h-1 bg-[#58585A] rounded-full"/>
+        <span className="w-1 h-1 bg-[#58585A] rounded-full" />
         <p className="text-xs">Concessionária {data.concessionaria.nome}</p>
       </div>
     ),
-  }
+  },
 ];

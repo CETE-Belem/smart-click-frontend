@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Equipments } from "../../../types/equipments";
 import { Button } from "@/components/ui/button";
 import Pagination from "@/components/pagination";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import {
   GetEquipmentsResponse,
 } from "../../../action/get-equipments.action";
@@ -19,10 +19,15 @@ import { Routes } from "@/enums/Routes.enum";
 import DataTable from "@/components/data-table";
 import TotalCountData from "@/components/total-count-data";
 import CardView from "../../../components/card-view";
+import useUserStore from "@/store/user.store";
+import { Role } from "@/enums/Role.enum";
+import { useToast } from "@/components/ui/use-toast";
+import { useAlert } from "@/providers/alert.provider";
 
 export default function EquipmentsPage() {
   const [rowSelection, setRowSelection] = useState({});
   const cookies = useCookies();
+  const user = useUserStore((state) => state.user);
 
   const searchParams = useSearchParams();
 
@@ -36,7 +41,7 @@ export default function EquipmentsPage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data } = useQuery<GetEquipmentsResponse>({
+  const { data, isLoading } = useQuery<GetEquipmentsResponse>({
     queryKey: ["equipments", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
@@ -67,18 +72,19 @@ export default function EquipmentsPage() {
             <Button variant="link" className="w-fit p-3">
               <Filter size={24} className="fill-white stroke-solaris-primary hover:fill-solaris-primary" />
             </Button>
-            <Button variant="solar" className="w-fit" asChild>
-              <Link href={Routes.EquipmentsNew}>
-                <CirclePlus size={24} className="mr-2" />
-                <p className="text-sm text-white">Novo Equipamento</p>
-              </Link>
-            </Button>
+            {
+              user?.perfil === Role.ADMIN && (
+                <Button variant="solar" className="w-fit" asChild>
+                  <Link href={Routes.EquipmentsNew}>
+                    <CirclePlus size={24} className="mr-2" />
+                    <p className="text-sm text-white">Novo Equipamento</p>
+                  </Link>
+                </Button>
+              )
+            }
+            
           </div>
         </div>
-        {/* <Button disabled variant="solar-destructive" className="w-fit">
-          <Trash2 size={24} />
-          <p>Excluir</p>
-        </Button> */}
       </div>
       <div>
         <TotalCountData label="Todos os Equipamentos" count={data?.totalEquipments}/>
@@ -86,6 +92,7 @@ export default function EquipmentsPage() {
           accessorKey="cod_equipamento"
           data={data?.equipments ?? []}
           columns={equipmentsCardColumns}
+          isLoading={isLoading}
         />
         <DataTable<Equipments>
           columns={equipmentsTableColumn}
@@ -93,6 +100,7 @@ export default function EquipmentsPage() {
           data={data?.equipments ?? []}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
+          isLoading={isLoading}
         />
       </div>
       <Pagination

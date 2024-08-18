@@ -15,6 +15,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import NoResult from "./no-result";
+import { LoaderCircle } from "lucide-react";
 
 interface DataTableProps<T> {
   data: T[];
@@ -22,6 +23,7 @@ interface DataTableProps<T> {
   rowSelection: {};
   className?: string;
   columns: ColumnDef<T>[];
+  isLoading?: boolean;
 }
 
 export default function DataTable<T>({
@@ -30,6 +32,7 @@ export default function DataTable<T>({
   rowSelection,
   className,
   columns,
+  isLoading,
 }: DataTableProps<T>) {
   const table = useReactTable({
     data,
@@ -81,7 +84,15 @@ export default function DataTable<T>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-64 py-6 text-center">
-                <NoResult />
+                {
+                  isLoading ? (
+                    <div className="flex justify-center items-center">
+                      <LoaderCircle className="w-8 h-8 mr-2 animate-spin text-solaris-primary" />
+                    </div>
+                  ) : (
+                    <NoResult />
+                  )
+                }
               </TableCell>
             </TableRow>
           )}

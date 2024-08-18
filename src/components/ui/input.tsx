@@ -9,6 +9,7 @@ interface InputProps
     label?: string
     labelClassName?: string
     iterativeIcon?: ReactNode
+    invalid?: boolean
 }
 
 type InputIconButtonProps = {
@@ -30,21 +31,20 @@ const Input = forwardRef(
             className,
             labelClassName,
             iterativeIcon,
+            invalid,
+            required,
             ...props
         }: InputProps,
         ref: Ref<HTMLInputElement>,
     ) => {
         return (
             <label className={cn("relative flex flex-col gap-[10px]", labelClassName)}>
-                { label && (<span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}</span>)}
-                <div className='flex items-center w-full rounded-3xl bg-[#BBBBBB33] shadow-input'>
-                    {
-                        iterativeIcon && (
-                            <div className='ml-3 flex items-center justify-center text-[#58585A]/40'>
-                                {iterativeIcon}
-                            </div>
-                        )
-                    }
+                { label && (<span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}
+                    {required && (<span className='text-[#FF0000]'>*</span>)}
+                </span>)}
+                <div className={cn('flex items-center w-full rounded-3xl bg-[#BBBBBB33] shadow-input', {
+                    'border border-[#FF0000]': invalid
+                })}>
                     <input
                         className={cn(
                             'h-12 w-full bg-transparent p-3 font-semibold text-[#58585A] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40',
@@ -56,6 +56,13 @@ const Input = forwardRef(
                         ref={ref}
                         {...props}
                     />
+                    {
+                        iterativeIcon && (
+                            <div className='pr-3 flex items-center justify-center text-[#58585A]/40'>
+                                {iterativeIcon}
+                            </div>
+                        )
+                    }
                 </div>
             </label>
         )

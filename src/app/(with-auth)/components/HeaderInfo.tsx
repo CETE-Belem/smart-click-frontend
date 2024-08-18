@@ -45,11 +45,11 @@ export default function HeaderInfo() {
   const finalLinksArray = filteredPathname.map((item, index, array) => {
     const currentLinkArray = array.slice(0, index + 1);
     const routeKey = `/${currentLinkArray.join("/")}` as Routes;
-    const { title, icon, subtitle } = headerInfoData[routeKey];
+    const data = headerInfoData[routeKey];
     return {
-      title,
-      icon,
-      subtitle,
+      title: data?.title,
+      icon: data?.icon,
+      subtitle: data?.subtitle,
       url: `/${currentLinkArray.join("/")}`,
     };
   });

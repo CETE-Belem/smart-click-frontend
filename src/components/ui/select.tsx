@@ -29,12 +29,15 @@ const SelectTrigger = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
     label?: string;
     labelClassName?: string;
+    invalid?: boolean;
+    required?: boolean;
   }
->(({ className, children, label, labelClassName, ...props }, ref) => (
+>(({ className, children, label, labelClassName, invalid, required, ...props }, ref) => (
   <label className={cn("relative flex flex-col gap-[10px]", labelClassName)}>
     {label && (
       <span className={cn("text-sm font-medium text-[#333333] opacity-70")}>
         {label}
+        {required && <span className="text-[#FF0000]">*</span>}
       </span>
     )}
     {/*focus:ring-2 focus:ring-ring focus:ring-offset-2*/}
@@ -42,7 +45,8 @@ const SelectTrigger = React.forwardRef<
       ref={ref}
       className={cn(
         "bg-[#BBBBBB33] placeholder:text-[#58585A]/40  shadow-input flex h-12 w-full items-center justify-between rounded-3xl border border-input px-3 py-2 text-sm ring-offset-background focus:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-        className
+        className,
+        invalid && "border-[#FF0000] border",
       )}
       {...props}
     >

@@ -41,7 +41,7 @@ import { useState } from "react";
 import { newEquipmentAction } from "@/action/new-equipment.action";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Routes } from "@/enums/Routes.enum";
 
 export default function NewEquipmentPage() {
@@ -56,7 +56,7 @@ export default function NewEquipmentPage() {
   });
   const router = useRouter();
   const { toast } = useToast();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -77,7 +77,7 @@ export default function NewEquipmentPage() {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ['equipments'] })
+      queryClient.invalidateQueries({ queryKey: ["equipments"] });
       router.push(Routes.Equipments);
     } else {
       toast({
@@ -96,7 +96,10 @@ export default function NewEquipmentPage() {
           equipamento
         </h1>
         <Form {...form}>
-          <form className="w-full max-w-[500px]" onSubmit={form.handleSubmit(onSubmit)}>
+          <form
+            className="w-full max-w-[500px]"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <div className="space-y-6">
               <FormField
                 control={form.control}
@@ -105,11 +108,15 @@ export default function NewEquipmentPage() {
                   <FormItem className="max-w-96">
                     <FormControl>
                       <Input
+                        required
                         {...field}
                         label="Nome do equipamento"
                         placeholder="Nome..."
+                        invalid={!!form.formState.errors.name}
+                        disabled={loading}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -121,13 +128,17 @@ export default function NewEquipmentPage() {
                     <FormItem className="max-w-40">
                       <FormControl>
                         <Input
+                          required
                           {...field}
                           label="Endereço MAC"
                           placeholder="00:00:00:00:00:00"
                           maxLength={17}
                           onInput={handleMACInputChange}
+                          invalid={!!form.formState.errors.mac}
+                          disabled={loading}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -138,6 +149,7 @@ export default function NewEquipmentPage() {
                     <FormItem className="max-w-40">
                       <FormControl>
                         <Input
+                          required
                           {...field}
                           label="Unidade Consumidora"
                           placeholder="0 0 0 0 0 0 0 0"
@@ -156,8 +168,11 @@ export default function NewEquipmentPage() {
                               </Tooltip>
                             </TooltipProvider>
                           }
+                          invalid={!!form.formState.errors.consumerUnityNumber}
+                          disabled={loading}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -170,9 +185,10 @@ export default function NewEquipmentPage() {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          disabled={loading}
                         >
                           <FormControl>
-                            <SelectTrigger label="Subgrupo">
+                            <SelectTrigger label="Subgrupo" required invalid={!!form.formState.errors.subGroup}>
                               <SelectValue placeholder="A1" />
                             </SelectTrigger>
                           </FormControl>
@@ -191,6 +207,7 @@ export default function NewEquipmentPage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -202,13 +219,16 @@ export default function NewEquipmentPage() {
                   <FormItem className="max-w-[500px]">
                     <FormControl>
                       <Textarea
+                        invalid={!!form.formState.errors.description}
                         variant="solar"
                         label="Descrição"
                         {...field}
                         placeholder="Adicione a descrição do equipamento..."
                         className="h-28"
+                        disabled={loading}
                       />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -227,10 +247,10 @@ export default function NewEquipmentPage() {
                             );
                           }}
                           defaultValue={field.value}
-                          disabled={ufLoading}
+                          disabled={ufLoading || loading}
                         >
                           <FormControl>
-                            <SelectTrigger label="UF">
+                            <SelectTrigger label="UF" required invalid={!!form.formState.errors.uf}>
                               <SelectValue
                                 placeholder={ufLoading ? "Carregando..." : "PA"}
                               />
@@ -246,6 +266,7 @@ export default function NewEquipmentPage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -258,10 +279,10 @@ export default function NewEquipmentPage() {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={uf === null || citiesLoading}
+                          disabled={uf === null || citiesLoading || loading}
                         >
                           <FormControl>
-                            <SelectTrigger label="Cidade">
+                            <SelectTrigger label="Cidade" required invalid={!!form.formState.errors.city}>
                               <SelectValue placeholder="Belém" />
                             </SelectTrigger>
                           </FormControl>
@@ -275,6 +296,7 @@ export default function NewEquipmentPage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -289,9 +311,10 @@ export default function NewEquipmentPage() {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
+                          disabled={loading}
                         >
                           <FormControl>
-                            <SelectTrigger label="Fase monitorada">
+                            <SelectTrigger required label="Fase monitorada" invalid={!!form.formState.errors.monitoredPhases}>
                               <SelectValue placeholder="Monofásico" />
                             </SelectTrigger>
                           </FormControl>
@@ -302,6 +325,7 @@ export default function NewEquipmentPage() {
                           </SelectContent>
                         </Select>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -312,12 +336,16 @@ export default function NewEquipmentPage() {
                     <FormItem className="max-w-40 w-full">
                       <FormControl>
                         <Input
+                          required
                           {...field}
                           type="number"
                           label="Tensão nominal (V)"
                           placeholder="127"
+                          invalid={!!form.formState.errors.ratedVoltage}
+                          disabled={loading}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -343,9 +371,8 @@ export default function NewEquipmentPage() {
         />
       </div>
       <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
-          <span className="text-solaris-primary">Cadastrar</span> novo
-          equipamento
-        </h1>
+        <span className="text-solaris-primary">Cadastrar</span> novo equipamento
+      </h1>
     </div>
   );
 }

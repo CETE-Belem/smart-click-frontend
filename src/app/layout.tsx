@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Providers from "@/providers/react-query.provider";
 import { CookiesProvider } from "next-client-cookies/server";
+import { AlertProvider } from "@/providers/alert.provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,10 +23,12 @@ export default function RootLayout({
       <body className={inter.className}>
         <CookiesProvider>
           <Providers>
-            <>
-              {children}
-              <Toaster />
-            </>
+            <AlertProvider>
+              <>
+                {children}
+                <Toaster />
+              </>
+            </AlertProvider>
           </Providers>
         </CookiesProvider>
       </body>
