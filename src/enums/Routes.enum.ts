@@ -8,5 +8,9 @@ export enum Routes {
   ConsumerUnitEquipments = "/consumer-unit/[number]/equipments",
   ConsumerUnitTeste = "/consumer-unit/[number]",
   ConsumerUnit = "/consumer-unit",
+  ConfirmEmail = "/confirm-email",
+  NoPermission = "/no-permission",
+  Register = "/register",
+  RecoverPasswordByEmail = "/recover-password/email",
   MainPage = ConsumerUnit,
 }

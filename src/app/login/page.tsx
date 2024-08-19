@@ -154,14 +154,14 @@ export default function Login() {
             </Form>
             <div className="flex justify-start">
               <Button variant="link" className="text-xs" size="link" asChild>
-                <Link href="/recover-password/email">Esqueceu sua senha?</Link>
+                <Link href={Routes.RecoverPasswordByEmail}>Esqueceu sua senha?</Link>
               </Button>
             </div>
           </div>
           <div className="flex justify-between items-center">
             <span className="opacity-70 text-sm">Não tem uma conta?</span>
             <Button variant="solar-outline" asChild>
-              <Link href="/register">Criar conta</Link>
+              <Link href={Routes.Register}>Criar conta</Link>
             </Button>
           </div>
         </div>

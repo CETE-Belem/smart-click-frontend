@@ -21,6 +21,8 @@ import {
 import { useSearchParams } from "next/navigation";
 import { confirmEmail } from "@/action/confirm-email.action";
 import { resendConfirmationCode } from "@/action/resend-confirmation-code.action";
+import { Routes } from "@/enums/Routes.enum";
+import { useCookies } from "next-client-cookies";
 
 export default function ConfirmEmail() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -28,6 +30,7 @@ export default function ConfirmEmail() {
   const { toast } = useToast();
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
+  const cookies = useCookies();
   const {
     register,
     handleSubmit,
@@ -36,7 +39,6 @@ export default function ConfirmEmail() {
     trigger,
     formState: { isValid, errors },
   } = useForm<ConfirmEmailType>({
-    mode: "all",
     resolver: zodResolver(ConfirmEmailSchema),
   });
 
@@ -46,9 +48,9 @@ export default function ConfirmEmail() {
 
   async function onSubmit(data: ConfirmEmailType) {
     setLoading(true);
-    if(!email) return router.push("/login");
+    if(!email) return router.push(Routes.Login);
     
-    router.prefetch("/dashboard");
+    router.prefetch(Routes.MainPage);
     const response = await confirmEmail(data, email).finally(() => {
         setLoading(false)
     })
@@ -59,7 +61,7 @@ export default function ConfirmEmail() {
             description: response?.message,
             variant: "success"
         })
-        router.push("/dashboard")
+        router.push(Routes.MainPage)
     } else {
         toast({
             title: "Erro",
@@ -70,7 +72,7 @@ export default function ConfirmEmail() {
   }
 
   async function handleResendCode() {
-    if(!email) return router.push("/login");
+    if(!email) return router.push(Routes.Login);
     const response = await resendConfirmationCode(email);
 
     if (response.success) {
@@ -129,12 +131,12 @@ export default function ConfirmEmail() {
               Não recebeu nada? Reenviar código.
             </Button>
           </div>
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <span className="opacity-70 text-sm">Já tem uma conta?</span>
             <Button variant="solar-outline" asChild>
-              <Link href="/register">Fazer Login</Link>
+              <Link href={Routes.Login}>Fazer Login</Link>
             </Button>
-          </div>
+          </div> */}
         </div>
       </div>
     </main>

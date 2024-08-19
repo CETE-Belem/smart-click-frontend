@@ -110,14 +110,14 @@ export default function Register() {
                         />
                         <Button variant="solar" className="w-full" disabled={!isValid} loading={loading}>Cadastrar</Button>
                     </form>
-                    <div className="flex justify-between items-center">
+                    {/* <div className="flex justify-between items-center">
                         <span className="opacity-70 text-sm">Já tem uma conta?</span>
                         <Button variant="solar-outline">
                             <Link href="/login">
                                 Fazer login
                             </Link>
                         </Button>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </main>
