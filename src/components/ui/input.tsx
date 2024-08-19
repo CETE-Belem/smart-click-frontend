@@ -7,7 +7,9 @@ import { IconType } from 'react-icons'
 interface InputProps
     extends InputHTMLAttributes<HTMLInputElement> {
     label?: string
+    labelClassName?: string
     iterativeIcon?: ReactNode
+    invalid?: boolean
 }
 
 type InputIconButtonProps = {
@@ -27,24 +29,40 @@ const Input = forwardRef(
         {
             label,
             className,
+            labelClassName,
             iterativeIcon,
+            invalid,
+            required,
             ...props
         }: InputProps,
         ref: Ref<HTMLInputElement>,
     ) => {
         return (
-            <label className="relative flex flex-col gap-[10px]">
-                <span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}</span>
-                <div className='flex items-center gap-3 w-full rounded-3xl px-3 bg-[#BBBBBB33]'>
+            <label className={cn("relative flex flex-col gap-[10px]", labelClassName)}>
+                { label && (<span className={cn('text-sm font-medium text-[#333333] opacity-70')}>{label}
+                    {required && (<span className='text-[#FF0000]'>*</span>)}
+                </span>)}
+                <div className={cn('flex items-center w-full rounded-3xl bg-[#BBBBBB33] shadow-input', {
+                    'border border-[#FF0000]': invalid
+                })}>
                     <input
                         className={cn(
-                            'w-full bg-transparent py-3 font-semibold text-[#999999] text-sm outline-none placeholder:text-[#999999] placeholder:font-semibold ',
+                            'h-12 w-full bg-transparent p-3 font-semibold text-[#58585A] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40',
+                            {
+                                "pr-1": iterativeIcon
+                            },
                             className,
                         )}
                         ref={ref}
                         {...props}
                     />
-                    {iterativeIcon}
+                    {
+                        iterativeIcon && (
+                            <div className='pr-3 flex items-center justify-center text-[#58585A]/40'>
+                                {iterativeIcon}
+                            </div>
+                        )
+                    }
                 </div>
             </label>
         )

@@ -1,7 +1,7 @@
 "use client";
 
 import Input from "@/components/ui/input";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Turnstile from "react-turnstile";
 import Image from "next/image";
 import WhiteLogo from "public/images/white-logo.svg";
@@ -120,17 +120,18 @@ export default function ConfirmEmail() {
                 type="submit"
                 className="w-full"
                 loading={loading}
+                variant="solar"
               >
                 Confirmar conta
               </Button>
             </form>
-            <Button onClick={handleResendCode} variant="link" className="text-xs">
+            <Button onClick={handleResendCode} variant="link" size="link" className="text-xs">
               Não recebeu nada? Reenviar código.
             </Button>
           </div>
           <div className="flex justify-between items-center">
             <span className="opacity-70 text-sm">Já tem uma conta?</span>
-            <Button variant="outline" asChild>
+            <Button variant="solar-outline" asChild>
               <Link href="/register">Fazer Login</Link>
             </Button>
           </div>
