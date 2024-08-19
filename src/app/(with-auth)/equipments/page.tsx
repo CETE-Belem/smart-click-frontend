@@ -7,11 +7,9 @@ import { Equipments } from "../../../types/equipments";
 import { Button } from "@/components/ui/button";
 import Pagination from "@/components/pagination";
 import { useSearchParams } from "next/navigation";
-import {
-  GetEquipmentsResponse,
-} from "../../../action/get-equipments.action";
+import { GetEquipmentsResponse } from "../../../action/get-equipments.action";
 import Link from "next/link";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCookies } from "next-client-cookies";
 import { apiClient } from "@/lib/axios-client";
 import SearchInput from "@/components/search";
@@ -28,6 +26,9 @@ export default function EquipmentsPage() {
   const [rowSelection, setRowSelection] = useState({});
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
+  const { openAlert } = useAlert();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const searchParams = useSearchParams();
 
@@ -63,6 +64,47 @@ export default function EquipmentsPage() {
     placeholderData: keepPreviousData,
   });
 
+  async function handleDelete(data: Equipments) {
+    try {
+      const confirmed = await openAlert({
+        title: "Excluir equipamento",
+        description: `Tem certeza que deseja excluir o equipamento ${data.nome}?`,
+        confirmText: "Sim",
+        cancelText: "Não",
+      });
+
+      if(!confirmed) return;
+      
+      const response = await apiClient.delete(`/equipments/${data.cod_equipamento}`, {
+        headers: {
+          Authorization: `Bearer ${cookies.get("token")}`,
+        },
+      });
+
+      if(response.status === 200) {
+        queryClient.invalidateQueries({ queryKey: ["equipments"] });
+        toast({
+          title: "Equipamento excluído com sucesso",
+          description: `O equipamento ${data.nome} foi excluído com sucesso`,
+          variant: "success",
+        })
+      }else{
+        toast({
+          title: `Ocorreu um erro ao excluir o equipamento`,
+          description: response.data.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error(error)
+      toast({
+        title: "Erro ao excluir equipamento",
+        description: `Ocorreu um erro ao excluir o equipamento ${data.nome}`,
+        variant: "destructive",
+      });
+    }
+  }
+
   return (
     <div className="w-full py-4">
       <div className="flex items-center w-full gap-3">
@@ -70,29 +112,35 @@ export default function EquipmentsPage() {
           <SearchInput />
           <div className="flex flex-row-reverse justify-between sm:flex-row sm:justify-start w-full sm:w-fit">
             <Button variant="link" className="w-fit p-3">
-              <Filter size={24} className="fill-white stroke-solaris-primary hover:fill-solaris-primary" />
+              <Filter
+                size={24}
+                className="fill-white stroke-solaris-primary hover:fill-solaris-primary"
+              />
             </Button>
-            {
-              user?.perfil === Role.ADMIN && (
-                <Button variant="solar" className="w-fit" asChild>
-                  <Link href={Routes.EquipmentsNew}>
-                    <CirclePlus size={24} className="mr-2" />
-                    <p className="text-sm text-white">Novo Equipamento</p>
-                  </Link>
-                </Button>
-              )
-            }
-            
+            {user?.perfil === Role.ADMIN && (
+              <Button variant="solar" className="w-fit" asChild>
+                <Link href={Routes.EquipmentsNew}>
+                  <CirclePlus size={24} className="mr-2" />
+                  <p className="text-sm text-white">Novo Equipamento</p>
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
       </div>
       <div>
-        <TotalCountData label="Todos os Equipamentos" count={data?.totalEquipments}/>
+        <TotalCountData
+          label="Todos os Equipamentos"
+          count={data?.totalEquipments}
+        />
         <CardView<Equipments>
           accessorKey="cod_equipamento"
           data={data?.equipments ?? []}
           columns={equipmentsCardColumns}
           isLoading={isLoading}
+          canEdit
+          canDelete={user?.perfil === Role.ADMIN}
+          handleDelete={handleDelete}
         />
         <DataTable<Equipments>
           columns={equipmentsTableColumn}

@@ -1,9 +1,9 @@
 "use server";
 
 import { api } from "@/lib/axios";
-import { Equipments } from "../app/(with-auth)/dashboard/equipments/types/equipments";
 import { cookies } from "next/headers";
 import { AxiosError } from "axios";
+import { Equipments } from "@/types/equipments";
 
 export interface GetEquipmentsResponse {
   limit: number;

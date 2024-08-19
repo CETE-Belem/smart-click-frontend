@@ -33,6 +33,7 @@ const Input = forwardRef(
             iterativeIcon,
             invalid,
             required,
+            disabled,
             ...props
         }: InputProps,
         ref: Ref<HTMLInputElement>,
@@ -43,17 +44,19 @@ const Input = forwardRef(
                     {required && (<span className='text-[#FF0000]'>*</span>)}
                 </span>)}
                 <div className={cn('flex items-center w-full rounded-3xl bg-[#BBBBBB33] shadow-input', {
-                    'border border-[#FF0000]': invalid
+                    'border border-[#FF0000]': invalid,
+                    "opacity-50": disabled
                 })}>
                     <input
                         className={cn(
-                            'h-12 w-full bg-transparent p-3 font-semibold text-[#58585A] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40',
+                            'h-12 w-full bg-transparent p-3 font-semibold text-[#58585A] text-sm outline-none placeholder:font-normal placeholder:text-[#58585A]/40 disabled:cursor-not-allowed',
                             {
                                 "pr-1": iterativeIcon
                             },
                             className,
                         )}
                         ref={ref}
+                        disabled={disabled}
                         {...props}
                     />
                     {

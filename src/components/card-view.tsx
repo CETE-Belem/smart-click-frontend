@@ -1,16 +1,31 @@
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/enums/Routes.enum";
-import { Equipments } from "@/types/equipments";
-import { LoaderCircle, PenBoxIcon } from "lucide-react";
+import {
+  Edit,
+  LoaderCircle,
+  MoreHorizontal,
+  PenBoxIcon,
+  Trash2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import NoResult from "./no-result";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 interface CardViewProps<T extends Record<string, any>> {
   accessorKey: keyof T;
   data: T[];
   columns: CardColumnDef<T>[];
   isLoading?: boolean;
+  canDelete?: boolean;
+  canEdit?: boolean;
+  handleDelete?: (data: T) => void;
 }
 
 export interface CardColumnDef<T> {
@@ -22,6 +37,9 @@ export default function CardView<T extends Record<string, any>>({
   columns,
   accessorKey,
   isLoading,
+  canEdit,
+  canDelete,
+  handleDelete = () => {},
 }: CardViewProps<T>) {
   return (
     <div className="flex flex-col w-full sm:hidden gap-3">
@@ -41,15 +59,36 @@ export default function CardView<T extends Record<string, any>>({
               </div>
               <div>
                 {accessorKey && item[accessorKey] && (
-                  <Link
-                    href={Routes.EquipmentsEdit.replace(
-                      "[id]",
-                      String(item[accessorKey])
-                    )}
-                    className="w-fit p-3"
-                  >
-                    <PenBoxIcon size={24} />
-                  </Link>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="link" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                      {canEdit && (
+                        <Link href={`/equipments/${item[accessorKey]}`}>
+                          <DropdownMenuItem>
+                            <Edit size={16} className="mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                        </Link>
+                      )}
+                      {canDelete && (
+                        <DropdownMenuItem onClick={() => handleDelete(item)}>
+                          <Trash2
+                            size={16}
+                            className="mr-2 text-red-600 hover:text-red-600"
+                          />
+                          <span className="text-red-600 hover:text-red-600">
+                            Excluir
+                          </span>
+                        </DropdownMenuItem>
+                      )}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 )}
               </div>
             </div>
