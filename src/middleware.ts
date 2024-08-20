@@ -3,7 +3,7 @@ import { verifyAuth } from "../src/lib/auth";
 import { Routes } from "./enums/Routes.enum";
 import { Role } from "./enums/Role.enum";
 
-const noNeedAuth = ["/login", "/no-permission", "/register", "/confirm-email"];
+const noNeedAuth = ["/login", "/no-permission", "/register", "/confirm-email", "/recover-password/email", "/recover-password/password"];
 
 const AdminPages = [Routes.EquipmentsNew];
 

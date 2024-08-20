@@ -1,7 +1,7 @@
 "use client";
 
 import Input, { InputIcon } from "@/components/ui/input";
-import Button from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import WhiteLogo from "public/images/white-logo.svg";
 import { useForm } from "react-hook-form";
@@ -136,10 +136,10 @@ export default function RecoverPassword() {
                                 {...register("password")} />
                             <Input type="password" placeholder="Digite sua senha novamente" label="Confirmar senha" {...register("confirmPassword")} />
                             <Button
+                                variant="solar"
                                 type="submit"
                                 className="w-full"
                                 loading={loading}
-                                disabled={!isValid || loading}
                             >
                                 Trocar senha
                             </Button>
@@ -151,13 +151,13 @@ export default function RecoverPassword() {
                     <div className="space-y-4 pt-6">
                         <div className="flex justify-between gap-3 items-center">
                             <span className="opacity-70 text-sm">Não tem uma conta?</span>
-                            <Button variant="outline" asChild>
+                            <Button variant="solar-outline" asChild>
                                 <Link href="/register">Criar conta</Link>
                             </Button>
                         </div>
                         <div className="flex justify-between gap-3 items-center">
                             <span className="opacity-70 text-sm">Já tem uma conta?</span>
-                            <Button variant="outline" asChild>
+                            <Button variant="solar-outline" asChild>
                                 <Link href="/login">Fazer Login</Link>
                             </Button>
                         </div>
