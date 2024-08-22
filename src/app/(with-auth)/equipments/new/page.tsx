@@ -61,6 +61,9 @@ export default function NewEquipmentPage() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<NewEquipmentSchemaType>({
+    defaultValues: {
+      description: '',
+    },
     resolver: zodResolver(NewEquipmentSchema),
   });
 

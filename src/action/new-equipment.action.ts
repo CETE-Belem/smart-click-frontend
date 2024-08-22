@@ -7,7 +7,7 @@ import {
 } from "@/schemas/new-equipment.schema";
 import { cookies } from "next/headers";
 
-interface NewEquipmentDataType {
+export interface NewEquipmentDataType {
   mac: string;
   name: string;
   description: string;

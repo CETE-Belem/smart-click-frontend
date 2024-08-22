@@ -6,7 +6,7 @@ import { ConfirmEmailType, ConfirmEmail } from "@/schemas/confirm-email.schema";
 export async function confirmEmail(
   formData: ConfirmEmailType,
   email: string
-): Promise<{ success: boolean; message: string }> {
+): Promise<{ success: boolean; message: string; token?: string }> {
   try {
     const result = ConfirmEmail.safeParse(formData);
     const newFormData = result.data!;
@@ -20,6 +20,7 @@ export async function confirmEmail(
       return {
         success: true,
         message: "Email confirmado com sucesso",
+        token: response.data.token,
       };
     }
 

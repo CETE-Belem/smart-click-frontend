@@ -19,6 +19,8 @@ import { apiClient } from "@/lib/axios-client";
 import { useCookies } from "next-client-cookies";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "@/providers/alert.provider";
+import useUserStore from "@/store/user.store";
+import { Role } from "@/enums/Role.enum";
 
 export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
   {
@@ -60,6 +62,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
         const { toast } = useToast();
         const cookies = useCookies();
         const queryClient = useQueryClient();
+        const user = useUserStore((state) => state.user);
 
         async function handleDelete() {
           try {
@@ -102,7 +105,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
           }
         }
 
-        return (
+        return user?.perfil === Role.ADMIN ?  (
           <DropdownMenuItem onClick={handleDelete}>
             <Trash2
               size={16}
@@ -110,7 +113,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
             />
             <span className="text-red-600 hover:text-red-600">Excluir</span>
           </DropdownMenuItem>
-        );
+        ) : <></>;
       }
 
       return (
