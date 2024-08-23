@@ -21,12 +21,18 @@ import TotalCountData from "@/components/total-count-data";
 import { Button } from "@/components/ui/button";
 import CardView from "@/components/card-view";
 import useUserStore from "@/store/user.store";
+import { consumerUnitCardColumns, consumerUnitTableColumn } from "./columms";
+import DataTable from "@/components/data-table";
+import { useState } from "react";
+import Pagination from "@/components/pagination";
 
 export default function ConsumerUnitPage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
+
+  const [rowSelection, setRowSelection] = useState({});
 
   const pageIndex = searchParams.get("page")
     ? parseInt(searchParams.get("page") as string)
@@ -55,24 +61,19 @@ export default function ConsumerUnitPage() {
           },
         }
       );
-
+      console.log(response.data);
       return response.data;
     },
 
     placeholderData: keepPreviousData,
   });
 
+  console.log(data?.totalConsumerUnit);
+
   return (
     <div className="w-full flex flex-col gap-5">
       <div className="w-full flex flex-row justify-between">
-        <Button variant={"solar"} className="w-fit flex" asChild>
-          <Link href={Routes.ConsumerUnitNew}>
-            <CirclePlus size={24} className="mr-2" />
-            <p className="text-sm font-bold text-white">
-              Nova unidade <br /> consumidora
-            </p>
-          </Link>
-        </Button>
+        <SearchInput />
 
         <Button variant="link" className="w-fit p-3">
           <Filter
@@ -81,21 +82,40 @@ export default function ConsumerUnitPage() {
           />
         </Button>
 
-        <Button className="w-fit bg-destructive-foreground border border-solid border-destructive rounded-full p-3">
-          <Trash2 size={24} className="text-destructive" />
+        <Button variant="solar" className="w-fit p-3" asChild>
+          <Link href={"/"}>
+            <CirclePlus size={24} />
+          </Link>
         </Button>
       </div>
 
-      <SearchInput />
-
       <div className="w-full flex flex-col gap-12">
-        <TotalCountData label="Resultados de pesquisa " />
+        <TotalCountData
+          label="Resultados de pesquisa "
+          count={data?.totalConsumerUnit}
+        />
         <CardView<ConsumerUnit>
           accessorKey="cod_unidade_consumidora"
+          data={data?.consumerUnit ?? []}
+          columns={consumerUnitCardColumns}
+          isLoading={isLoading}
           canEdit
           canDelete={user?.perfil === Role.ADMIN}
         />
+        <DataTable<ConsumerUnit>
+          columns={consumerUnitTableColumn}
+          className="hidden sm:table"
+          data={data?.consumerUnit ?? []}
+          rowSelection={rowSelection}
+          setRowSelection={setRowSelection}
+          isLoading={isLoading}
+        />
       </div>
+      <Pagination
+        pageIndex={pageIndex}
+        perPage={perPage}
+        totalCount={data?.totalConsumerUnit ?? 0}
+      />
     </div>
   );
 }
