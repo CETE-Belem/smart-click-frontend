@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useCookies } from "next-client-cookies";
 
 // Components
-import { CirclePlus, Trash2, Filter } from "lucide-react";
+import { CirclePlus, Filter } from "lucide-react";
 import SearchInput from "@/components/search";
 import TotalCountData from "@/components/total-count-data";
 import { Button } from "@/components/ui/button";
@@ -61,14 +61,11 @@ export default function ConsumerUnitPage() {
           },
         }
       );
-      console.log(response.data);
       return response.data;
     },
 
     placeholderData: keepPreviousData,
   });
-
-  console.log(data?.totalConsumerUnit);
 
   return (
     <div className="w-full flex flex-col gap-5">
@@ -89,29 +86,32 @@ export default function ConsumerUnitPage() {
         </Button>
       </div>
 
-      <div className="w-full flex flex-col gap-12">
+      <div className="w-full flex flex-col gap-5">
         <TotalCountData
           label="Resultados de pesquisa "
           count={data?.totalConsumerUnit}
         />
+
         <CardView<ConsumerUnit>
           accessorKey="cod_unidade_consumidora"
-          data={data?.consumerUnit ?? []}
+          data={data?.consumerUnits ?? []}
           columns={consumerUnitCardColumns}
           isLoading={isLoading}
           canEdit
           canDelete={user?.perfil === Role.ADMIN}
         />
+
         <DataTable<ConsumerUnit>
           columns={consumerUnitTableColumn}
           className="hidden sm:table"
-          data={data?.consumerUnit ?? []}
+          data={data?.consumerUnits ?? []}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
           isLoading={isLoading}
         />
       </div>
       <Pagination
+        className="my-4"
         pageIndex={pageIndex}
         perPage={perPage}
         totalCount={data?.totalConsumerUnit ?? 0}
