@@ -30,15 +30,24 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
 export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
   {
     cell: ({ data }) => (
-      <h2 className="text-xs font-semibold mb-2">{data.numero}</h2>
+      <h2 className="text-xs font-semibold mb-2 text-solaris-primary">
+        {data.numero}
+      </h2>
     ),
   },
   {
     cell: ({ data }) => (
-      <p className="text-xs font-semibold mb-2">{data.cidade}</p>
+      <div className="flex flex-row gap-2 items-center">
+        <div className="flex flex-row gap-1 items-center">
+          <span className="w-1 h-1 bg-[#58585A] rounded-full" />
+          <p className="text-xs font-semibold">{data.cidade}</p>
+        </div>
+
+        <div className="flex flex-row gap-1 items-center">
+          <span className="w-1 h-1 bg-[#58585A] rounded-full" />
+          <p className="text-xs font-semibold">{data.uf}</p>
+        </div>
+      </div>
     ),
-  },
-  {
-    cell: ({ data }) => <p className="text-xs font-semibold mb-2">{data.uf}</p>,
   },
 ];
