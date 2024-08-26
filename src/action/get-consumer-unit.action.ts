@@ -9,7 +9,7 @@ export interface GetConsumerUnitResponse {
     page: number;
     totalPages: number
     totalConsumerUnit: number;
-    consumerUnit: ConsumerUnit[];
+    consumerUnits: ConsumerUnit[];
 }
 
 export async function getConsumerUnitAction(
