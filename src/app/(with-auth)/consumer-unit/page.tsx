@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { GetConsumerUnitsResponse } from "@/action/get-consumer-units.action";
+import { GetConsumerUnitResponse } from "@/action/get-consumer-unit.action";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { Routes } from "@/enums/Routes.enum";
 import { Role } from "@/enums/Role.enum";
@@ -48,11 +48,11 @@ export default function ConsumerUnitPage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
+  const { data, isLoading } = useQuery<GetConsumerUnitResponse>({
     queryKey: ["consumer unit", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get<GetConsumerUnitsResponse>(
+      const response = await apiClient.get<GetConsumerUnitResponse>(
         `/consumer-units`,
         {
           headers: {
