@@ -98,7 +98,7 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
       const ufId = ufs?.find((uf) => uf.sigla === data.uf)?.id;
       ufId && setUf(ufId);
     }
-  }, [data.uf, ufs]);
+  }, [uf, ufs]);
 
   async function onSubmit(values: NewEquipmentSchemaType) {
     router.prefetch(Routes.Equipments);
