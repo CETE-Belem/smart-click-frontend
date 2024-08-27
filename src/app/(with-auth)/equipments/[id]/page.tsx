@@ -6,10 +6,10 @@ export default async function EditEquipmentPage({params}: {
   params: { id: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { data } = await getEquipmentAction(params.id);
+  const { equipment } = await getEquipmentAction(params.id);
   return (
     <Suspense fallback={<></>}>
-      <EditEquipmentForm data={data}/>
+      <EditEquipmentForm data={equipment}/>
     </Suspense>
   );
 }

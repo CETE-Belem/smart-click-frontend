@@ -82,7 +82,6 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
       description: data?.descricao,
       mac: data?.mac,
       consumerUnityNumber: data?.unidade_consumidora.numero,
-      subGroup: data?.subgrupo,
       uf: data?.uf,
       city: data?.cidade,
       monitoredPhases: data?.fases_monitoradas as
@@ -224,45 +223,6 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
                             }
                             disabled={loading || !isAdmin}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="subGroup"
-                    render={({ field }) => (
-                      <FormItem className="max-w-24 w-full">
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={loading || !isAdmin}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                label="Subgrupo"
-                                required
-                                invalid={!!form.formState.errors.subGroup}
-                              >
-                                <SelectValue placeholder="A1" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="A1">A1</SelectItem>
-                              <SelectItem value="A2">A2</SelectItem>
-                              <SelectItem value="A3">A3</SelectItem>
-                              <SelectItem value="A4">A4</SelectItem>
-                              <SelectItem value="A3a">A3a</SelectItem>
-                              <SelectItem value="AS">AS</SelectItem>
-                              <SelectSeparator />
-                              <SelectItem value="B1">B1</SelectItem>
-                              <SelectItem value="B2">B2</SelectItem>
-                              <SelectItem value="B3">B3</SelectItem>
-                              <SelectItem value="B4">B4</SelectItem>
-                            </SelectContent>
-                          </Select>
                         </FormControl>
                         <FormMessage />
                       </FormItem>

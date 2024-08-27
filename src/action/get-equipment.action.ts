@@ -10,12 +10,12 @@ export interface GetEquipmentResponse {
 
 export async function getEquipmentAction(
   id: string
-): Promise<GetEquipmentResponse | any> {
+): Promise<GetEquipmentResponse> {
   const token = cookies().get("token")?.value;
-  const data = await api.get<GetEquipmentResponse>(`/equipments/${id}`, {
+  const response = await api.get<GetEquipmentResponse>(`/equipments/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return data;
+  return response.data;
 }
