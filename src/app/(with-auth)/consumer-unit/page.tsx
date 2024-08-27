@@ -5,7 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { GetConsumerUnitResponse } from "@/action/get-consumer-unit.action";
+import { GetConsumerUnitsResponse } from "@/action/get-consumer-units.action";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { Routes } from "@/enums/Routes.enum";
 import { Role } from "@/enums/Role.enum";
@@ -25,12 +25,16 @@ import { consumerUnitCardColumns, consumerUnitTableColumn } from "./columms";
 import DataTable from "@/components/data-table";
 import { useState } from "react";
 import Pagination from "@/components/pagination";
+import { useAlert } from "@/providers/alert.provider";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function ConsumerUnitPage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
+  const { openAlert } = useAlert();
+  const { toast } = useToast();
 
   const [rowSelection, setRowSelection] = useState({});
 
@@ -44,12 +48,12 @@ export default function ConsumerUnitPage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data, isLoading } = useQuery<GetConsumerUnitResponse>({
-    queryKey: ["consumerUnit", pageIndex, perPage, query],
+  const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
+    queryKey: ["consumer unit", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get<GetConsumerUnitResponse>(
-        `/consumer-unit`,
+      const response = await apiClient.get<GetConsumerUnitsResponse>(
+        `/consumer-units`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -66,6 +70,51 @@ export default function ConsumerUnitPage() {
 
     placeholderData: keepPreviousData,
   });
+
+  console.log(data?.totalConsumerUnits);
+  console.log(data?.totalConsumerUnits);
+  console.log(data?.consumerUnits);
+
+  async function handleDelete(data: ConsumerUnit) {
+    try {
+      const confirmed = await openAlert({
+        title: "Excluir Unidade",
+        description: `Tem certeza que deseja excluir a unidade consumidora ${data.numero}`,
+        confirmText: "Sim",
+        cancelText: "Não",
+      });
+
+      if (!confirmed) return;
+
+      const response = await apiClient.delete(`/consumer-unit/${data.numero}`, {
+        headers: {
+          Authorization: `Bearer ${cookies.get("token")}`,
+        },
+      });
+
+      if (response.status === 200) {
+        queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
+        toast({
+          title: "Unidade consumidora excluída com sucesso",
+          description: `A unidade consumidora foi excluída com sucesso`,
+          variant: "success",
+        });
+      } else {
+        toast({
+          title: `Ocorreu um erro ao excluir a unidade consumidora`,
+          description: response.data.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: `Erro ao excluir a unidade consumidora`,
+        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
+        variant: "destructive",
+      });
+    }
+  }
 
   return (
     <div className="w-full flex flex-col gap-5">
@@ -89,7 +138,7 @@ export default function ConsumerUnitPage() {
       <div className="w-full flex flex-col gap-5">
         <TotalCountData
           label="Resultados de pesquisa "
-          count={data?.totalConsumerUnit}
+          count={data?.totalConsumerUnits}
         />
 
         <CardView<ConsumerUnit>
@@ -99,6 +148,7 @@ export default function ConsumerUnitPage() {
           isLoading={isLoading}
           canEdit
           canDelete={user?.perfil === Role.ADMIN}
+          handleDelete={handleDelete}
         />
 
         <DataTable<ConsumerUnit>
@@ -114,7 +164,7 @@ export default function ConsumerUnitPage() {
         className="my-4"
         pageIndex={pageIndex}
         perPage={perPage}
-        totalCount={data?.totalConsumerUnit ?? 0}
+        totalCount={data?.totalConsumerUnits ?? 0}
       />
     </div>
   );
