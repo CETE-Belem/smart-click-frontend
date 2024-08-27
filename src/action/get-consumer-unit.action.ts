@@ -8,7 +8,7 @@ export interface GetConsumerUnitResponse {
     limit: number;
     page: number;
     totalPages: number
-    totalConsumerUnit: number;
+    totalConsumerUnits: number;
     consumerUnits: ConsumerUnit[];
 }
 
