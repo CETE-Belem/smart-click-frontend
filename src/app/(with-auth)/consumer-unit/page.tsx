@@ -1,11 +1,10 @@
 "use client";
-
 import {
   keepPreviousData,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { GetConsumerUnitResponse } from "@/action/get-consumer-unit.action";
+import { GetConsumerUnitsResponse } from "@/action/get-consumer-units.action";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { Routes } from "@/enums/Routes.enum";
 import { Role } from "@/enums/Role.enum";
@@ -48,11 +47,11 @@ export default function ConsumerUnitPage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data, isLoading } = useQuery<GetConsumerUnitResponse>({
-    queryKey: ["consumer unit", pageIndex, perPage, query],
+  const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
+    queryKey: ["consumerUnits", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get<GetConsumerUnitResponse>(
+      const response = await apiClient.get<GetConsumerUnitsResponse>(
         `/consumer-units`,
         {
           headers: {
@@ -70,10 +69,6 @@ export default function ConsumerUnitPage() {
 
     placeholderData: keepPreviousData,
   });
-
-  console.log(data?.totalConsumerUnits);
-  console.log(data?.totalConsumerUnits);
-  console.log(data?.consumerUnits);
 
   async function handleDelete(data: ConsumerUnit) {
     try {
@@ -129,7 +124,7 @@ export default function ConsumerUnitPage() {
         </Button>
 
         <Button variant="solar" className="w-fit p-3" asChild>
-          <Link href={"/"}>
+          <Link href={Routes.ConsumerUnitNew}>
             <CirclePlus size={24} />
           </Link>
         </Button>
