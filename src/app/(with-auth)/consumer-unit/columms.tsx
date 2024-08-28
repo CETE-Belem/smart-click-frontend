@@ -63,7 +63,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             if (!confirmed) return;
 
             const response = await apiClient.delete(
-              `/consumer-unit/${row.original.numero}`,
+              `/consumer-units/${row.original.numero}`,
               {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
