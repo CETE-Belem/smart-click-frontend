@@ -5,20 +5,15 @@ import { ConsumerUnit } from '@/types/unidade-consumidora'
 import { cookies } from 'next/headers';
 
 export interface GetConsumerUnitResponse {
-    limit: number;
-    page: number;
-    totalPages: number
-    totalConsumerUnits: number;
-    consumerUnits: ConsumerUnit[];
+    consumerUnits: ConsumerUnit;
 }
 
 export async function getConsumerUnitAction(
-    page:number,
-    limit: number
+    id: string
 ): Promise<GetConsumerUnitResponse | any> {
     const token = cookies().get("token")?.value;
     const data = await api.get<GetConsumerUnitResponse>(
-        `/consumer-unit?page=${page}&limit=${limit}`,
+        `/consumer-units/${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`
