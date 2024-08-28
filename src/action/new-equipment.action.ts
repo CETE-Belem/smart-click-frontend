@@ -14,7 +14,6 @@ export interface NewEquipmentDataType {
   numeroUnidadeConsumidora: string;
   uf: string;
   cidade: string;
-  subgrupo: string;
   tensaoNominal: number;
   fases_monitoradas: string;
 }
@@ -33,7 +32,6 @@ export async function newEquipmentAction(
       numeroUnidadeConsumidora: newFormData.consumerUnityNumber,
       uf: newFormData.uf,
       cidade: newFormData.city,
-      subgrupo: newFormData.subGroup,
       tensaoNominal: Number(newFormData.ratedVoltage),
       fases_monitoradas: newFormData.monitoredPhases,
     };
