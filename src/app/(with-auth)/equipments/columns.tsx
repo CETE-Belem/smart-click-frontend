@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -26,7 +25,14 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
   {
     accessorKey: "nome",
     header: "Nome",
-    cell: ({ row }) => <div className="text-xs">{row.getValue("nome")}</div>,
+    cell: ({ row }) => {
+      const link = `/equipments/${row.original.cod_equipamento}`;
+      return (
+        <Link className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline" href={link}>
+          {row.getValue("nome")}
+        </Link>
+      );
+    },
   },
   {
     accessorKey: "descricao",
