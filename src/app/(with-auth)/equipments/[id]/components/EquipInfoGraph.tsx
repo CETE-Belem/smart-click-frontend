@@ -54,13 +54,13 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1}: EquipInfo
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>{title}</CardTitle>
-          <CardDescription>
+          {/* <CardDescription>
             {new Date().toLocaleDateString("pt-BR", {
               month: "long",
               day: "numeric",
               year: "numeric",
             })}
-          </CardDescription>
+          </CardDescription> */}
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
