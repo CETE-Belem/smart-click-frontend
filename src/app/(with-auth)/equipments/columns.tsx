@@ -126,7 +126,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/equipments/${row.original.cod_equipamento}`}>
+            <Link href={`/equipments/${row.original.cod_equipamento}/edit`}>
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar

@@ -25,6 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { EquipmentChartData } from "../page";
 
 const chartConfig = {
   faseA: {
@@ -43,7 +44,7 @@ const chartConfig = {
 
 interface EquipInfoGraphProps {
   title: string;
-  data: Record<string, any>[];
+  data: any;
   phaseNumber?: number;
 }
 

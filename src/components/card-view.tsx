@@ -69,7 +69,7 @@ export default function CardView<T extends Record<string, any>>({
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Ações</DropdownMenuLabel>
                       {canEdit && (
-                        <Link href={`/equipments/${item[accessorKey]}`}>
+                        <Link href={`/equipments/${item[accessorKey]}/edit`}>
                           <DropdownMenuItem>
                             <Edit size={16} className="mr-2" />
                             Editar
