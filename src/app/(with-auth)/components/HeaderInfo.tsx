@@ -86,7 +86,7 @@ export default function HeaderInfo() {
         ) : (
           <div className="text-white flex gap-2 items-center justify-center">
             {finalLinksArray[0]?.icon}
-            <h1 className="text-3xl lg:text-4xl font-bold text-white">
+            <h1 className="text-3xl lg:text-4xl flex-1 font-bold text-white">
               {headerTitle}
             </h1>
           </div>
