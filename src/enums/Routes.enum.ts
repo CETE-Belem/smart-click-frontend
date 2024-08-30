@@ -6,6 +6,8 @@ export enum Routes {
   EquipmentsEdit = "/equipments/[id]",
   ConsumerUnit = "/consumer-unit",
   ConsumerUnitNew = "/consumer-unit/new",
+  Concessionaire = "/concessionaire",
+  ConcessionaireNew = "/concessionaire/new",
   ConfirmEmail = "/confirm-email",
   NoPermission = "/no-permission",
   Register = "/register",
