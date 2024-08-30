@@ -30,6 +30,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
+import NewConsumerUnitImage from "public/images/new-consumer-unit-image.svg";
 
 export default function NewConsumerUnitPage() {
   const { ufs, loading: ufLoading } = useUFs();
@@ -94,7 +96,7 @@ export default function NewConsumerUnitPage() {
                       <Input
                         required
                         {...field}
-                        label="Número da unidade consumidora"
+                        label="Número"
                         placeholder="Número..."
                         invalid={!!form.formState.errors.number}
                         disabled={loading}
@@ -107,43 +109,9 @@ export default function NewConsumerUnitPage() {
               <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
                 <FormField
                   control={form.control}
-                  name="city"
-                  render={({ field }) => (
-                    <FormItem className="max-w-40 w-full">
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                          disabled={uf === null || citiesLoading || loading}
-                        >
-                          <FormControl>
-                            <SelectTrigger
-                              label="Cidade"
-                              required
-                              invalid={!!form.formState.errors.city}
-                            >
-                              <SelectValue placeholder="Belém" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {cities &&
-                              cities.map((city) => (
-                                <SelectItem key={city.nome} value={city.nome}>
-                                  {city.nome}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
                   name="uf"
                   render={({ field }) => (
-                    <FormItem className="max-w-40 w-full">
+                    <FormItem className="max-w-24 w-full">
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
@@ -171,6 +139,40 @@ export default function NewConsumerUnitPage() {
                               ufs.map((uf) => (
                                 <SelectItem key={uf.sigla} value={uf.sigla}>
                                   {uf.sigla}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem className="max-w-40 w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={uf === null || citiesLoading || loading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="Cidade"
+                              required
+                              invalid={!!form.formState.errors.city}
+                            >
+                              <SelectValue placeholder="Belém" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {cities &&
+                              cities.map((city) => (
+                                <SelectItem key={city.nome} value={city.nome}>
+                                  {city.nome}
                                 </SelectItem>
                               ))}
                           </SelectContent>
@@ -234,6 +236,13 @@ export default function NewConsumerUnitPage() {
             </Button>
           </form>
         </Form>
+      </div>
+      <div className="flex justify-center items-start w-full h-full">
+        <Image
+          className="w-full h-auto max-w-[500px]"
+          src={NewConsumerUnitImage}
+          alt="New Equipment"
+        />
       </div>
       <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
         <span className="text-solaris-primary">Cadastrar</span> nova unidade
