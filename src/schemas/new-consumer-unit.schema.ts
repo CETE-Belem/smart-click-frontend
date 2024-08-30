@@ -9,9 +9,6 @@ export const NewConsumerUnitSchema = z.object({
             8, "O número da unidade consumidora é obrigatório e deve conter no mínimo 8 dígitos"
         )
         .max(8, "O número da unidade consumidora deve conter no mínimo 8 dígitos"),
-    description: z
-        .string()
-        .max(255, "A descrição deve ter no máximo 255 caracteres"),
     city: z
         .string({
             required_error: "Campo obrigatório",
