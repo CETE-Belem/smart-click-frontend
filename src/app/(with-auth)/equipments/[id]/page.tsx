@@ -11,6 +11,7 @@ import { apiClient } from "@/lib/axios-client";
 import { EquipmentSchemaType } from "@/schemas/equipment.schema";
 import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
 import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
+import dayjs from "dayjs";
 
 export interface EquipmentChartData {
   date: Date;
@@ -61,6 +62,10 @@ export default function EquipmentInfo() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          from: dayjs().startOf('day').toDate(),
+          to: dayjs().endOf('day').toDate(),
+        }
       });
       return response.data;
     },
