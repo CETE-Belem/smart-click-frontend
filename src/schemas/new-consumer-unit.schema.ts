@@ -20,7 +20,7 @@ export const NewConsumerUnitSchema = z.object({
         })
         .min(2, "UF deve ter no mínimo 2 caracteres")
         .min(2, "UF deve ter no máximo 2 caracteres"),
-    cod_concessionaire: z.enum([""], {
+    cod_concessionaire: z.string({
         message: "Concessionária inválida",
     }),
     subGroup: z
