@@ -158,13 +158,13 @@ export default function EquipmentInfo() {
        * Fator de Potência
        * todo: remove this
        */
-      socket.on(`${data.mac}/smartclick/fpa`, (res) => {
+      socket.on(`${data.mac}/smartclick/fpfa`, (res) => {
         setFpA(res.data);
       });
-      socket.on(`${data.mac}/smartclick/fpb`, (res) => {
+      socket.on(`${data.mac}/smartclick/fpfb`, (res) => {
         setFpB(res.data);
       });
-      socket.on(`${data.mac}/smartclick/fpc`, (res) => {
+      socket.on(`${data.mac}/smartclick/fpfc`, (res) => {
         setFpC(res.data);
       });
     }
@@ -188,7 +188,9 @@ export default function EquipmentInfo() {
 
   return (
     <div className="space-y-4 my-10">
-      <div className="flex flex-col md:grid md:grid-cols-3 gap-5">
+      {//flex-col md:grid md:grid-cols-3
+      }
+      <div className="flex gap-5">
         {isLoading ? (
           <EquipmentCardInfoSkeleton />        
         ) : (
