@@ -88,7 +88,8 @@ export default function EquipmentInfo() {
   const token = cookies.get('token');
   useEffect(() => {
     if(data){
-      const socket = io("wss://smartclick.zenithinova.com.br:3000/", {
+      const socket = io("wss://smartclick.zenithinova.com.br", {
+        path: "/api/socket.io",
         extraHeaders: {
           authorization: `bearer ${token}`
         }
