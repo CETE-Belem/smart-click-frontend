@@ -81,11 +81,14 @@ export default function ConsumerUnitPage() {
 
       if (!confirmed) return;
 
-      const response = await apiClient.delete(`/consumer-unit/${data.numero}`, {
-        headers: {
-          Authorization: `Bearer ${cookies.get("token")}`,
-        },
-      });
+      const response = await apiClient.delete(
+        `/consumer-unit/${data.cod_unidade_consumidora}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.get("token")}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
