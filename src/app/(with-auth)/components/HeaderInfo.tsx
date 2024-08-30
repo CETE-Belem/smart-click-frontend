@@ -48,6 +48,16 @@ const headerInfoData: HeaderInfoData = {
     subtitle: "Informações do equipamento",
     icon: <NotebookTextIcon size={24} />,
   },
+  [Routes.ConcessionaireNew]: {
+    title: "Concessionária",
+    subtitle: "Cadastrar Concessionária",
+    icon: <Plus size={24} />,
+  },
+  [Routes.ConsumerUnitNew]: {
+    title: "Unidade Consumidora",
+    subtitle: "Cadastrar Unidade Consumidora",
+    icon: <Plus size={24} />,
+  },
 };
 
 export default function HeaderInfo() {

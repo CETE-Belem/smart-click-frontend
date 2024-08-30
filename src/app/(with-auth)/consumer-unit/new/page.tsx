@@ -20,6 +20,7 @@ import {
 import { useToast } from "@/components/ui/use-toast";
 import { Routes } from "@/enums/Routes.enum";
 import useCities from "@/hooks/useCities";
+import useConcessionaires from "@/hooks/useConcessionaires";
 import useUFs from "@/hooks/useUF";
 import {
   NewConsumerUnitSchema,
@@ -41,6 +42,8 @@ export default function NewConsumerUnitPage() {
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { concessionaires, loading: isLoadingConcessionaires } =
+    useConcessionaires();
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -51,6 +54,7 @@ export default function NewConsumerUnitPage() {
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
     setLoading(true);
+
     const response = await newConsumerUnitAction(values).finally(() => {
       setLoading(false);
     });
@@ -85,53 +89,58 @@ export default function NewConsumerUnitPage() {
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <div className="space-y-6">
-              <FormField
-                control={form.control}
-                name="number"
-                render={({ field }) => (
-                  <FormItem className="max-w-96">
-                    <FormControl>
-                      <Input
-                        required
-                        {...field}
-                        label="Número da unidade consumidora"
-                        placeholder="Número..."
-                        invalid={!!form.formState.errors.number}
-                        disabled={loading}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
                 <FormField
                   control={form.control}
-                  name="city"
+                  name="number"
                   render={({ field }) => (
-                    <FormItem className="max-w-40 w-full">
+                    <FormItem className="max-w-96">
+                      <FormControl>
+                        <Input
+                          required
+                          {...field}
+                          label="Número da unidade consumidora"
+                          placeholder="Número..."
+                          invalid={!!form.formState.errors.number}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subGroup"
+                  render={({ field }) => (
+                    <FormItem className="max-w-24 w-full">
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={uf === null || citiesLoading || loading}
+                          disabled={loading}
                         >
                           <FormControl>
                             <SelectTrigger
-                              label="Cidade"
+                              label="Subgrupo"
                               required
-                              invalid={!!form.formState.errors.city}
+                              invalid={!!form.formState.errors.subGroup}
                             >
-                              <SelectValue placeholder="Belém" />
+                              <SelectValue placeholder="A1" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {cities &&
-                              cities.map((city) => (
-                                <SelectItem key={city.nome} value={city.nome}>
-                                  {city.nome}
-                                </SelectItem>
-                              ))}
+                            <SelectItem value="A1">A1</SelectItem>
+                            <SelectItem value="A2">A2</SelectItem>
+                            <SelectItem value="A3">A3</SelectItem>
+                            <SelectItem value="A4">A4</SelectItem>
+                            <SelectItem value="A3a">A3a</SelectItem>
+                            <SelectItem value="AS">AS</SelectItem>
+                            <SelectSeparator />
+                            <SelectItem value="B1">B1</SelectItem>
+                            <SelectItem value="B2">B2</SelectItem>
+                            <SelectItem value="B3">B3</SelectItem>
+                            <SelectItem value="B4">B4</SelectItem>
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -139,6 +148,8 @@ export default function NewConsumerUnitPage() {
                     </FormItem>
                   )}
                 />
+              </div>
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
                 <FormField
                   control={form.control}
                   name="uf"
@@ -180,40 +191,33 @@ export default function NewConsumerUnitPage() {
                     </FormItem>
                   )}
                 />
-              </div>
-              <div className="flex flex-row flex-wrap gap-3 w-full sm:gap-5">
                 <FormField
                   control={form.control}
-                  name="subGroup"
+                  name="city"
                   render={({ field }) => (
-                    <FormItem className="max-w-24 w-full">
+                    <FormItem className="max-w-40 w-full">
                       <FormControl>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={loading}
+                          disabled={uf === null || citiesLoading || loading}
                         >
                           <FormControl>
                             <SelectTrigger
-                              label="Subgrupo"
+                              label="Cidade"
                               required
-                              invalid={!!form.formState.errors.subGroup}
+                              invalid={!!form.formState.errors.city}
                             >
-                              <SelectValue placeholder="A1" />
+                              <SelectValue placeholder="Belém" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="A1">A1</SelectItem>
-                            <SelectItem value="A2">A2</SelectItem>
-                            <SelectItem value="A3">A3</SelectItem>
-                            <SelectItem value="A4">A4</SelectItem>
-                            <SelectItem value="A3a">A3a</SelectItem>
-                            <SelectItem value="AS">AS</SelectItem>
-                            <SelectSeparator />
-                            <SelectItem value="B1">B1</SelectItem>
-                            <SelectItem value="B2">B2</SelectItem>
-                            <SelectItem value="B3">B3</SelectItem>
-                            <SelectItem value="B4">B4</SelectItem>
+                            {cities &&
+                              cities.map((city) => (
+                                <SelectItem key={city.nome} value={city.nome}>
+                                  {city.nome}
+                                </SelectItem>
+                              ))}
                           </SelectContent>
                         </Select>
                       </FormControl>
@@ -222,6 +226,41 @@ export default function NewConsumerUnitPage() {
                   )}
                 />
               </div>
+              <FormField
+                  control={form.control}
+                  name="cod_concessionaire"
+                  render={({ field }) => (
+                    <FormItem className="max-w-[500px] w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={isLoadingConcessionaires}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="Concessionária"
+                              required
+                              invalid={!!form.formState.errors.subGroup}
+                            >
+                              <SelectValue placeholder="Concessionária 1" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {
+                              concessionaires.map(concessionaire => (
+                                <SelectItem key={concessionaire.cod_concessionaria} value={concessionaire.cod_concessionaria}>
+                                  {`${concessionaire.nome} - ${concessionaire.cidade}/${concessionaire.uf}`} 
+                                </SelectItem>
+                              ))
+                            }
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
             </div>
             <Button
               type="submit"

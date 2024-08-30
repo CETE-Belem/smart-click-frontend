@@ -129,11 +129,14 @@ export default function ConcessionairePage() {
           />
         </Button>
 
-        <Button variant="solar" className="w-fit p-3" asChild>
-          <Link href={Routes.ConcessionaireNew}>
-            <CirclePlus size={24} />
-          </Link>
-        </Button>
+        {user?.perfil === Role.ADMIN && (
+          <Button variant="solar" className="w-fit p-3 gap-2" asChild>
+            <Link href={Routes.ConcessionaireNew}>
+              <CirclePlus size={24} />
+              Adicionar
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="w-full flex flex-col gap-5">
@@ -147,13 +150,19 @@ export default function ConcessionairePage() {
           data={data?.concessionaires ?? []}
           columns={concessionaireCardColumns}
           isLoading={isLoading}
-          canEdit
+          canEdit={user?.perfil === Role.ADMIN}
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
         <DataTable<Concessionaire>
-          columns={concessionaireTableColumn}
+          columns={
+            user?.perfil !== Role.ADMIN
+              ? concessionaireTableColumn.filter(
+                  (column) => column.id !== "actions"
+                )
+              : concessionaireTableColumn
+          }
           className="hidden sm:table"
           data={data?.concessionaires ?? []}
           rowSelection={rowSelection}

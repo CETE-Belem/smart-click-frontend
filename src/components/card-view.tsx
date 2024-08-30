@@ -37,8 +37,8 @@ export default function CardView<T extends Record<string, any>>({
   columns,
   accessorKey,
   isLoading,
-  canEdit,
-  canDelete,
+  canEdit = false,
+  canDelete = false,
   handleDelete = () => {},
 }: CardViewProps<T>) {
   return (
@@ -58,7 +58,7 @@ export default function CardView<T extends Record<string, any>>({
                 </div>
               </div>
               <div>
-                {accessorKey && item[accessorKey] && (
+                {(canDelete || canEdit) && accessorKey && item[accessorKey] && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="link" className="h-8 w-8 p-0">

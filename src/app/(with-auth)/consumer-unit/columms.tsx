@@ -15,8 +15,9 @@ import useUserStore from "@/store/user.store";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { Divide, Edit, Link, MoreHorizontal, Trash2 } from "lucide-react";
+import { Divide, Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { useCookies } from "next-client-cookies";
+import Link from "next/link";
 
 export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
   {
@@ -63,7 +64,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             if (!confirmed) return;
 
             const response = await apiClient.delete(
-              `/consumer-units/${row.original.numero}`,
+              `/consumer-units/${row.original.cod_unidade_consumidora}`,
               {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
@@ -85,11 +86,10 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
                 variant: "destructive",
               });
             }
-          } catch (error) {
-            console.log(error);
+          } catch (error: any) {
             toast({
               title: `Erro ao excluir a unidade consumidora`,
-              description: `Ocorreu um erro ao excluir a unidade consumidora ${row.original.numero}`,
+              description: `Ocorreu um erro ao excluir a unidade consumidora ${row.original.numero}, ${error.response.data.message}`,
               variant: "destructive",
             });
           }
@@ -118,7 +118,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/consumer-unit/${row.original.numero}`}>
+            <Link href={`/consumer-unit/${row.original.cod_unidade_consumidora}`}>
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar

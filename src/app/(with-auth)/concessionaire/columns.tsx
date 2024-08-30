@@ -14,16 +14,17 @@ import {
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuLabel,
-} from "@radix-ui/react-dropdown-menu";
-import { Trash2, MoreHorizontal, Link, Edit } from "lucide-react";
+} from "@/components/ui/dropdown-menu";
+import { Trash2, MoreHorizontal, Edit } from "lucide-react";
 import { CardColumnDef } from "@/components/card-view";
+import Link from "next/link";
 
 export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "nome",
     header: "Nome",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("name")}</div>;
+      return <div className="texto-xs">{row.getValue("nome")}</div>;
     },
   },
   {

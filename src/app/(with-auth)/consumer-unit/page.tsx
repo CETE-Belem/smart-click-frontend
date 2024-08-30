@@ -123,11 +123,14 @@ export default function ConsumerUnitPage() {
           />
         </Button>
 
-        <Button variant="solar" className="w-fit p-3" asChild>
-          <Link href={Routes.ConsumerUnitNew}>
-            <CirclePlus size={24} />
-          </Link>
-        </Button>
+        {user?.perfil === Role.ADMIN && (
+          <Button variant="solar" className="w-fit p-3 gap-2" asChild>
+            <Link href={Routes.ConsumerUnitNew}>
+              <CirclePlus size={24} />
+              Adicionar
+            </Link>
+          </Button>
+        )}
       </div>
 
       <div className="w-full flex flex-col gap-5">
@@ -141,13 +144,19 @@ export default function ConsumerUnitPage() {
           data={data?.consumerUnits ?? []}
           columns={consumerUnitCardColumns}
           isLoading={isLoading}
-          canEdit
+          canEdit={user?.perfil === Role.ADMIN} 
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
         <DataTable<ConsumerUnit>
-          columns={consumerUnitTableColumn}
+          columns={
+            user?.perfil !== Role.ADMIN
+              ? consumerUnitTableColumn.filter(
+                  (column) => column.id !== "actions"
+                )
+              : consumerUnitTableColumn
+          }
           className="hidden sm:table"
           data={data?.consumerUnits ?? []}
           rowSelection={rowSelection}
