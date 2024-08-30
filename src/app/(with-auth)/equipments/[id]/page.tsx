@@ -47,6 +47,7 @@ export default function EquipmentInfo() {
   const [pA, setPA] = useState<number | null>(null);
   const [pB, setPB] = useState<number | null>(null);
   const [pC, setPC] = useState<number | null>(null);
+  const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
   const { data: chartData, isLoading: isChartLoading } = useQuery<EquipmentChartData[]>({
     queryKey: ["equipment-chart", params.id],
@@ -64,6 +65,8 @@ export default function EquipmentInfo() {
     },
     placeholderData: keepPreviousData,
   });
+
+
 
   const { data, isLoading } = useQuery<EquipmentSchemaType>({
     queryKey: ["equipment", params.id],
@@ -85,7 +88,7 @@ export default function EquipmentInfo() {
   const token = cookies.get('token');
   useEffect(() => {
     if(data){
-      const socket = io("ws://localhost:3000/", {
+      const socket = io("wss://smartclick.zenithinova.com.br:3000/", {
         extraHeaders: {
           authorization: `bearer ${token}`
         }
@@ -131,21 +134,38 @@ export default function EquipmentInfo() {
     }
   }, [data, token])
 
+
+  useEffect(() => {
+    if(!data) return;
+
+    switch (data.fases_monitoradas){
+      case "MONOFASE":
+        setPhaseNumber(1);
+        break;
+      case "BIFASE":
+        setPhaseNumber(2);
+        break;
+      case "TRIFASE":
+        setPhaseNumber(3);
+        break;
+    }
+  }, [data])
+
   return (
     <div className="space-y-4 my-10">
       <div className="flex flex-col md:grid md:grid-cols-3 gap-5">
         <EquipmentCardInfo value={{V: vA, I: iA, P: pA}} phase="A" />
         {
-          vB || iB || pB ? <EquipmentCardInfo value={{V: vB, I: iB, P: pB}} phase="B" /> : null
+          phaseNumber > 1 ? <EquipmentCardInfo value={{V: vB, I: iB, P: pB}} phase="B" /> : null
         }
         {
-          vC || iC || pC ? <EquipmentCardInfo value={{V: vC, I: iC, P: pC}} phase="C" /> : null
+          phaseNumber > 2 ? <EquipmentCardInfo value={{V: vC, I: iC, P: pC}} phase="C" /> : null
         }
       </div>
       {
         !isChartLoading && (
           <>
-            <EquipInfoGraph data={chartData?.map(e => {
+            <EquipInfoGraph phaseNumber={phaseNumber} data={chartData?.map(e => {
               return {
                 date: e.date,
                 faseA: e.faseA.v,
@@ -153,7 +173,7 @@ export default function EquipmentInfo() {
                 faseC: e.faseC?.v,
               };
             })} title="Tensão (V)"/>
-            <EquipInfoGraph data={chartData?.map(e => {
+            <EquipInfoGraph phaseNumber={phaseNumber} data={chartData?.map(e => {
               return {
                 date: e.date,
                 faseA: e.faseA.i,
@@ -161,7 +181,7 @@ export default function EquipmentInfo() {
                 faseC: e.faseC?.i,
               };
             })} title="Corrente (A)"/>
-            <EquipInfoGraph data={chartData?.map(e => {
+            <EquipInfoGraph phaseNumber={phaseNumber} data={chartData?.map(e => {
               return {
                 date: e.date,
                 faseA: e.faseA.potenciaAtiva,

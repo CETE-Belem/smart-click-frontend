@@ -13,7 +13,7 @@ export const EquipmentSchema = z.object({
   tensao_nominal: z.number(),
   uf: z.string(),
   cidade: z.string(),
-  fases_monitoradas: z.string(),
+  fases_monitoradas: z.enum(["MONOFASE", "BIFASE", "TRIFASE"]),
   unidade_consumidora: z.string(),
   concessionaria: z.object({
     cod_concessionaria: z.string(),
