@@ -57,8 +57,6 @@ export default function HeaderInfo() {
       return regex.test(`/${currentLinkArray.join("/")}`);
     });
 
-    console.log(params.id);
-
     const data = headerInfoData[routeKey || ""];
     return {
       title: data?.title,
