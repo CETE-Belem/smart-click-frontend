@@ -15,8 +15,9 @@ import useUserStore from "@/store/user.store";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
-import { Divide, Edit, Link, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
 import { useCookies } from "next-client-cookies";
+import Link from "next/link";
 
 export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
   {
