@@ -265,28 +265,28 @@ export default function NewConsumerUnitPage() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="optanteTB"
+                render={({ field }) => (
+                  <FormItem className="max-w-96">
+                    <FormControl>
+                      <div className="flex flex-row gap-2 items-center">
+                        <Checkbox
+                          id="confirm"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <label htmlFor="confirm" className="text-sm">
+                          Possível optante por tarifa branca
+                        </label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
-            <FormField
-              control={form.control}
-              name="optanteTB"
-              render={({ field }) => (
-                <FormItem className="max-w-96">
-                  <FormControl>
-                    <div className="flex flex-row gap-2 items-center">
-                      <Checkbox
-                        id="confirm"
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                      <label htmlFor="confirm" className="text-sm">
-                        Possível optante por tarifa branca
-                      </label>
-                    </div>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <Button
               type="submit"
               variant="solar"

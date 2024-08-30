@@ -26,7 +26,6 @@ export default function useConcessionaires() {
             },
           }
         );
-
         setConcessionaires(response.data.concessionaires);
       } catch (error: any) {
         setError(
