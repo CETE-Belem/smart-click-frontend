@@ -1,4 +1,4 @@
-import Button from "@/components/ui/button"
+import {Button} from "@/components/ui/button"
 import {Meta, StoryObj} from "@storybook/react"
 
 export default {
@@ -14,13 +14,15 @@ type Story = StoryObj<typeof Button>
 
 export const Default: Story = {
     args: {
-        children: "Teste"
+        children: "Teste",
+        variant: "solar"
     }
 }
 
 export const Disabled: Story = {
     args: {
         children: "Teste",
+        variant: "solar",
         disabled: true
     }
 }
@@ -28,6 +30,7 @@ export const Disabled: Story = {
 export const Loading: Story = {
     args: {
         children: "Teste",
+        variant: "solar",
         loading: true
     }
 }
@@ -35,35 +38,28 @@ export const Loading: Story = {
 export const Success: Story = {
     args: {
         children: "Teste",
-        success: true
+        variant: "solar"
     }
 }
 
 export const Invalid: Story = {
     args: {
         children: "Teste",
-        invalid: true
-    }
-}
-
-export const Thank: Story = {
-    args: {
-        children: "Teste",
-        thank: true
+        variant: "solar",
     }
 }
 
 export const Outline: Story = {
     args: {
         children: "Teste",
-        variant: "outline"
+        variant: "solar-outline"
     }
 }
 
 export const OutlineLoading: Story = {
     args: {
         children: "Teste",
-        variant: "outline",
+        variant: "solar-outline",
         loading: true
     }
 }
@@ -71,16 +67,14 @@ export const OutlineLoading: Story = {
 export const OutlineSuccess: Story = {
     args: {
         children: "Teste",
-        variant: "outline",
-        success: true
+        variant: "solar-outline",
     }
 }
 
 export const OutlineInvalid: Story = {
     args: {
         children: "Teste",
-        variant: "outline",
-        invalid: true
+        variant: "solar-outline",
     }
 }
 
