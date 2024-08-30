@@ -6,6 +6,7 @@ export interface ConsumerUnit {
   cidade: string;
   uf: string;
   numero: string;
+  subgrupo: string;
   criadoEm: Date;
   atualizadoEm: Date;
   equipamentos: Equipments[];
