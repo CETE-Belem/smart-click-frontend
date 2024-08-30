@@ -44,12 +44,6 @@ export const NewEquipmentSchema = z.object({
       const number = Number(value);
       return number >= 0 && number <= 999;
     }, "Tensão inválida"),
-  subGroup: z
-    .string({
-      required_error: "Campo obrigatório",
-    })
-    .min(1)
-    .max(10, "O subgrupo deve ter no máximo 10 caracteres"),
 });
 
 export type NewEquipmentSchemaType = z.infer<typeof NewEquipmentSchema>;

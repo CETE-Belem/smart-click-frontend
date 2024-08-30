@@ -76,7 +76,6 @@ export async function adminEditEquipmentAction(
       numeroUnidadeConsumidora: newFormData.consumerUnityNumber,
       uf: newFormData.uf,
       cidade: newFormData.city,
-      subgrupo: newFormData.subGroup,
       tensaoNominal: Number(newFormData.ratedVoltage),
       fases_monitoradas: newFormData.monitoredPhases,
     };

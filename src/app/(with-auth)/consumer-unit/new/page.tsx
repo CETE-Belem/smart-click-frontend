@@ -17,11 +17,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/components/ui/use-toast";
 import { Routes } from "@/enums/Routes.enum";
 import useCities from "@/hooks/useCities";
-import useMask from "@/hooks/useMask";
 import useUFs from "@/hooks/useUF";
 import {
   NewConsumerUnitSchema,
@@ -34,9 +32,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function NewConsumerUnitPage() {
-  const { handleChange: handleMACInputChange } = useMask({
-    mask: "00:00:00:00:00:00",
-  });
   const { ufs, loading: ufLoading } = useUFs();
   const [uf, setUf] = useState<number | null>(null);
   const { cities, loading: citiesLoading } = useCities({
@@ -50,9 +45,6 @@ export default function NewConsumerUnitPage() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<NewConsumerUnitSchemaType>({
-    defaultValues: {
-      description: "",
-    },
     resolver: zodResolver(NewConsumerUnitSchema),
   });
 

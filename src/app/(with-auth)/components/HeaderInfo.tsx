@@ -4,6 +4,7 @@ import {
   Building,
   ChevronsRight,
   Fish,
+  NotebookTextIcon,
   PenIcon,
   PenSquareIcon,
   Plus,
@@ -39,8 +40,13 @@ const headerInfoData: HeaderInfoData = {
   },
   [Routes.EquipmentsEdit]: {
     title: "Equipamento",
-    subtitle: "Editar equipamento id: [id]",
+    subtitle: "Editar equipamento",
     icon: <PenSquareIcon size={24} />,
+  },
+  [Routes.Equipment]: {
+    title: "Equipamento",
+    subtitle: "Informações do equipamento",
+    icon: <NotebookTextIcon size={24} />,
   },
 };
 
@@ -86,7 +92,7 @@ export default function HeaderInfo() {
           </div>
         )}
         {finalLinksArray.length > 1 && (
-          <div className="flex gap-4 items-center">
+          <div className="flex flex-wrap gap-4 items-center">
             {finalLinksArray.map((item, index) => {
               return (
                 <div key={index} className="flex gap-2 items-center">
