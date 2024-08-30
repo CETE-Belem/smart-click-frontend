@@ -9,6 +9,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useCookies } from "next-client-cookies";
 import { apiClient } from "@/lib/axios-client";
 import { EquipmentSchemaType } from "@/schemas/equipment.schema";
+import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
+import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
 
 export interface EquipmentChartData {
   date: Date;
@@ -49,97 +51,90 @@ export default function EquipmentInfo() {
   const [pC, setPC] = useState<number | null>(null);
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
-  const { data: chartData, isLoading: isChartLoading } = useQuery<EquipmentChartData[]>({
+  const { data: chartData, isLoading: isChartLoading } = useQuery<
+    EquipmentChartData[]
+  >({
     queryKey: ["equipment-chart", params.id],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get(
-        `/sensor-data/${params.id}/chart`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiClient.get(`/sensor-data/${params.id}/chart`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     },
     placeholderData: keepPreviousData,
   });
-
-
 
   const { data, isLoading } = useQuery<EquipmentSchemaType>({
     queryKey: ["equipment", params.id],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get(
-        `/equipments/${params.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await apiClient.get(`/equipments/${params.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     },
     placeholderData: keepPreviousData,
   });
 
-  const token = cookies.get('token');
+  const token = cookies.get("token");
   useEffect(() => {
-    if(data){
+    if (data) {
       const socket = io("wss://smartclick.zenithinova.com.br", {
         path: "/api/socket.io",
         extraHeaders: {
-          authorization: `bearer ${token}`
-        }
+          authorization: `bearer ${token}`,
+        },
       });
       /**
        * Tensão
        */
       socket.on(`${data.mac}/smartclick/tfa`, (res) => {
         setVA(res.data);
-      })
+      });
       socket.on(`${data.mac}/smartclick/tfb`, (res) => {
         setVB(res.data);
-      })
+      });
       socket.on(`${data.mac}/smartclick/tfc`, (res) => {
         setVC(res.data);
-      })
+      });
 
       /**
        * Corrente
        */
       socket.on(`${data.mac}/smartclick/cfa`, (res) => {
         setIA(res.data);
-      })
+      });
       socket.on(`${data.mac}/smartclick/cfb`, (res) => {
         setIB(res.data);
-      })
+      });
       socket.on(`${data.mac}/smartclick/cfc`, (res) => {
         setIC(res.data);
-      })
+      });
 
       /**
        * Potência
        */
       socket.on(`${data.mac}/smartclick/prfa`, (res) => {
         setPA(res.data);
-      })
+      });
       socket.on(`${data.mac}/smartclick/prfb`, (res) => {
         setPB(res.data);
-      })
+      });
       socket.on(`${data.mac}/smartclick/prfc`, (res) => {
         setPC(res.data);
-      })
+      });
     }
-  }, [data, token])
-
+  }, [data, token]);
 
   useEffect(() => {
-    if(!data) return;
+    if (!data) return;
 
-    switch (data.fases_monitoradas){
+    switch (data.fases_monitoradas) {
       case "MONOFASE":
         setPhaseNumber(1);
         break;
@@ -150,49 +145,77 @@ export default function EquipmentInfo() {
         setPhaseNumber(3);
         break;
     }
-  }, [data])
+  }, [data]);
 
   return (
     <div className="space-y-4 my-10">
       <div className="flex flex-col md:grid md:grid-cols-3 gap-5">
-        <EquipmentCardInfo value={{V: vA, I: iA, P: pA}} phase="A" />
-        {
-          phaseNumber > 1 ? <EquipmentCardInfo value={{V: vB, I: iB, P: pB}} phase="B" /> : null
-        }
-        {
-          phaseNumber > 2 ? <EquipmentCardInfo value={{V: vC, I: iC, P: pC}} phase="C" /> : null
-        }
+        {vA && iA && pA ? (
+          <EquipmentCardInfo value={{ V: vA, I: iA, P: pA }} phase="A" />
+        ) : (
+          <EquipmentCardInfoSkeleton />
+        )}
+        {phaseNumber > 1 ? (
+          vB && iB && pB ? (
+            <EquipmentCardInfo value={{ V: vB, I: iB, P: pB }} phase="B" />
+          ) : (
+            <EquipmentCardInfoSkeleton />
+          )
+        ) : null}
+        {phaseNumber > 2 ? (
+          vC && iC && pC ? (
+            <EquipmentCardInfo value={{ V: vC, I: iC, P: pC }} phase="C" />
+          ) : (
+            <EquipmentCardInfoSkeleton />
+          )
+        ) : null}
       </div>
-      {
-        !isChartLoading && (
-          <>
-            <EquipInfoGraph phaseNumber={phaseNumber} data={chartData?.map(e => {
+      {isChartLoading ? (
+        <>
+          <EquipInfoGraphSkeleton />
+          <EquipInfoGraphSkeleton />
+          <EquipInfoGraphSkeleton />
+        </>
+      ) : (
+        <>
+          <EquipInfoGraph
+            phaseNumber={phaseNumber}
+            data={chartData?.map((e) => {
               return {
                 date: e.date,
                 faseA: e.faseA.v,
                 faseB: e.faseB?.v,
                 faseC: e.faseC?.v,
               };
-            })} title="Tensão (V)"/>
-            <EquipInfoGraph phaseNumber={phaseNumber} data={chartData?.map(e => {
+            })}
+            title="Tensão (V)"
+          />
+          <EquipInfoGraph
+            phaseNumber={phaseNumber}
+            data={chartData?.map((e) => {
               return {
                 date: e.date,
                 faseA: e.faseA.i,
                 faseB: e.faseB?.i,
                 faseC: e.faseC?.i,
               };
-            })} title="Corrente (A)"/>
-            <EquipInfoGraph phaseNumber={phaseNumber} data={chartData?.map(e => {
+            })}
+            title="Corrente (A)"
+          />
+          <EquipInfoGraph
+            phaseNumber={phaseNumber}
+            data={chartData?.map((e) => {
               return {
                 date: e.date,
                 faseA: e.faseA.potenciaAtiva,
                 faseB: e.faseB?.potenciaAtiva,
                 faseC: e.faseC?.potenciaAtiva,
               };
-            })} title="Potência (W)"/>
-          </>
-        )
-      }
+            })}
+            title="Potência (W)"
+          />
+        </>
+      )}
     </div>
   );
 }
