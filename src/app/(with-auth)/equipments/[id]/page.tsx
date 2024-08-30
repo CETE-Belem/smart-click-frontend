@@ -47,9 +47,15 @@ export default function EquipmentInfo() {
   const [iA, setIA] = useState<number | null>(null);
   const [iB, setIB] = useState<number | null>(null);
   const [iC, setIC] = useState<number | null>(null);
-  const [pA, setPA] = useState<number | null>(null);
-  const [pB, setPB] = useState<number | null>(null);
-  const [pC, setPC] = useState<number | null>(null);
+  const [paA, setPaA] = useState<number | null>(null);
+  const [paB, setPaB] = useState<number | null>(null);
+  const [paC, setPaC] = useState<number | null>(null);
+  const [prA, setPrA] = useState<number | null>(null);
+  const [prB, setPrB] = useState<number | null>(null);
+  const [prC, setPrC] = useState<number | null>(null);
+  const [fpA, setFpA] = useState<number | null>(null);
+  const [fpB, setFpB] = useState<number | null>(null);
+  const [fpC, setFpC] = useState<number | null>(null);
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
 
   const { data: chartData, isLoading: isChartLoading } = useQuery<
@@ -122,16 +128,29 @@ export default function EquipmentInfo() {
       });
 
       /**
-       * Potência
+       * Potência Real
        */
       socket.on(`${data.mac}/smartclick/prfa`, (res) => {
-        setPA(res.data);
+        setPrA(res.data);
       });
       socket.on(`${data.mac}/smartclick/prfb`, (res) => {
-        setPB(res.data);
+        setPrB(res.data);
       });
       socket.on(`${data.mac}/smartclick/prfc`, (res) => {
-        setPC(res.data);
+        setPrC(res.data);
+      });
+
+      /**
+       * Potência Aparente
+       */
+      socket.on(`${data.mac}/smartclick/pafa`, (res) => {
+        setPaA(res.data);
+      });
+      socket.on(`${data.mac}/smartclick/pafb`, (res) => {
+        setPaB(res.data);
+      });
+      socket.on(`${data.mac}/smartclick/pafc`, (res) => {
+        setPaC(res.data);
       });
     }
   }, [data, token]);
@@ -158,20 +177,20 @@ export default function EquipmentInfo() {
         {isLoading ? (
           <EquipmentCardInfoSkeleton />        
         ) : (
-          <EquipmentCardInfo value={{ V: vA, I: iA, P: pA }} phase="A" />
+          <EquipmentCardInfo value={{ V: vA, I: iA, Pa: paA, Pr: prA, Fp: fpA }} phase="A" />
         )}
         {phaseNumber > 1 ? (
-          vB && iB && pB ? (
-            <EquipmentCardInfo value={{ V: vB, I: iB, P: pB }} phase="B" />
-          ) : (
+          isLoading ? (
             <EquipmentCardInfoSkeleton />
+          ) : (
+            <EquipmentCardInfo value={{ V: vB, I: iB, Pa: paB, Pr: prB, Fp: fpB }} phase="B" />
           )
         ) : null}
         {phaseNumber > 2 ? (
-          vC && iC && pC ? (
-            <EquipmentCardInfo value={{ V: vC, I: iC, P: pC }} phase="C" />
-          ) : (
+          isLoading ? (
             <EquipmentCardInfoSkeleton />
+          ) : (
+            <EquipmentCardInfo value={{ V: vC, I: iC, Pa: paC, Pr: prC, Fp: fpC }} phase="C" />
           )
         ) : null}
       </div>
