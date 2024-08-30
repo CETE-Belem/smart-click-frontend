@@ -32,6 +32,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import NewConsumerUnitImage from "public/images/new-consumer-unit-image.svg";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export default function NewConsumerUnitPage() {
   const { ufs, loading: ufLoading } = useUFs();
@@ -224,6 +225,27 @@ export default function NewConsumerUnitPage() {
                   )}
                 />
               </div>
+              <FormField
+                control={form.control}
+                name="optanteTB"
+                render={({ field }) => (
+                  <FormItem className="max-w-96">
+                    <FormControl>
+                      <div className="flex flex-row gap-2 items-center">
+                        <Checkbox
+                          id="confirm"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <label htmlFor="confirm" className="text-sm">
+                          Possível optante por tarifa branca
+                        </label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <Button
               type="submit"
