@@ -151,9 +151,9 @@ export default function EquipmentInfo() {
     <div className="space-y-4 my-10">
       <div className="flex flex-col md:grid md:grid-cols-3 gap-5">
         {isLoading ? (
-          <EquipmentCardInfo value={{ V: vA, I: iA, P: pA }} phase="A" />
+          <EquipmentCardInfoSkeleton />        
         ) : (
-          <EquipmentCardInfoSkeleton />
+          <EquipmentCardInfo value={{ V: vA, I: iA, P: pA }} phase="A" />
         )}
         {phaseNumber > 1 ? (
           vB && iB && pB ? (
