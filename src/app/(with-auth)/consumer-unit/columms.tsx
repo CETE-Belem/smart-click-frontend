@@ -64,7 +64,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             if (!confirmed) return;
 
             const response = await apiClient.delete(
-              `/consumer-units/${row.original.numero}`,
+              `/consumer-units/${row.original.cod_unidade_consumidora}`,
               {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
@@ -119,7 +119,9 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/consumer-unit/${row.original.numero}`}>
+            <Link
+              href={`/consumer-unit/${row.original.cod_unidade_consumidora}`}
+            >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar
