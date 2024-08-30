@@ -16,6 +16,19 @@ import {
 import useConcessionaires from "@/hooks/useConcessionaires";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Routes } from "@/enums/Routes.enum";
+import { adminEditConsumerUnitAction } from "@/action/edit-consumer-unit.action";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import Image from "next/image";
+import EditConsumerUnit from "public/images/new-consumer-unit-image.svg";
 
 export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   const { ufs, loading: ufLoading } = useUfs();
@@ -29,17 +42,9 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   const queryClient = useQueryClient();
   const params = useParams();
 
-  const [loadingHere, setLoadingHere] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const user = useUserStore((state) => state.user);
   const isAdmin = user?.perfil === Role.ADMIN;
-
-  const { concessionaireOptions, loading, error } = useConcessionaires();
-
-  const dynamicSchema = NewConsumerUnitSchema.extend({
-    cod_concessionaire: z.enum(concessionaireOptions as [string, ...string[]], {
-      message: "Concessionária inválida",
-    }),
-  });
 
   const form = useForm<NewConsumerUnitSchemaType>({
     defaultValues: {
@@ -49,8 +54,73 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
       subGroup: data.subgrupo,
       cod_concessionaire: data.cod_concessionaria,
     },
-    resolver: zodResolver(dynamicSchema),
+    resolver: zodResolver(NewConsumerUnitSchema),
   });
 
-  return <h1>oi</h1>;
+  useEffect(() => {
+    if (data?.uf) {
+      const ufId = ufs?.find((uf) => uf.sigla === data.uf)?.id;
+      ufId && setUf(ufId);
+    }
+  }, [uf, ufs]);
+
+  async function onSubmit(values: NewConsumerUnitSchemaType) {
+    router.prefetch(Routes.ConsumerUnit);
+    setLoading(true);
+    let response: any = null;
+    if (user?.perfil === Role.ADMIN) {
+      response = await adminEditConsumerUnitAction(
+        values,
+        params.id.toString()
+      ).finally(() => {
+        setLoading(false);
+      });
+    } else {
+      response = await adminEditConsumerUnitAction(
+        values,
+        params.id.toString()
+      ).finally(() => {
+        setLoading(false);
+      });
+    }
+
+    if (response.success) {
+      toast({
+        title: "Sucesso",
+        description: response.message,
+        variant: "success",
+      });
+      queryClient.invalidateQueries({ queryKey: ["consumerUnit"] });
+      queryClient.invalidateQueries({ queryKey: ["consumerUnit", params.id] });
+      router.push(Routes.ConsumerUnit);
+    } else {
+      toast({
+        title: "Erro",
+        description: response.message,
+        variant: "destructive",
+      });
+    }
+  }
+
+  return (
+    <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
+      <div className="flex flex-col items-center lg:items-start w-full space-y-6 col-span-1">
+        <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
+          <span className="text-solaris-primary">Editar</span> unidade
+          consumidora
+        </h1>
+        <Form {...form}></Form>
+      </div>
+      <div className="flex justify-center items-start w-full h-full">
+        <Image
+          src={EditConsumerUnit}
+          className="w-full h-auto max-w-[500px]"
+          alt="Editar Equipamento"
+        />
+      </div>
+      <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
+        <span className="text-solaris-primary">Editar</span> unidade consumidora
+      </h1>
+    </div>
+  );
 }
