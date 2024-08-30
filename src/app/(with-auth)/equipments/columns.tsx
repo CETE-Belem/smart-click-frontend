@@ -28,7 +28,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
     cell: ({ row }) => {
       const link = `/equipments/${row.original.cod_equipamento}`;
       return (
-        <Link className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline" href={link}>
+        <Link prefetch={false} className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline" href={link}>
           {row.getValue("nome")}
         </Link>
       );
