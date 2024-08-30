@@ -150,7 +150,7 @@ export default function EquipmentInfo() {
   return (
     <div className="space-y-4 my-10">
       <div className="flex flex-col md:grid md:grid-cols-3 gap-5">
-        {vA && iA && pA ? (
+        {isLoading ? (
           <EquipmentCardInfo value={{ V: vA, I: iA, P: pA }} phase="A" />
         ) : (
           <EquipmentCardInfoSkeleton />
