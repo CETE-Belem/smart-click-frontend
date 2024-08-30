@@ -142,6 +142,7 @@ export default function EquipmentInfo() {
 
       /**
        * Potência Aparente
+       * todo: remove this
        */
       socket.on(`${data.mac}/smartclick/pafa`, (res) => {
         setPaA(res.data);
@@ -151,6 +152,20 @@ export default function EquipmentInfo() {
       });
       socket.on(`${data.mac}/smartclick/pafc`, (res) => {
         setPaC(res.data);
+      });
+
+      /**
+       * Fator de Potência
+       * todo: remove this
+       */
+      socket.on(`${data.mac}/smartclick/fpa`, (res) => {
+        setFpA(res.data);
+      });
+      socket.on(`${data.mac}/smartclick/fpb`, (res) => {
+        setFpB(res.data);
+      });
+      socket.on(`${data.mac}/smartclick/fpc`, (res) => {
+        setFpC(res.data);
       });
     }
   }, [data, token]);

@@ -32,12 +32,14 @@ export default function EquipmentCardInfo(props: EquipmentCardInfoProps) {
             <p className="text-2xs">Corrente (A)</p>
           </div>
           <div className="flex flex-col items-center justify-center">
-            <p className="text-2xl">{props.value.Pa ?? '-'}</p>
-            <p className="text-2xs">Potência Aparente (VA)</p>
-          </div>
-          <div className="flex flex-col items-center justify-center">
             <p className="text-2xl">{props.value.Pr ?? '-'}</p>
             <p className="text-2xs">Potência Real (W)</p>
+          </div>
+          {//todo: remove this
+          }
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-2xl">{props.value.Pa ?? '-'}</p>
+            <p className="text-2xs">Potência Aparente (VA)</p>
           </div>
           <div className="flex flex-col items-center justify-center">
             <p className="text-2xl">{props.value.Fp ?? '-'}</p>
