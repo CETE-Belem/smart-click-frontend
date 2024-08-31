@@ -321,17 +321,12 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                         <Checkbox
                           id="confirm"
                           checked={
-                            data.subgrupo === "B1" || "B2" || "B3" || "B4"
-                              ? field.value === true
-                              : field.value
+                            form.watch("subGroup").startsWith("A")
+                              ? field.value
+                              : field.value === true
                           }
                           onCheckedChange={field.onChange}
-                          disabled={
-                            data.subgrupo === "B1" ||
-                            data.subgrupo === "B2" ||
-                            data.subgrupo === "B3" ||
-                            data.subgrupo === "B4"
-                          }
+                          disabled={!form.watch("subGroup").startsWith("A")}
                         />
                         <label htmlFor="confirm" className="text-sm">
                           Opção de faturamento pelo grupo tarifário B
