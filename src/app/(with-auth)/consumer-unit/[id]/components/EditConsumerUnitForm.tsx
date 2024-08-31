@@ -77,6 +77,12 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
     }
   }, [uf, ufs]);
 
+  useEffect(() => {
+    const selectedSubGroup = form.watch("subGroup");
+    const selectedA = selectedSubGroup.startsWith("A");
+    form.setValue("optanteTB", !selectedA);
+  }, [form.watch("subGroup")]);
+
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
     setLoading(true);
@@ -314,11 +320,21 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                       <div className="flex flex-row gap-2 items-center">
                         <Checkbox
                           id="confirm"
-                          checked={field.value}
+                          checked={
+                            data.subgrupo === "B1" || "B2" || "B3" || "B4"
+                              ? field.value === true
+                              : field.value
+                          }
                           onCheckedChange={field.onChange}
+                          disabled={
+                            data.subgrupo === "B1" ||
+                            data.subgrupo === "B2" ||
+                            data.subgrupo === "B3" ||
+                            data.subgrupo === "B4"
+                          }
                         />
                         <label htmlFor="confirm" className="text-sm">
-                          Possível optante por tarifa branca
+                          Opção de faturamento pelo grupo tarifário B
                         </label>
                       </div>
                     </FormControl>
