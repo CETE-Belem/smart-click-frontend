@@ -29,7 +29,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Image from "next/image";
 import NewConsumerUnitImage from "public/images/new-consumer-unit-image.svg";
@@ -53,6 +53,12 @@ export default function NewConsumerUnitPage() {
   const form = useForm<NewConsumerUnitSchemaType>({
     resolver: zodResolver(NewConsumerUnitSchema),
   });
+
+  useEffect(() => {
+    const selectedSubGroup = form.watch("subGroup");
+    const selectedA = selectedSubGroup.startsWith("A");
+    form.setValue("optanteTB", !selectedA);
+  }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
@@ -274,11 +280,16 @@ export default function NewConsumerUnitPage() {
                       <div className="flex flex-row gap-2 items-center">
                         <Checkbox
                           id="confirm"
-                          checked={field.value}
+                          checked={
+                            form.watch("subGroup").startsWith("A")
+                              ? field.value
+                              : field.value === true
+                          }
                           onCheckedChange={field.onChange}
+                          disabled={!form.watch("subGroup").startsWith("A")}
                         />
                         <label htmlFor="confirm" className="text-sm">
-                          Possível optante por tarifa branca
+                          Opção de faturamento pelo grupo tarifário B
                         </label>
                       </div>
                     </FormControl>
