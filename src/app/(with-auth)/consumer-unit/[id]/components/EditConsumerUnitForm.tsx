@@ -29,6 +29,17 @@ import {
 } from "@/components/ui/form";
 import Image from "next/image";
 import EditConsumerUnit from "public/images/new-consumer-unit-image.svg";
+import { Button } from "@/components/ui/button";
+import Input from "@/components/ui/input";
+import { Checkbox } from "@radix-ui/react-checkbox";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+} from "@/components/ui/select";
 
 export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   const { ufs, loading: ufLoading } = useUfs();
@@ -41,6 +52,8 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const params = useParams();
+  const { concessionaires, loading: isLoadingConcessionaires } =
+    useConcessionaires();
 
   const [loading, setLoading] = useState<boolean>(false);
   const user = useUserStore((state) => state.user);
@@ -109,7 +122,222 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
           <span className="text-solaris-primary">Editar</span> unidade
           consumidora
         </h1>
-        <Form {...form}></Form>
+        <Form {...form}>
+          <form
+            className="w-full max-w-[500px]"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <div className="space-y-6">
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
+                <FormField
+                  control={form.control}
+                  name="number"
+                  render={({ field }) => (
+                    <FormItem className="max-w-96">
+                      <FormControl>
+                        <Input
+                          required
+                          {...field}
+                          label="Número da unidade consumidora"
+                          placeholder={data.numero}
+                          invalid={!!form.formState.errors.number}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="subGroup"
+                  render={({ field }) => (
+                    <FormItem className="max-w-24 w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={loading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="Subgrupo"
+                              required
+                              invalid={!!form.formState.errors.subGroup}
+                            >
+                              <SelectValue placeholder={data.subgrupo} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="A1">A1</SelectItem>
+                            <SelectItem value="A2">A2</SelectItem>
+                            <SelectItem value="A3">A3</SelectItem>
+                            <SelectItem value="A4">A4</SelectItem>
+                            <SelectItem value="A3a">A3a</SelectItem>
+                            <SelectItem value="AS">AS</SelectItem>
+                            <SelectSeparator />
+                            <SelectItem value="B1">B1</SelectItem>
+                            <SelectItem value="B2">B2</SelectItem>
+                            <SelectItem value="B3">B3</SelectItem>
+                            <SelectItem value="B4">B4</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
+                <FormField
+                  control={form.control}
+                  name="uf"
+                  render={({ field }) => (
+                    <FormItem className="max-w-24 w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            setUf(
+                              ufs?.find((uf) => uf.sigla === value)?.id ?? null
+                            );
+                          }}
+                          defaultValue={field.value}
+                          disabled={ufLoading || loading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="UF"
+                              required
+                              invalid={!!form.formState.errors.uf}
+                            >
+                              <SelectValue
+                                placeholder={
+                                  ufLoading ? "Carregando..." : data.uf
+                                }
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {ufs &&
+                              ufs.map((uf) => (
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
+                                  {uf.sigla}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem className="max-w-40 w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={uf === null || citiesLoading || loading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="Cidade"
+                              required
+                              invalid={!!form.formState.errors.city}
+                            >
+                              <SelectValue placeholder={data.cidade} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {cities &&
+                              cities.map((city) => (
+                                <SelectItem key={city.nome} value={city.nome}>
+                                  {city.nome}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="cod_concessionaire"
+                render={({ field }) => (
+                  <FormItem className="max-w-[500px] w-full">
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        disabled={isLoadingConcessionaires}
+                      >
+                        <FormControl>
+                          <SelectTrigger
+                            label="Concessionária"
+                            required
+                            invalid={!!form.formState.errors.subGroup}
+                          >
+                            <SelectValue
+                              placeholder={data.concessionaria.nome}
+                            />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {concessionaires.map((concessionaire) => (
+                            <SelectItem
+                              key={concessionaire.cod_concessionaria}
+                              value={concessionaire.cod_concessionaria}
+                            >
+                              {`${concessionaire.nome} - ${concessionaire.cidade}/${concessionaire.uf}`}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="optanteTB"
+                render={({ field }) => (
+                  <FormItem className="max-w-96">
+                    <FormControl>
+                      <div className="flex flex-row gap-2 items-center">
+                        <Checkbox
+                          id="confirm"
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                        <label htmlFor="confirm" className="text-sm">
+                          Possível optante por tarifa branca
+                        </label>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <Button
+              type="submit"
+              variant="solar"
+              className="w-full max-w-[500px] mt-12"
+              disabled={loading}
+              loading={loading}
+            >
+              Finalizar Cadastro
+            </Button>
+          </form>
+        </Form>
       </div>
       <div className="flex justify-center items-start w-full h-full">
         <Image
