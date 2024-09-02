@@ -13,6 +13,5 @@ export interface ConsumerUnit {
   atualizadoEm: Date;
   subgrupo: string;
   equipamentos: Equipments[];
-  concessionaria: Concessionaire
   optanteTB: boolean
 }
