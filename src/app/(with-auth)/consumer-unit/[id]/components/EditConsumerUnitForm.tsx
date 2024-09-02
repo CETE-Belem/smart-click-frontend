@@ -93,13 +93,6 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
       ).finally(() => {
         setLoading(false);
       });
-    } else {
-      response = await adminEditConsumerUnitAction(
-        values,
-        params.id.toString()
-      ).finally(() => {
-        setLoading(false);
-      });
     }
 
     if (response.success) {
