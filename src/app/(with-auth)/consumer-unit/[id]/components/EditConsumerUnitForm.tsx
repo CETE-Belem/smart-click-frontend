@@ -31,7 +31,7 @@ import Image from "next/image";
 import EditConsumerUnit from "public/images/new-consumer-unit-image.svg";
 import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
-import { Checkbox } from "@radix-ui/react-checkbox";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
   SelectTrigger,
@@ -57,7 +57,6 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
 
   const [loading, setLoading] = useState<boolean>(false);
   const user = useUserStore((state) => state.user);
-  const isAdmin = user?.perfil === Role.ADMIN;
 
   const form = useForm<NewConsumerUnitSchemaType>({
     defaultValues: {
@@ -79,7 +78,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
 
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
-    const selectedA = selectedSubGroup.startsWith("A");
+    const selectedA = selectedSubGroup?.startsWith("A");
     form.setValue("optanteTB", !selectedA);
   }, [form.watch("subGroup")]);
 
@@ -255,7 +254,11 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                               required
                               invalid={!!form.formState.errors.city}
                             >
-                              <SelectValue placeholder={data.cidade} />
+                              <SelectValue
+                                placeholder={
+                                  citiesLoading ? "Carregando..." : data?.cidade
+                                }
+                              />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -291,7 +294,11 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                             invalid={!!form.formState.errors.subGroup}
                           >
                             <SelectValue
-                              placeholder={data.concessionaria.nome}
+                              placeholder={
+                                isLoadingConcessionaires
+                                  ? "Carregando..."
+                                  : data.concessionaria?.nome
+                              }
                             />
                           </SelectTrigger>
                         </FormControl>
@@ -321,14 +328,17 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                         <Checkbox
                           id="confirm"
                           checked={
-                            form.watch("subGroup").startsWith("A")
+                            form.watch("subGroup")?.startsWith("A")
                               ? field.value
                               : field.value === true
                           }
                           onCheckedChange={field.onChange}
-                          disabled={!form.watch("subGroup").startsWith("A")}
+                          disabled={!form.watch("subGroup")?.startsWith("A")}
                         />
-                        <label htmlFor="confirm" className="text-sm">
+                        <label
+                          htmlFor="confirm"
+                          className="text-sm  peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
                           Opção de faturamento pelo grupo tarifário B
                         </label>
                       </div>
