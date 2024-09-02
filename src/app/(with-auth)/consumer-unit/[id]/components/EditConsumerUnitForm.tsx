@@ -101,8 +101,10 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["consumerUnit"] });
-      queryClient.invalidateQueries({ queryKey: ["consumerUnit", params.id] });
+      queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+      queryClient.invalidateQueries({
+        queryKey: ["consumer-units", params.id],
+      });
       router.push(Routes.ConsumerUnit);
     } else {
       toast({
