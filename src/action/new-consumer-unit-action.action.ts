@@ -27,9 +27,10 @@ export async function newConsumerUnitAction(
             numero: newFormData?.number,
             cidade: newFormData.city,
             uf: newFormData.uf,
-            cod_concessionaria: newFormData.city,
+            cod_concessionaria: newFormData.cod_concessionaire,
             subgrupo: newFormData.subGroup,
             optanteTB: newFormData.optanteTB,
+            
         };
 
         const response = await api.post("/consumer-units", parsedData, {
