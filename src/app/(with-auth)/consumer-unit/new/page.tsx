@@ -56,7 +56,7 @@ export default function NewConsumerUnitPage() {
 
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
-    const selectedA = selectedSubGroup.startsWith("A");
+    const selectedA = selectedSubGroup?.startsWith("A");
     form.setValue("optanteTB", !selectedA);
   }, [form.watch("subGroup")]);
 
@@ -281,14 +281,17 @@ export default function NewConsumerUnitPage() {
                         <Checkbox
                           id="confirm"
                           checked={
-                            form.watch("subGroup").startsWith("A")
+                            form.watch("subGroup")?.startsWith("A")
                               ? field.value
                               : field.value === true
                           }
                           onCheckedChange={field.onChange}
-                          disabled={!form.watch("subGroup").startsWith("A")}
+                          disabled={!form.watch("subGroup")?.startsWith("A")}
                         />
-                        <label htmlFor="confirm" className="text-sm">
+                        <label
+                          htmlFor="confirm"
+                          className="text-sm peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
                           Opção de faturamento pelo grupo tarifário B
                         </label>
                       </div>
