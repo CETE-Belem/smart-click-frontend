@@ -73,7 +73,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             );
 
             if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
+              queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
               toast({
                 title: "Unidade consumidora excluída com sucesso",
                 description: `A unidade consumidora ${row.original.numero} foi excluída com sucesso`,
@@ -118,7 +118,9 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/consumer-unit/${row.original.cod_unidade_consumidora}`}>
+            <Link
+              href={`/consumer-unit/${row.original.cod_unidade_consumidora}`}
+            >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar
