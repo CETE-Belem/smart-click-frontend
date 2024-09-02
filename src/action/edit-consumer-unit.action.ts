@@ -23,7 +23,7 @@ export async function adminEditConsumerUnitAction(
         };
 
         const response = await api
-        .put(`/consumer-unit/${cod_consumer_unit}`, parsedData, {
+        .patch(`/consumer-units/${cod_consumer_unit}`, parsedData, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -34,14 +34,14 @@ export async function adminEditConsumerUnitAction(
         if(response.status === 200) {
             return {
                 success: true,
-                message: "Unidade consumidora editado com sucesso"
+                message: "Unidade consumidora editada com sucesso"
             }
         }
 
         if (response.statusCode === 404) {
             return {
               success: false,
-              message: "Unidade consumidora não encontrado",
+              message: "Unidade consumidora não encontrada",
             };
           }
 
@@ -52,7 +52,7 @@ export async function adminEditConsumerUnitAction(
     } catch (error) {
         return {
             success: false,
-            message: "Erro ao editar equipamento. Exceção: " + error,
+            message: "Erro ao editar unidade consumidora. Exceção: " + error,
         };
     }
 }
