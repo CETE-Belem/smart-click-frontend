@@ -74,7 +74,7 @@ export default function NewConsumerUnitPage() {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["consumerUnit"] });
+      queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
       router.push(Routes.ConsumerUnit);
     } else {
       toast({
@@ -250,7 +250,7 @@ export default function NewConsumerUnitPage() {
                           <SelectTrigger
                             label="Concessionária"
                             required
-                            invalid={!!form.formState.errors.subGroup}
+                            invalid={!!form.formState.errors.cod_concessionaire}
                           >
                             <SelectValue placeholder="Concessionária 1" />
                           </SelectTrigger>
