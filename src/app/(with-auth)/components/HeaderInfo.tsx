@@ -23,7 +23,7 @@ type HeaderInfoData = {
 };
 
 const headerInfoData: HeaderInfoData = {
-  [Routes.ConsumerUnit]: {
+  [Routes.ConsumerUnits]: {
     title: "Unidades Consumidoras",
     subtitle: "Unidades Consumidoras",
     icon: <Building size={24} />,
@@ -56,6 +56,16 @@ const headerInfoData: HeaderInfoData = {
   [Routes.ConsumerUnitNew]: {
     title: "Unidade Consumidora",
     subtitle: "Cadastrar Unidade Consumidora",
+    icon: <Plus size={24} />,
+  },
+  [Routes.ConsumerUnit]: {
+    title: "Unidade Consumidora",
+    subtitle: "Informações Unidade Consumidora",
+    icon: <Plus size={24} />,
+  },
+  [Routes.ConsumerUnitEdit]: {
+    title: "Unidade Consumidora",
+    subtitle: "Editar Unidade Consumidora",
     icon: <Plus size={24} />,
   },
 };
