@@ -105,7 +105,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
       queryClient.invalidateQueries({
         queryKey: ["consumer-units", params.id],
       });
-      router.push(Routes.ConsumerUnit);
+      router.push(Routes.ConsumerUnits);
     } else {
       toast({
         title: "Erro",
