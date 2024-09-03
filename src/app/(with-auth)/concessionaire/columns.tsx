@@ -24,7 +24,16 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
     accessorKey: "nome",
     header: "Nome",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("nome")}</div>;
+      const link = `/concessionaires/${row.original.cod_concessionaria}`;
+      return (
+        <Link
+          prefetch={false}
+          href={link}
+          className="texto-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+        >
+          {row.getValue("nome")}
+        </Link>
+      );
     },
   },
   {
