@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import EquipmentCardInfo from "./components/EquipInfoCard";
 import EquipInfoGraph from "./components/EquipInfoGraph";
 import { io } from "socket.io-client";
@@ -12,6 +12,8 @@ import { EquipmentSchemaType } from "@/schemas/equipment.schema";
 import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
 import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
 import dayjs from "dayjs";
+import { useReactToPrint } from "react-to-print"
+import { Printer } from "lucide-react";
 
 export interface EquipmentChartData {
   date: Date;
@@ -39,6 +41,12 @@ export interface EquipmentChartData {
 }
 
 export default function EquipmentInfo() {
+  const graphRef = useRef<HTMLDivElement>(null);
+  const handlePrint = useReactToPrint({
+    content: () => graphRef.current,
+    documentTitle: "Gráficos",
+  })
+
   const params = useParams();
   const cookies = useCookies();
   const [vA, setVA] = useState<number | null>(null);
@@ -187,76 +195,81 @@ export default function EquipmentInfo() {
   }, [data]);
 
   return (
-    <div className="space-y-4 my-10">
-      {//flex-col md:grid md:grid-cols-3
-      }
-      <div className="flex gap-5">
-        {isLoading ? (
-          <EquipmentCardInfoSkeleton />        
-        ) : (
-          <EquipmentCardInfo value={{ V: vA, I: iA, Pa: paA, Pr: prA, Fp: fpA }} phase="A" />
-        )}
-        {phaseNumber > 1 ? (
-          isLoading ? (
-            <EquipmentCardInfoSkeleton />
-          ) : (
-            <EquipmentCardInfo value={{ V: vB, I: iB, Pa: paB, Pr: prB, Fp: fpB }} phase="B" />
-          )
-        ) : null}
-        {phaseNumber > 2 ? (
-          isLoading ? (
-            <EquipmentCardInfoSkeleton />
-          ) : (
-            <EquipmentCardInfo value={{ V: vC, I: iC, Pa: paC, Pr: prC, Fp: fpC }} phase="C" />
-          )
-        ) : null}
+    <div>
+      <div className="w-full flex flex-row justify-end items-center py-4 border border-opacity-20 border-black shadow-lg px-4 rounded-md">
+        <button onClick={handlePrint} className="flex gap-1 text-sm items-center"><Printer size={24} /> Imprimir</button>
       </div>
-      {isChartLoading ? (
-        <>
-          <EquipInfoGraphSkeleton />
-          <EquipInfoGraphSkeleton />
-          <EquipInfoGraphSkeleton />
-        </>
-      ) : (
-        <>
-          <EquipInfoGraph
-            phaseNumber={phaseNumber}
-            data={chartData?.map((e) => {
-              return {
-                date: e.date,
-                faseA: e.faseA.v,
-                faseB: e.faseB?.v,
-                faseC: e.faseC?.v,
-              };
-            })}
-            title="Tensão (V)"
-          />
-          <EquipInfoGraph
-            phaseNumber={phaseNumber}
-            data={chartData?.map((e) => {
-              return {
-                date: e.date,
-                faseA: e.faseA.i,
-                faseB: e.faseB?.i,
-                faseC: e.faseC?.i,
-              };
-            })}
-            title="Corrente (A)"
-          />
-          <EquipInfoGraph
-            phaseNumber={phaseNumber}
-            data={chartData?.map((e) => {
-              return {
-                date: e.date,
-                faseA: e.faseA.potenciaAtiva,
-                faseB: e.faseB?.potenciaAtiva,
-                faseC: e.faseC?.potenciaAtiva,
-              };
-            })}
-            title="Potência (W)"
-          />
-        </>
-      )}
+      <div ref={graphRef} className="space-y-4 my-10">
+        {//flex-col md:grid md:grid-cols-3
+        }
+        <div className="flex gap-5">
+          {isLoading ? (
+            <EquipmentCardInfoSkeleton />
+          ) : (
+            <EquipmentCardInfo value={{ V: vA, I: iA, Pa: paA, Pr: prA, Fp: fpA }} phase="A" />
+          )}
+          {phaseNumber > 1 ? (
+            isLoading ? (
+              <EquipmentCardInfoSkeleton />
+            ) : (
+              <EquipmentCardInfo value={{ V: vB, I: iB, Pa: paB, Pr: prB, Fp: fpB }} phase="B" />
+            )
+          ) : null}
+          {phaseNumber > 2 ? (
+            isLoading ? (
+              <EquipmentCardInfoSkeleton />
+            ) : (
+              <EquipmentCardInfo value={{ V: vC, I: iC, Pa: paC, Pr: prC, Fp: fpC }} phase="C" />
+            )
+          ) : null}
+        </div>
+        {isChartLoading ? (
+          <>
+            <EquipInfoGraphSkeleton />
+            <EquipInfoGraphSkeleton />
+            <EquipInfoGraphSkeleton />
+          </>
+        ) : (
+          <>
+            <EquipInfoGraph
+              phaseNumber={phaseNumber}
+              data={chartData?.map((e) => {
+                return {
+                  date: e.date,
+                  faseA: e.faseA.v,
+                  faseB: e.faseB?.v,
+                  faseC: e.faseC?.v,
+                };
+              })}
+              title="Tensão (V)"
+            />
+            <EquipInfoGraph
+              phaseNumber={phaseNumber}
+              data={chartData?.map((e) => {
+                return {
+                  date: e.date,
+                  faseA: e.faseA.i,
+                  faseB: e.faseB?.i,
+                  faseC: e.faseC?.i,
+                };
+              })}
+              title="Corrente (A)"
+            />
+            <EquipInfoGraph
+              phaseNumber={phaseNumber}
+              data={chartData?.map((e) => {
+                return {
+                  date: e.date,
+                  faseA: e.faseA.potenciaAtiva,
+                  faseB: e.faseB?.potenciaAtiva,
+                  faseC: e.faseC?.potenciaAtiva,
+                };
+              })}
+              title="Potência (W)"
+            />
+          </>
+        )}
+      </div>
     </div>
   );
 }
