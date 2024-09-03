@@ -20,7 +20,7 @@ export default function MenuItems() {
       <SidebarMenuItem href={Routes.Equipments} label="Equipamentos">
         <Briefcase height={24} width={24} />
       </SidebarMenuItem>
-      <SidebarMenuItem href={Routes.Concessionaire} label="Concessionárias">
+      <SidebarMenuItem href={Routes.Concessionaires} label="Concessionárias">
         <Zap height={24} width={24} />
       </SidebarMenuItem>
     </>
