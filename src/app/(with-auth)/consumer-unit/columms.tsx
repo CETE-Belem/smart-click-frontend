@@ -119,7 +119,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <Link
-              href={`/consumer-unit/${row.original.cod_unidade_consumidora}`}
+              href={`/consumer-unit/${row.original.cod_unidade_consumidora}/edit`}
             >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
