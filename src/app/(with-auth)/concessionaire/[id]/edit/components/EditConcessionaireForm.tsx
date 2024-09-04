@@ -1,0 +1,254 @@
+"use client";
+
+import { adminEditConcessionaireAction } from "@/action/edit-concessionaire.action";
+import { useToast } from "@/components/ui/use-toast";
+import { Role } from "@/enums/Role.enum";
+import { Routes } from "@/enums/Routes.enum";
+import useCities from "@/hooks/useCities";
+import useUFs from "@/hooks/useUF";
+import {
+  NewConcessionaireSchema,
+  NewConcessionaireSchemaType,
+} from "@/schemas/new-concessionaire.schema";
+import useUserStore from "@/store/user.store";
+import { Concessionaire } from "@/types/concessionaire";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import Input from "@/components/ui/input";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+} from "@/components/ui/select";
+import Image from "next/image";
+import EditConcessionaireImage from "public/images/new-concessionaire-image.svg";
+
+export default function EditConcessionaireForm({
+  data,
+}: {
+  data: Concessionaire;
+}) {
+  const { ufs, loading: ufLoading } = useUFs();
+  const [uf, setUf] = useState<number | null>(null);
+  const { cities, loading: citiesLoading } = useCities({
+    fetchAll: false,
+    ufId: uf,
+  });
+  const router = useRouter();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const params = useParams();
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const user = useUserStore((state) => state.user);
+
+  const form = useForm<NewConcessionaireSchemaType>({
+    defaultValues: {
+      name: data.nome,
+      city: data.cidade,
+      uf: data.uf,
+    },
+    resolver: zodResolver(NewConcessionaireSchema),
+  });
+
+  useEffect(() => {
+    if (data?.uf) {
+      const ufId = ufs?.find((uf) => uf.sigla === data.uf)?.id;
+      ufId && setUf(ufId);
+    }
+  }, [uf, ufs]);
+
+  async function onSubmit(values: NewConcessionaireSchemaType) {
+    router.prefetch(Routes.Concessionaire);
+    setLoading(true);
+    let response: any = null;
+    if (user?.perfil === Role.ADMIN) {
+      response = await adminEditConcessionaireAction(
+        values,
+        params.id.toString()
+      ).finally(() => {
+        setLoading(false);
+      });
+    }
+
+    if (response.success) {
+      toast({
+        title: "Sucesso",
+        description: response.message,
+        variant: "success",
+      });
+      queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
+      queryClient.invalidateQueries({
+        queryKey: ["concessionaires", params.id],
+      });
+      router.push(Routes.Concessionaires);
+    } else {
+      toast({
+        title: "Erro",
+        description: response.message,
+        variant: "destructive",
+      });
+    }
+  }
+
+  return (
+    <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
+      <div className="flex flex-col items-center lg:items-start w-full space-y-6 col-span-1">
+        <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
+          <span className="text-solaris-primary">Editar</span> concessionária
+        </h1>
+        <Form {...form}>
+          <form
+            className="w-full max-w-[500px]"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <div className="space-y-6">
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem className="max-w-96">
+                      <FormControl>
+                        <Input
+                          required
+                          {...field}
+                          label="Concessionária"
+                          placeholder={data.nome}
+                          invalid={!!form.formState.errors.name}
+                          disabled={loading}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex flex-row-reverse flex-wrap w-full gap-3 sm:gap-5">
+                  <FormField
+                    control={form.control}
+                    name="uf"
+                    render={({ field }) => (
+                      <FormItem className="max-w-24 w-full">
+                        <FormControl>
+                          <Select
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              setUf(
+                                ufs?.find((uf) => uf.sigla === value)?.id ??
+                                  null
+                              );
+                            }}
+                            defaultValue={field.value}
+                            disabled={ufLoading || loading}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                label="UF"
+                                required
+                                invalid={!!form.formState.errors.uf}
+                              >
+                                <SelectValue
+                                  placeholder={
+                                    ufLoading ? "Carregando..." : data.uf
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {ufs &&
+                                ufs.map((uf) => (
+                                  <SelectItem key={uf.sigla} value={uf.sigla}>
+                                    {uf.sigla}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem className="max-w-40 w-full">
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={uf === null || citiesLoading || loading}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                label="Cidade"
+                                required
+                                invalid={!!form.formState.errors.city}
+                              >
+                                <SelectValue
+                                  placeholder={
+                                    citiesLoading
+                                      ? "Carregando..."
+                                      : data?.cidade
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {cities &&
+                                cities.map((city) => (
+                                  <SelectItem key={city.nome} value={city.nome}>
+                                    {city.nome}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+            <Button
+              type="submit"
+              variant="solar"
+              className="w-full max-w-[500px] mt-12"
+              disabled={loading}
+              loading={loading}
+            >
+              Finalizar Edição
+            </Button>
+          </form>
+        </Form>
+      </div>
+      <div className="flex justify-center items-start w-full h-full">
+        <Image
+          src={EditConcessionaireImage}
+          className="w-full h-auto max-w-[500px]"
+          alt="Editar Equipamento"
+        />
+      </div>
+      <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
+        <span className="text-solaris-primary">Editar</span> concessionária
+      </h1>
+    </div>
+  );
+}
