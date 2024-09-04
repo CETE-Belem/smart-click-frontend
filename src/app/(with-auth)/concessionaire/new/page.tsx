@@ -1,10 +1,27 @@
 "use client";
 
 import { newConcessionaireAction } from "@/action/new-concessionaire-action";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import Input from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useToast } from "@/components/ui/use-toast";
 import { Routes } from "@/enums/Routes.enum";
 import useCities from "@/hooks/useCities";
 import useConcessionaires from "@/hooks/useConcessionaires";
+import useUFs from "@/hooks/useUF";
 import {
   NewConcessionaireSchema,
   NewConcessionaireSchemaType,
@@ -16,6 +33,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function NewConcessionairePage() {
+  const { ufs, loading: ufLoading } = useUFs();
   const [uf, setUf] = useState<number | null>(null);
   const { cities, loading: citiesLoading } = useCities({
     fetchAll: false,
@@ -56,4 +74,120 @@ export default function NewConcessionairePage() {
       });
     }
   }
+
+  return (
+    <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
+      <div className="flex flex-col items-center lg:items-center w-full space-y-6">
+        <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
+          <span className="text-solaris-primary">Cadastrar</span> nova
+          concessionária
+        </h1>
+        <Form {...form}>
+          <form
+            className="w-full max-w-[500px]"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            <div className="space-y-6">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem className="max-w-96">
+                    <FormControl>
+                      <Input
+                        required
+                        {...field}
+                        label="Concessionária"
+                        placeholder="Nome..."
+                        invalid={!!form.formState.errors.name}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
+                <FormField
+                  control={form.control}
+                  name="uf"
+                  render={({ field }) => (
+                    <FormItem className="max-w-24 w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            setUf(
+                              ufs?.find((uf) => uf.sigla === value)?.id ?? null
+                            );
+                          }}
+                          defaultValue={field.value}
+                          disabled={ufLoading || loading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="UF"
+                              required
+                              invalid={!!form.formState.errors.uf}
+                            >
+                              <SelectValue
+                                placeholder={ufLoading ? "Carregando..." : "PA"}
+                              />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {ufs &&
+                              ufs.map((uf) => (
+                                <SelectItem key={uf.sigla} value={uf.sigla}>
+                                  {uf.sigla}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="city"
+                  render={({ field }) => (
+                    <FormItem className="max-w-40 w-full">
+                      <FormControl>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                          disabled={uf === null || citiesLoading || loading}
+                        >
+                          <FormControl>
+                            <SelectTrigger
+                              label="Cidade"
+                              required
+                              invalid={!!form.formState.errors.city}
+                            >
+                              <SelectValue placeholder="Belém" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {cities &&
+                              cities.map((city) => (
+                                <SelectItem key={city.nome} value={city.nome}>
+                                  {city.nome}
+                                </SelectItem>
+                              ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </div>
+  );
 }
