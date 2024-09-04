@@ -73,7 +73,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
             if (!confirmed) return;
 
             const response = await apiClient.delete(
-              `/concessionaires/${row.original.nome}`,
+              `/concessionaires/${row.original.cod_concessionaria}`,
               {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
@@ -128,7 +128,9 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/concessionaires/${row.original.nome}`}>
+            <Link
+              href={`/concessionaire/${row.original.cod_concessionaria}/edit`}
+            >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar
