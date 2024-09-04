@@ -75,7 +75,7 @@ export default function EditConcessionaireForm({
   }, [uf, ufs]);
 
   async function onSubmit(values: NewConcessionaireSchemaType) {
-    router.prefetch(Routes.Concessionaire);
+    router.prefetch(Routes.Concessionaires);
     setLoading(true);
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {
@@ -108,7 +108,7 @@ export default function EditConcessionaireForm({
   }
 
   return (
-    <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
+    <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9 lg:gap-16">
       <div className="flex flex-col items-center lg:items-start w-full space-y-6 col-span-1">
         <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
           <span className="text-solaris-primary">Editar</span> concessionária
@@ -119,12 +119,12 @@ export default function EditConcessionaireForm({
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <div className="space-y-6">
-              <div className="flex flex-row flex-wrap w-full gap-3 sm:gap-5">
+              <div className="flex flex-col w-full gap-3 sm:gap-5">
                 <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
-                    <FormItem className="max-w-96">
+                    <FormItem className="max-w-full w-full">
                       <FormControl>
                         <Input
                           required
@@ -139,12 +139,52 @@ export default function EditConcessionaireForm({
                     </FormItem>
                   )}
                 />
-                <div className="flex flex-row-reverse flex-wrap w-full gap-3 sm:gap-5">
+                <div className="flex flex-row w-full gap-3 sm:gap-5">
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem className="max-w-full w-full">
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={uf === null || citiesLoading || loading}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                label="Cidade"
+                                required
+                                invalid={!!form.formState.errors.city}
+                              >
+                                <SelectValue
+                                  placeholder={
+                                    citiesLoading
+                                      ? "Carregando..."
+                                      : data?.cidade
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {cities &&
+                                cities.map((city) => (
+                                  <SelectItem key={city.nome} value={city.nome}>
+                                    {city.nome}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={form.control}
                     name="uf"
                     render={({ field }) => (
-                      <FormItem className="max-w-24 w-full">
+                      <FormItem className="max-w-full w-full">
                         <FormControl>
                           <Select
                             onValueChange={(value) => {
@@ -175,46 +215,6 @@ export default function EditConcessionaireForm({
                                 ufs.map((uf) => (
                                   <SelectItem key={uf.sigla} value={uf.sigla}>
                                     {uf.sigla}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem className="max-w-40 w-full">
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={uf === null || citiesLoading || loading}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                label="Cidade"
-                                required
-                                invalid={!!form.formState.errors.city}
-                              >
-                                <SelectValue
-                                  placeholder={
-                                    citiesLoading
-                                      ? "Carregando..."
-                                      : data?.cidade
-                                  }
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {cities &&
-                                cities.map((city) => (
-                                  <SelectItem key={city.nome} value={city.nome}>
-                                    {city.nome}
                                   </SelectItem>
                                 ))}
                             </SelectContent>
