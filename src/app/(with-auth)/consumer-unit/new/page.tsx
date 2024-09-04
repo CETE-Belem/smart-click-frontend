@@ -61,7 +61,7 @@ export default function NewConsumerUnitPage() {
   }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
-    router.prefetch(Routes.ConsumerUnit);
+    router.prefetch(Routes.ConsumerUnits);
     setLoading(true);
 
     const response = await newConsumerUnitAction(values).finally(() => {
@@ -75,7 +75,7 @@ export default function NewConsumerUnitPage() {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
-      router.push(Routes.ConsumerUnit);
+      router.push(Routes.ConsumerUnits);
     } else {
       toast({
         title: "Erro",
