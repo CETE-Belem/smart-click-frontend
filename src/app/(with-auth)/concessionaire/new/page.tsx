@@ -31,6 +31,9 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import Image from "next/image";
+import NewConcessionaireImage from "public/images/new-concessionaire-image.svg";
+import { Button } from "@/components/ui/button";
 
 export default function NewConcessionairePage() {
   const { ufs, loading: ufLoading } = useUFs();
@@ -182,9 +185,29 @@ export default function NewConcessionairePage() {
                 />
               </div>
             </div>
+            <Button
+              type="submit"
+              variant="solar"
+              className="w-full max-w-[500px] mt-12"
+              disabled={loading}
+              loading={loading}
+            >
+              Finalizar Cadastro
+            </Button>
           </form>
         </Form>
       </div>
+      <div className="flex justify-center items-start w-full h-full">
+        <Image
+          className="w-full h-auto max-w-[500px]"
+          src={NewConcessionaireImage}
+          alt="New Equipment"
+        />
+      </div>
+      <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
+        <span className="text-solaris-primary">Cadastrar</span> nova
+        concessionária
+      </h1>
     </div>
   );
 }
