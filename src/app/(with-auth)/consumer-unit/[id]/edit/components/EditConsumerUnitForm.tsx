@@ -48,6 +48,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
     fetchAll: false,
     ufId: uf,
   });
+  console.log(uf);
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -69,10 +70,19 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
     resolver: zodResolver(NewConsumerUnitSchema),
   });
 
+  // TODO: Refactor
   useEffect(() => {
-    if (data?.uf) {
-      const ufId = ufs?.find((uf) => uf.sigla === data.uf)?.id;
-      ufId && setUf(ufId);
+    if (ufs && !uf) {
+      setUf(ufs.find((UF) => UF.sigla === data.uf)!.id);
+      return;
+    }
+
+    if (ufs) {
+      const newUFId = ufs.find(
+        (u) => u.sigla === ufs.find((v) => v.id === uf)?.sigla
+      )?.id;
+
+      setUf(newUFId!);
     }
   }, [uf, ufs]);
 
@@ -212,9 +222,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                               invalid={!!form.formState.errors.uf}
                             >
                               <SelectValue
-                                placeholder={
-                                  ufLoading ? "Carregando..." : data.uf
-                                }
+                                placeholder={ufLoading ? "Carregando..." : "PA"}
                               />
                             </SelectTrigger>
                           </FormControl>
@@ -249,11 +257,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                               required
                               invalid={!!form.formState.errors.city}
                             >
-                              <SelectValue
-                                placeholder={
-                                  citiesLoading ? "Carregando..." : data?.cidade
-                                }
-                              />
+                              <SelectValue placeholder="Belém" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
