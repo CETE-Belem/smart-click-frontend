@@ -74,7 +74,7 @@ export default function NewConcessionairePage() {
 
   return (
     <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
-      <div className="flex flex-col items-center lg:items-center w-full space-y-6">
+      <div className="flex flex-col items-center lg:items-start w-full space-y-6">
         <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
           <span className="text-solaris-primary">Cadastrar</span> nova
           concessionária
