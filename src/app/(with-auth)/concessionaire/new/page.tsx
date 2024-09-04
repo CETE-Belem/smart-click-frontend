@@ -52,6 +52,7 @@ export default function NewConcessionairePage() {
   });
 
   async function onSubmit(values: NewConcessionaireSchemaType) {
+    router.prefetch(Routes.Concessionaires);
     setLoading(true);
 
     const response = await newConcessionaireAction(values).finally(() => {
@@ -65,7 +66,7 @@ export default function NewConcessionairePage() {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
-      router.push(Routes.Concessionaire);
+      router.push(Routes.Concessionaires);
     } else {
       toast({
         title: "Erro",
