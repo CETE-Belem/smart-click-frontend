@@ -48,7 +48,7 @@ export default function ConsumerUnitPage() {
   const query = searchParams.get("query") ?? "";
 
   const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
-    queryKey: ["consumerUnits", pageIndex, perPage, query],
+    queryKey: ["consumer-units", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
       const response = await apiClient.get<GetConsumerUnitsResponse>(
@@ -91,10 +91,10 @@ export default function ConsumerUnitPage() {
       );
 
       if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
+        queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
         toast({
           title: "Unidade consumidora excluída com sucesso",
-          description: `A unidade consumidora foi excluída com sucesso`,
+          description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
           variant: "success",
         });
       } else {
@@ -147,7 +147,7 @@ export default function ConsumerUnitPage() {
           data={data?.consumerUnits ?? []}
           columns={consumerUnitCardColumns}
           isLoading={isLoading}
-          canEdit={user?.perfil === Role.ADMIN} 
+          canEdit={user?.perfil === Role.ADMIN}
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
