@@ -42,9 +42,6 @@ export default function NewConcessionairePage() {
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { concessionaires, loading: isLoadingConcessionaires } =
-    useConcessionaires();
-
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<NewConcessionaireSchemaType>({
