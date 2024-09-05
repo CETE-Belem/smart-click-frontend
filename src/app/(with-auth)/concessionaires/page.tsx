@@ -94,7 +94,7 @@ export default function ConcessionairePage() {
       );
 
       if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
+        queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
         toast({
           title: "Unidade consumidora excluída com sucesso",
           description: `A unidade consumidora foi excluída com sucesso`,

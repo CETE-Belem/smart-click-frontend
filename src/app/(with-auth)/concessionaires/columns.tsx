@@ -83,7 +83,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
             );
 
             if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["Concessionaire"] });
+              queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
               toast({
                 title: "Concessionária excluída com sucesso",
                 description: `A concessionária ${row.original.nome} foi excluída com sucesso`,
