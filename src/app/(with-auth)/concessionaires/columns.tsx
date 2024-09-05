@@ -1,44 +1,54 @@
-import { CardColumnDef } from "@/components/card-view";
+import { ColumnDef } from "@tanstack/react-table";
+import { Concessionaire } from "@/types/concessionaire";
+import { useAlert } from "@/providers/alert.provider";
+import { useToast } from "@/components/ui/use-toast";
+import { useCookies } from "next-client-cookies";
+import { useQueryClient } from "@tanstack/react-query";
+import useUserStore from "@/store/user.store";
+import { apiClient } from "@/lib/axios-client";
+import { Role } from "@/enums/Role.enum";
 import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
+  DropdownMenu,
   DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
-import { Role } from "@/enums/Role.enum";
-import { apiClient } from "@/lib/axios-client";
-import { useAlert } from "@/providers/alert.provider";
-import useUserStore from "@/store/user.store";
-import { ConsumerUnit } from "@/types/unidade-consumidora";
-import { useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
-import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
-import { useCookies } from "next-client-cookies";
+import { Trash2, MoreHorizontal, Edit } from "lucide-react";
+import { CardColumnDef } from "@/components/card-view";
 import Link from "next/link";
+import { Routes } from "@/enums/Routes.enum";
 
-export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
+export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
   {
-    accessorKey: "numero",
-    header: "Número",
+    accessorKey: "nome",
+    header: "Nome",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("numero")}</div>;
+      const link = `/concessionaires/${row.original.cod_concessionaria}`;
+      return (
+        <Link
+          prefetch={false}
+          href={link}
+          className="texto-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+        >
+          {row.getValue("nome")}
+        </Link>
+      );
     },
   },
   {
     accessorKey: "cidade",
     header: "Cidade",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("cidade")}</div>;
+      return <div className="texto-xs">{row.getValue("cidade")}</div>;
     },
   },
   {
     accessorKey: "uf",
     header: "UF",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("uf")}</div>;
+      return <div className="texto-xs">{row.getValue("uf")}</div>;
     },
   },
   {
@@ -55,8 +65,8 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
         async function handleDelete() {
           try {
             const confirmed = await openAlert({
-              title: "Excluir Unidade",
-              description: `Tem certeza que deseja excluir a unidade consumidora ${row.original.numero}`,
+              title: "Excluir Concessionária",
+              description: `Tem certeza que deseja excluir a concessionária ${row.original.nome}`,
               confirmText: "Sim",
               cancelText: "Não",
             });
@@ -64,7 +74,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             if (!confirmed) return;
 
             const response = await apiClient.delete(
-              `/consumer-units/${row.original.cod_unidade_consumidora}`,
+              `/concessionaires/${row.original.cod_concessionaria}`,
               {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
@@ -73,23 +83,24 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             );
 
             if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+              queryClient.invalidateQueries({ queryKey: ["Concessionaire"] });
               toast({
-                title: "Unidade consumidora excluída com sucesso",
-                description: `A unidade consumidora ${row.original.numero} foi excluída com sucesso`,
+                title: "Concessionária excluída com sucesso",
+                description: `A concessionária ${row.original.nome} foi excluída com sucesso`,
                 variant: "success",
               });
             } else {
               toast({
-                title: `Ocorreu um erro ao excluir a unidade consumidora`,
+                title: `Ocorreu um erro ao excluir a concessionária`,
                 description: response.data.message,
                 variant: "destructive",
               });
             }
-          } catch (error: any) {
+          } catch (error) {
+            console.log(error);
             toast({
-              title: `Erro ao excluir a unidade consumidora`,
-              description: `Ocorreu um erro ao excluir a unidade consumidora ${row.original.numero}, ${error.response.data.message}`,
+              title: `Erro ao excluir a concessionária`,
+              description: `Ocorreu um erro ao excluir a concessionária ${row.original.nome}`,
               variant: "destructive",
             });
           }
@@ -119,7 +130,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <Link
-              href={`/consumer-unit/${row.original.cod_unidade_consumidora}/edit`}
+              href={Routes.ConcessionaireEdit.replace("[id]", row.original.cod_concessionaria)}
             >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
@@ -134,11 +145,11 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
   },
 ];
 
-export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
+export const concessionaireCardColumns: CardColumnDef<Concessionaire>[] = [
   {
     cell: ({ data }) => (
       <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
-        {data.numero}
+        {data.nome}
       </h2>
     ),
   },

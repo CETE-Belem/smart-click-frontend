@@ -4,7 +4,8 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { GetConcessionairesResponse } from "@/action/get-concessionaires-action";
+import { GetConsumerUnitsResponse } from "@/action/get-consumer-units.action";
+import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { Routes } from "@/enums/Routes.enum";
 import { Role } from "@/enums/Role.enum";
 import { apiClient } from "@/lib/axios-client";
@@ -19,18 +20,14 @@ import TotalCountData from "@/components/total-count-data";
 import { Button } from "@/components/ui/button";
 import CardView from "@/components/card-view";
 import useUserStore from "@/store/user.store";
-import {
-  concessionaireCardColumns,
-  concessionaireTableColumn,
-} from "./columns";
+import { consumerUnitCardColumns, consumerUnitTableColumn } from "./columms";
 import DataTable from "@/components/data-table";
 import { useState } from "react";
 import Pagination from "@/components/pagination";
 import { useAlert } from "@/providers/alert.provider";
 import { useToast } from "@/components/ui/use-toast";
-import { Concessionaire } from "@/types/concessionaire";
 
-export default function ConcessionairePage() {
+export default function ConsumerUnitPage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
@@ -50,12 +47,12 @@ export default function ConcessionairePage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data, isLoading } = useQuery<GetConcessionairesResponse>({
-    queryKey: ["concessionaires", pageIndex, perPage, query],
+  const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
+    queryKey: ["consumer-units", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get<GetConcessionairesResponse>(
-        `/concessionaires`,
+      const response = await apiClient.get<GetConsumerUnitsResponse>(
+        `/consumer-units`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,11 +70,11 @@ export default function ConcessionairePage() {
     placeholderData: keepPreviousData,
   });
 
-  async function handleDelete(data: Concessionaire) {
+  async function handleDelete(data: ConsumerUnit) {
     try {
       const confirmed = await openAlert({
         title: "Excluir Unidade",
-        description: `Tem certeza que deseja excluir a unidade consumidora ${data.nome}`,
+        description: `Tem certeza que deseja excluir a unidade consumidora ${data.numero}`,
         confirmText: "Sim",
         cancelText: "Não",
       });
@@ -85,7 +82,7 @@ export default function ConcessionairePage() {
       if (!confirmed) return;
 
       const response = await apiClient.delete(
-        `/concessionaires/${data.cod_concessionaria}`,
+        `/consumer-unit/${data.cod_unidade_consumidora}`,
         {
           headers: {
             Authorization: `Bearer ${cookies.get("token")}`,
@@ -94,10 +91,10 @@ export default function ConcessionairePage() {
       );
 
       if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
+        queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
         toast({
           title: "Unidade consumidora excluída com sucesso",
-          description: `A unidade consumidora foi excluída com sucesso`,
+          description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
           variant: "success",
         });
       } else {
@@ -111,7 +108,7 @@ export default function ConcessionairePage() {
       console.log(error);
       toast({
         title: `Erro ao excluir a unidade consumidora`,
-        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.nome}`,
+        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
         variant: "destructive",
       });
     }
@@ -131,7 +128,7 @@ export default function ConcessionairePage() {
 
         {user?.perfil === Role.ADMIN && (
           <Button variant="solar" className="w-fit p-3 gap-2" asChild>
-            <Link href={Routes.ConcessionaireNew}>
+            <Link href={Routes.ConsumerUnitNew}>
               <CirclePlus size={24} />
               Adicionar
             </Link>
@@ -142,29 +139,30 @@ export default function ConcessionairePage() {
       <div className="w-full flex flex-col gap-5">
         <TotalCountData
           label="Resultados de pesquisa "
-          count={data?.totalConcessionaires}
+          count={data?.totalConsumerUnits}
         />
 
-        <CardView<Concessionaire>
-          accessorKey="cod_concessionaria"
-          data={data?.concessionaires ?? []}
-          columns={concessionaireCardColumns}
+        <CardView<ConsumerUnit>
+          accessorKey="cod_unidade_consumidora"
+          data={data?.consumerUnits ?? []}
+          columns={consumerUnitCardColumns}
           isLoading={isLoading}
           canEdit={user?.perfil === Role.ADMIN}
+          editRoute={Routes.ConsumerUnitEdit}
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
-        <DataTable<Concessionaire>
+        <DataTable<ConsumerUnit>
           columns={
             user?.perfil !== Role.ADMIN
-              ? concessionaireTableColumn.filter(
+              ? consumerUnitTableColumn.filter(
                   (column) => column.id !== "actions"
                 )
-              : concessionaireTableColumn
+              : consumerUnitTableColumn
           }
           className="hidden sm:table"
-          data={data?.concessionaires ?? []}
+          data={data?.consumerUnits ?? []}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
           isLoading={isLoading}
@@ -174,7 +172,7 @@ export default function ConcessionairePage() {
         className="my-4"
         pageIndex={pageIndex}
         perPage={perPage}
-        totalCount={data?.totalConcessionaires ?? 0}
+        totalCount={data?.totalConsumerUnits ?? 0}
       />
     </div>
   );

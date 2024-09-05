@@ -4,8 +4,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { GetConsumerUnitsResponse } from "@/action/get-consumer-units.action";
-import { ConsumerUnit } from "@/types/unidade-consumidora";
+import { GetConcessionairesResponse } from "@/action/get-concessionaires-action";
 import { Routes } from "@/enums/Routes.enum";
 import { Role } from "@/enums/Role.enum";
 import { apiClient } from "@/lib/axios-client";
@@ -20,14 +19,18 @@ import TotalCountData from "@/components/total-count-data";
 import { Button } from "@/components/ui/button";
 import CardView from "@/components/card-view";
 import useUserStore from "@/store/user.store";
-import { consumerUnitCardColumns, consumerUnitTableColumn } from "./columms";
+import {
+  concessionaireCardColumns,
+  concessionaireTableColumn,
+} from "./columns";
 import DataTable from "@/components/data-table";
 import { useState } from "react";
 import Pagination from "@/components/pagination";
 import { useAlert } from "@/providers/alert.provider";
 import { useToast } from "@/components/ui/use-toast";
+import { Concessionaire } from "@/types/concessionaire";
 
-export default function ConsumerUnitPage() {
+export default function ConcessionairePage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
@@ -47,12 +50,12 @@ export default function ConsumerUnitPage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
-    queryKey: ["consumer-units", pageIndex, perPage, query],
+  const { data, isLoading } = useQuery<GetConcessionairesResponse>({
+    queryKey: ["concessionaires", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get<GetConsumerUnitsResponse>(
-        `/consumer-units`,
+      const response = await apiClient.get<GetConcessionairesResponse>(
+        `/concessionaires`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,11 +73,11 @@ export default function ConsumerUnitPage() {
     placeholderData: keepPreviousData,
   });
 
-  async function handleDelete(data: ConsumerUnit) {
+  async function handleDelete(data: Concessionaire) {
     try {
       const confirmed = await openAlert({
         title: "Excluir Unidade",
-        description: `Tem certeza que deseja excluir a unidade consumidora ${data.numero}`,
+        description: `Tem certeza que deseja excluir a unidade consumidora ${data.nome}`,
         confirmText: "Sim",
         cancelText: "Não",
       });
@@ -82,7 +85,7 @@ export default function ConsumerUnitPage() {
       if (!confirmed) return;
 
       const response = await apiClient.delete(
-        `/consumer-unit/${data.cod_unidade_consumidora}`,
+        `/concessionaires/${data.cod_concessionaria}`,
         {
           headers: {
             Authorization: `Bearer ${cookies.get("token")}`,
@@ -91,10 +94,10 @@ export default function ConsumerUnitPage() {
       );
 
       if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+        queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
         toast({
           title: "Unidade consumidora excluída com sucesso",
-          description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
+          description: `A unidade consumidora foi excluída com sucesso`,
           variant: "success",
         });
       } else {
@@ -108,7 +111,7 @@ export default function ConsumerUnitPage() {
       console.log(error);
       toast({
         title: `Erro ao excluir a unidade consumidora`,
-        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
+        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.nome}`,
         variant: "destructive",
       });
     }
@@ -128,7 +131,7 @@ export default function ConsumerUnitPage() {
 
         {user?.perfil === Role.ADMIN && (
           <Button variant="solar" className="w-fit p-3 gap-2" asChild>
-            <Link href={Routes.ConsumerUnitNew}>
+            <Link href={Routes.ConcessionaireNew}>
               <CirclePlus size={24} />
               Adicionar
             </Link>
@@ -139,29 +142,30 @@ export default function ConsumerUnitPage() {
       <div className="w-full flex flex-col gap-5">
         <TotalCountData
           label="Resultados de pesquisa "
-          count={data?.totalConsumerUnits}
+          count={data?.totalConcessionaires}
         />
 
-        <CardView<ConsumerUnit>
-          accessorKey="cod_unidade_consumidora"
-          data={data?.consumerUnits ?? []}
-          columns={consumerUnitCardColumns}
+        <CardView<Concessionaire>
+          accessorKey="cod_concessionaria"
+          data={data?.concessionaires ?? []}
+          columns={concessionaireCardColumns}
           isLoading={isLoading}
           canEdit={user?.perfil === Role.ADMIN}
+          editRoute={Routes.ConcessionaireEdit}
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
-        <DataTable<ConsumerUnit>
+        <DataTable<Concessionaire>
           columns={
             user?.perfil !== Role.ADMIN
-              ? consumerUnitTableColumn.filter(
+              ? concessionaireTableColumn.filter(
                   (column) => column.id !== "actions"
                 )
-              : consumerUnitTableColumn
+              : concessionaireTableColumn
           }
           className="hidden sm:table"
-          data={data?.consumerUnits ?? []}
+          data={data?.concessionaires ?? []}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
           isLoading={isLoading}
@@ -171,7 +175,7 @@ export default function ConsumerUnitPage() {
         className="my-4"
         pageIndex={pageIndex}
         perPage={perPage}
-        totalCount={data?.totalConsumerUnits ?? 0}
+        totalCount={data?.totalConcessionaires ?? 0}
       />
     </div>
   );

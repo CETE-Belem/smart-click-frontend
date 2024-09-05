@@ -5,9 +5,12 @@ import {
   ChevronsRight,
   Fish,
   NotebookTextIcon,
+  NotepadText,
+  Pencil,
   PenIcon,
   PenSquareIcon,
   Plus,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -49,22 +52,37 @@ const headerInfoData: HeaderInfoData = {
     icon: <NotebookTextIcon size={24} />,
   },
   [Routes.ConcessionaireNew]: {
-    title: "Concessionária",
+    title: "Concessionárias",
     subtitle: "Cadastrar Concessionária",
     icon: <Plus size={24} />,
   },
+  [Routes.Concessionaire]: {
+    title: "Concessionárias",
+    subtitle: "Informações Concessionária",
+    icon: <NotepadText size={24} />,
+  },
+  [Routes.ConcessionaireEdit]: {
+    title: "Concessionárias",
+    subtitle: "Editar Concessionária",
+    icon: <Pencil size={24} />,
+  },
+  [Routes.Concessionaires]: {
+    title: "Concessionárias",
+    subtitle: "Concessionárias",
+    icon: <Zap size={24} />,
+  },
   [Routes.ConsumerUnitNew]: {
-    title: "Unidade Consumidora",
+    title: "Unidades Consumidoras",
     subtitle: "Cadastrar Unidade Consumidora",
     icon: <Plus size={24} />,
   },
   [Routes.ConsumerUnit]: {
-    title: "Unidade Consumidora",
+    title: "Unidades Consumidoras",
     subtitle: "Informações Unidade Consumidora",
-    icon: <Plus size={24} />,
+    icon: <NotepadText size={24} />,
   },
   [Routes.ConsumerUnitEdit]: {
-    title: "Unidade Consumidora",
+    title: "Unidades Consumidoras",
     subtitle: "Editar Unidade Consumidora",
     icon: <Plus size={24} />,
   },
