@@ -14,17 +14,14 @@ import {
   NewConsumerUnitSchemaType,
 } from "@/schemas/new-consumer-unit.schema";
 import useConcessionaires from "@/hooks/useConcessionaires";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Routes } from "@/enums/Routes.enum";
 import { adminEditConsumerUnitAction } from "@/action/edit-consumer-unit.action";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import Image from "next/image";
@@ -43,12 +40,12 @@ import {
 
 export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   const { ufs, loading: ufLoading } = useUfs();
-  const [uf, setUf] = useState<number | null>(null);
+  const [ufId, setUfId] = useState<number | null>(null);
   const { cities, loading: citiesLoading } = useCities({
     fetchAll: false,
-    ufId: uf,
+    ufId: ufId,
   });
-  console.log(uf);
+
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -70,21 +67,21 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
     resolver: zodResolver(NewConsumerUnitSchema),
   });
 
-  // TODO: Refactor
   useEffect(() => {
-    if (ufs && !uf) {
-      setUf(ufs.find((UF) => UF.sigla === data.uf)!.id);
+    if (ufs && !ufId) {
+      setUfId(ufs.find((uf) => uf.sigla === data.uf)!.id);
       return;
     }
 
     if (ufs) {
-      const newUFId = ufs.find(
-        (u) => u.sigla === ufs.find((v) => v.id === uf)?.sigla
+      const newUfId = ufs.find(
+        (uf) =>
+          uf.sigla === ufs.find((ufSelected) => ufSelected.id === ufId)?.sigla
       )?.id;
 
-      setUf(newUFId!);
+      setUfId(newUfId!);
     }
-  }, [uf, ufs]);
+  }, [ufId, ufs]);
 
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
@@ -208,7 +205,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                         <Select
                           onValueChange={(value) => {
                             field.onChange(value);
-                            setUf(
+                            setUfId(
                               ufs?.find((uf) => uf.sigla === value)?.id ?? null
                             );
                           }}
@@ -249,7 +246,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={uf === null || citiesLoading || loading}
+                          disabled={ufId === null || citiesLoading || loading}
                         >
                           <FormControl>
                             <SelectTrigger
