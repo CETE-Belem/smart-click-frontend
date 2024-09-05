@@ -1,6 +1,22 @@
 "use client";
-import { newConsumerUnitAction } from "@/action/new-consumer-unit-action.action";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
+import useUfs from "@/hooks/useUF";
+import { ConsumerUnit } from "@/types/unidade-consumidora";
+import useCities from "@/hooks/useCities";
+import { useParams, useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
+import useUserStore from "@/store/user.store";
+import { Role } from "@/enums/Role.enum";
+import { useForm } from "react-hook-form";
+import {
+  NewConsumerUnitSchema,
+  NewConsumerUnitSchemaType,
+} from "@/schemas/new-consumer-unit.schema";
+import useConcessionaires from "@/hooks/useConcessionaires";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Routes } from "@/enums/Routes.enum";
+import { adminEditConsumerUnitAction } from "@/action/edit-consumer-unit.action";
 import {
   Form,
   FormControl,
@@ -8,59 +24,83 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
+import Image from "next/image";
+import EditConsumerUnit from "public/images/new-consumer-unit-image.svg";
+import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
+  SelectTrigger,
+  SelectValue,
   SelectContent,
   SelectItem,
   SelectSeparator,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
-import { Routes } from "@/enums/Routes.enum";
-import useCities from "@/hooks/useCities";
-import useConcessionaires from "@/hooks/useConcessionaires";
-import useUFs from "@/hooks/useUF";
-import {
-  NewConsumerUnitSchema,
-  NewConsumerUnitSchemaType,
-} from "@/schemas/new-consumer-unit.schema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import Image from "next/image";
-import NewConsumerUnitImage from "public/images/new-consumer-unit-image.svg";
-import { Checkbox } from "@/components/ui/checkbox";
 
-export default function NewConsumerUnitPage() {
-  const { ufs, loading: ufLoading } = useUFs();
-  const [uf, setUf] = useState<number | null>(null);
+export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
+  const { ufs, loading: ufLoading } = useUfs();
+  const [ufId, setUfId] = useState<number | null>(null);
   const { cities, loading: citiesLoading } = useCities({
     fetchAll: false,
-    ufId: uf,
+    ufId: ufId,
   });
+
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const params = useParams();
   const { concessionaires, loading: isLoadingConcessionaires } =
     useConcessionaires();
 
   const [loading, setLoading] = useState<boolean>(false);
+  const user = useUserStore((state) => state.user);
 
   const form = useForm<NewConsumerUnitSchemaType>({
+    defaultValues: {
+      number: data.numero,
+      city: data.cidade,
+      uf: data.uf,
+      subGroup: data.subgrupo,
+      cod_concessionaire: data.cod_concessionaria,
+    },
     resolver: zodResolver(NewConsumerUnitSchema),
   });
+
+  useEffect(() => {
+    if (ufs && !ufId) {
+      setUfId(ufs.find((uf) => uf.sigla === data.uf)!.id);
+      return;
+    }
+
+    if (ufs) {
+      const newUfId = ufs.find(
+        (uf) =>
+          uf.sigla === ufs.find((ufSelected) => ufSelected.id === ufId)?.sigla
+      )?.id;
+
+      setUfId(newUfId!);
+    }
+  }, [ufId, ufs]);
+
+  useEffect(() => {
+    const selectedSubGroup = form.watch("subGroup");
+    const selectedA = selectedSubGroup?.startsWith("A");
+    form.setValue("optanteTB", !selectedA);
+  }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
     setLoading(true);
-
-    const response = await newConsumerUnitAction(values).finally(() => {
-      setLoading(false);
-    });
+    let response: any = null;
+    if (user?.perfil === Role.ADMIN) {
+      response = await adminEditConsumerUnitAction(
+        values,
+        params.id.toString()
+      ).finally(() => {
+        setLoading(false);
+      });
+    }
 
     if (response.success) {
       toast({
@@ -68,8 +108,11 @@ export default function NewConsumerUnitPage() {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["consumerUnit"] });
-      router.push(Routes.ConsumerUnit);
+      queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+      queryClient.invalidateQueries({
+        queryKey: ["consumer-units", params.id],
+      });
+      router.push(Routes.ConsumerUnits);
     } else {
       toast({
         title: "Erro",
@@ -83,7 +126,7 @@ export default function NewConsumerUnitPage() {
     <div className="flex flex-col-reverse items-center lg:grid lg:grid-cols-2 lg:p-14 py-6 gap-9">
       <div className="flex flex-col items-center lg:items-start w-full space-y-6 col-span-1">
         <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
-          <span className="text-solaris-primary">Cadastrar</span> nova unidade
+          <span className="text-solaris-primary">Editar</span> unidade
           consumidora
         </h1>
         <Form {...form}>
@@ -103,7 +146,7 @@ export default function NewConsumerUnitPage() {
                           required
                           {...field}
                           label="Número da unidade consumidora"
-                          placeholder="Número..."
+                          placeholder={data.numero}
                           invalid={!!form.formState.errors.number}
                           disabled={loading}
                         />
@@ -129,7 +172,7 @@ export default function NewConsumerUnitPage() {
                               required
                               invalid={!!form.formState.errors.subGroup}
                             >
-                              <SelectValue placeholder="A1" />
+                              <SelectValue placeholder={data.subgrupo} />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
@@ -162,7 +205,7 @@ export default function NewConsumerUnitPage() {
                         <Select
                           onValueChange={(value) => {
                             field.onChange(value);
-                            setUf(
+                            setUfId(
                               ufs?.find((uf) => uf.sigla === value)?.id ?? null
                             );
                           }}
@@ -203,7 +246,7 @@ export default function NewConsumerUnitPage() {
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
-                          disabled={uf === null || citiesLoading || loading}
+                          disabled={ufId === null || citiesLoading || loading}
                         >
                           <FormControl>
                             <SelectTrigger
@@ -246,7 +289,13 @@ export default function NewConsumerUnitPage() {
                             required
                             invalid={!!form.formState.errors.subGroup}
                           >
-                            <SelectValue placeholder="Concessionária 1" />
+                            <SelectValue
+                              placeholder={
+                                isLoadingConcessionaires
+                                  ? "Carregando..."
+                                  : data.concessionaria?.nome
+                              }
+                            />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
@@ -274,11 +323,19 @@ export default function NewConsumerUnitPage() {
                       <div className="flex flex-row gap-2 items-center">
                         <Checkbox
                           id="confirm"
-                          checked={field.value}
+                          checked={
+                            form.watch("subGroup")?.startsWith("A")
+                              ? field.value
+                              : field.value === true
+                          }
                           onCheckedChange={field.onChange}
+                          disabled={!form.watch("subGroup")?.startsWith("A")}
                         />
-                        <label htmlFor="confirm" className="text-sm">
-                          Possível optante por tarifa branca
+                        <label
+                          htmlFor="confirm"
+                          className="text-sm  peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          Opção de faturamento pelo grupo tarifário B
                         </label>
                       </div>
                     </FormControl>
@@ -301,14 +358,13 @@ export default function NewConsumerUnitPage() {
       </div>
       <div className="flex justify-center items-start w-full h-full">
         <Image
+          src={EditConsumerUnit}
           className="w-full h-auto max-w-[500px]"
-          src={NewConsumerUnitImage}
-          alt="New Equipment"
+          alt="Editar Equipamento"
         />
       </div>
       <h1 className="lg:hidden text-2xl sm:text-3xl font-bold text-secondary-foreground">
-        <span className="text-solaris-primary">Cadastrar</span> nova unidade
-        consumidora
+        <span className="text-solaris-primary">Editar</span> unidade consumidora
       </h1>
     </div>
   );

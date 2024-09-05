@@ -5,13 +5,14 @@ export interface ConsumerUnit {
   cod_unidade_consumidora: string;
   cidade: string;
   uf: string;
+  cod_concessionaria: string;
   numero: string;
-  subgrupo: string;
+  cod_usuario: string;
+  cod_criador: string;
   criadoEm: Date;
   atualizadoEm: Date;
+  subgrupo: string;
   equipamentos: Equipments[];
-  cod_concessionaria: string;
   concessionaria: Concessionaire
-  cod_criador: string;
-  cod_usuario: string;
+  optanteTB: boolean
 }

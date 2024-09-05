@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { Role } from "@/enums/Role.enum";
+import { Routes } from "@/enums/Routes.enum";
 import { apiClient } from "@/lib/axios-client";
 import { useAlert } from "@/providers/alert.provider";
 import useUserStore from "@/store/user.store";
@@ -73,7 +74,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
             );
 
             if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["consumer unit"] });
+              queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
               toast({
                 title: "Unidade consumidora excluída com sucesso",
                 description: `A unidade consumidora ${row.original.numero} foi excluída com sucesso`,
@@ -118,7 +119,9 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/consumer-unit/${row.original.cod_unidade_consumidora}`}>
+            <Link
+              href={Routes.ConsumerUnitEdit.replace("[id]", row.original.cod_unidade_consumidora)}
+            >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar

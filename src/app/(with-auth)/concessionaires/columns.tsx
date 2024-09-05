@@ -18,13 +18,23 @@ import {
 import { Trash2, MoreHorizontal, Edit } from "lucide-react";
 import { CardColumnDef } from "@/components/card-view";
 import Link from "next/link";
+import { Routes } from "@/enums/Routes.enum";
 
 export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
   {
     accessorKey: "nome",
     header: "Nome",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("nome")}</div>;
+      const link = `/concessionaires/${row.original.cod_concessionaria}`;
+      return (
+        <Link
+          prefetch={false}
+          href={link}
+          className="texto-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+        >
+          {row.getValue("nome")}
+        </Link>
+      );
     },
   },
   {
@@ -64,7 +74,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
             if (!confirmed) return;
 
             const response = await apiClient.delete(
-              `/concessionaires/${row.original.nome}`,
+              `/concessionaires/${row.original.cod_concessionaria}`,
               {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
@@ -73,7 +83,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
             );
 
             if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["Concessionaire"] });
+              queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
               toast({
                 title: "Concessionária excluída com sucesso",
                 description: `A concessionária ${row.original.nome} foi excluída com sucesso`,
@@ -119,7 +129,9 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <Link href={`/concessionaires/${row.original.nome}`}>
+            <Link
+              href={Routes.ConcessionaireEdit.replace("[id]", row.original.cod_concessionaria)}
+            >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
                 Editar

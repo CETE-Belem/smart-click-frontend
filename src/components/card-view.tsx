@@ -25,6 +25,7 @@ interface CardViewProps<T extends Record<string, any>> {
   isLoading?: boolean;
   canDelete?: boolean;
   canEdit?: boolean;
+  editRoute?: string;
   handleDelete?: (data: T) => void;
 }
 
@@ -38,6 +39,7 @@ export default function CardView<T extends Record<string, any>>({
   accessorKey,
   isLoading,
   canEdit = false,
+  editRoute,
   canDelete = false,
   handleDelete = () => {},
 }: CardViewProps<T>) {
@@ -69,7 +71,7 @@ export default function CardView<T extends Record<string, any>>({
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Ações</DropdownMenuLabel>
                       {canEdit && (
-                        <Link href={`/equipments/${item[accessorKey]}/edit`}>
+                        <Link href={editRoute?.replace("[id]", item[accessorKey]) ?? ""}>
                           <DropdownMenuItem>
                             <Edit size={16} className="mr-2" />
                             Editar

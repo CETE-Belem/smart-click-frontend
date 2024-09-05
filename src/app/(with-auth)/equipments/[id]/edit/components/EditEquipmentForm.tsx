@@ -11,10 +11,8 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import Input, { InputIcon } from "@/components/ui/input";
@@ -30,7 +28,6 @@ import {
   Select,
   SelectContent,
   SelectItem,
-  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -38,19 +35,12 @@ import useMask from "@/hooks/useMask";
 import useUfs from "@/hooks/useUF";
 import useCities from "@/hooks/useCities";
 import { useEffect, useState } from "react";
-import { newEquipmentAction } from "@/action/new-equipment.action";
 import { useToast } from "@/components/ui/use-toast";
 import { useParams, useRouter } from "next/navigation";
-import {
-  keepPreviousData,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Routes } from "@/enums/Routes.enum";
 import useUserStore from "@/store/user.store";
 import { Role } from "@/enums/Role.enum";
-import { apiClient } from "@/lib/axios-client";
-import { useCookies } from "next-client-cookies";
 import { Equipments } from "@/types/equipments";
 import {
   adminEditEquipmentAction,
@@ -62,10 +52,10 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
     mask: "00:00:00:00:00:00",
   });
   const { ufs, loading: ufLoading } = useUfs();
-  const [uf, setUf] = useState<number | null>(null);
+  const [ufId, setUfId] = useState<number | null>(null);
   const { cities, loading: citiesLoading } = useCities({
     fetchAll: false,
-    ufId: uf,
+    ufId: ufId,
   });
   const router = useRouter();
   const { toast } = useToast();
@@ -94,11 +84,20 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
   });
 
   useEffect(() => {
-    if (data?.uf) {
-      const ufId = ufs?.find((uf) => uf.sigla === data.uf)?.id;
-      ufId && setUf(ufId);
+    if (ufs && !ufId) {
+      setUfId(ufs.find((uf) => uf.sigla === data.uf)!.id);
+      return;
     }
-  }, [uf, ufs]);
+
+    if (ufs) {
+      const newUfId = ufs.find(
+        (uf) =>
+          uf.sigla === ufs.find((ufSelected) => ufSelected.id === ufId)?.sigla
+      )?.id;
+
+      setUfId(newUfId!);
+    }
+  }, [ufId, ufs]);
 
   async function onSubmit(values: NewEquipmentSchemaType) {
     router.prefetch(Routes.Equipments);
@@ -261,7 +260,7 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
                           <Select
                             onValueChange={(value) => {
                               field.onChange(value);
-                              setUf(
+                              setUfId(
                                 ufs?.find((uf) => uf.sigla === value)?.id ??
                                   null
                               );
@@ -306,7 +305,7 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
                             onValueChange={field.onChange}
                             defaultValue={field.value}
                             disabled={
-                              uf === null ||
+                              ufId === null ||
                               citiesLoading ||
                               loading ||
                               !isAdmin
