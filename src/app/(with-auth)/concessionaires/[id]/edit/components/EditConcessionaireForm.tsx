@@ -145,47 +145,7 @@ export default function EditConcessionaireForm({
                   )}
                 />
                 <div className="flex flex-row w-full gap-3 sm:gap-5">
-                  <FormField
-                    control={form.control}
-                    name="city"
-                    render={({ field }) => (
-                      <FormItem className="max-w-full w-full">
-                        <FormControl>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            disabled={ufId === null || citiesLoading || loading}
-                          >
-                            <FormControl>
-                              <SelectTrigger
-                                label="Cidade"
-                                required
-                                invalid={!!form.formState.errors.city}
-                              >
-                                <SelectValue
-                                  placeholder={
-                                    citiesLoading
-                                      ? "Carregando..."
-                                      : data?.cidade
-                                  }
-                                />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {cities &&
-                                cities.map((city) => (
-                                  <SelectItem key={city.nome} value={city.nome}>
-                                    {city.nome}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
+                <FormField
                     control={form.control}
                     name="uf"
                     render={({ field }) => (
@@ -220,6 +180,46 @@ export default function EditConcessionaireForm({
                                 ufs.map((uf) => (
                                   <SelectItem key={uf.sigla} value={uf.sigla}>
                                     {uf.sigla}
+                                  </SelectItem>
+                                ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="city"
+                    render={({ field }) => (
+                      <FormItem className="max-w-full w-full">
+                        <FormControl>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                            disabled={ufId === null || citiesLoading || loading}
+                          >
+                            <FormControl>
+                              <SelectTrigger
+                                label="Cidade"
+                                required
+                                invalid={!!form.formState.errors.city}
+                              >
+                                <SelectValue
+                                  placeholder={
+                                    citiesLoading
+                                      ? "Carregando..."
+                                      : data?.cidade
+                                  }
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {cities &&
+                                cities.map((city) => (
+                                  <SelectItem key={city.nome} value={city.nome}>
+                                    {city.nome}
                                   </SelectItem>
                                 ))}
                             </SelectContent>

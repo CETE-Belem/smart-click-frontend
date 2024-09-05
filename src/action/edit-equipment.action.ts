@@ -88,7 +88,7 @@ export async function adminEditEquipmentAction(
       })
       .then((response) => response)
       .catch((error) => error.response.data);
-    console.log(response);
+
     if (response.status === 200) {
       return {
         success: true,
