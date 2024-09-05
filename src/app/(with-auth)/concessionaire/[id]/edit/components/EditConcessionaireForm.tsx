@@ -1,5 +1,4 @@
 "use client";
-
 import { adminEditConcessionaireAction } from "@/action/edit-concessionaire.action";
 import { useToast } from "@/components/ui/use-toast";
 import { Role } from "@/enums/Role.enum";
@@ -20,10 +19,8 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
@@ -34,7 +31,6 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
-  SelectSeparator,
 } from "@/components/ui/select";
 import Image from "next/image";
 import EditConcessionaireImage from "public/images/new-concessionaire-image.svg";
@@ -45,10 +41,10 @@ export default function EditConcessionaireForm({
   data: Concessionaire;
 }) {
   const { ufs, loading: ufLoading } = useUFs();
-  const [uf, setUf] = useState<number | null>(null);
+  const [ufId, setUfId] = useState<number | null>(null);
   const { cities, loading: citiesLoading } = useCities({
     fetchAll: false,
-    ufId: uf,
+    ufId: ufId,
   });
   const router = useRouter();
   const { toast } = useToast();
@@ -68,11 +64,20 @@ export default function EditConcessionaireForm({
   });
 
   useEffect(() => {
-    if (data?.uf) {
-      const ufId = ufs?.find((uf) => uf.sigla === data.uf)?.id;
-      ufId && setUf(ufId);
+    if (ufs && !ufId) {
+      setUfId(ufs.find((uf) => uf.sigla === data.uf)!.id);
+      return;
     }
-  }, [uf, ufs]);
+
+    if (ufs) {
+      const newUfId = ufs.find(
+        (uf) =>
+          uf.sigla === ufs.find((ufSelected) => ufSelected.id === ufId)?.sigla
+      )?.id;
+
+      setUfId(newUfId!);
+    }
+  }, [ufId, ufs]);
 
   async function onSubmit(values: NewConcessionaireSchemaType) {
     router.prefetch(Routes.Concessionaires);
@@ -149,7 +154,7 @@ export default function EditConcessionaireForm({
                           <Select
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            disabled={uf === null || citiesLoading || loading}
+                            disabled={ufId === null || citiesLoading || loading}
                           >
                             <FormControl>
                               <SelectTrigger
@@ -189,7 +194,7 @@ export default function EditConcessionaireForm({
                           <Select
                             onValueChange={(value) => {
                               field.onChange(value);
-                              setUf(
+                              setUfId(
                                 ufs?.find((uf) => uf.sigla === value)?.id ??
                                   null
                               );
