@@ -81,29 +81,33 @@ export default function ConsumerUnitPage() {
 
       if (!confirmed) return;
 
-      const response = await apiClient.delete(
-        `/consumer-unit/${data.cod_unidade_consumidora}`,
-        {
+      toast({
+        title: "Excluindo...",
+        description: `A unidade consumidora ${data.numero} está sendo excluida`,
+        variant: "loading",
+      });
+
+      await apiClient
+        .delete(`/consumer-unit/${data.cod_unidade_consumidora}`, {
           headers: {
             Authorization: `Bearer ${cookies.get("token")}`,
           },
-        }
-      );
-
-      if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
-        toast({
-          title: "Unidade consumidora excluída com sucesso",
-          description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
-          variant: "success",
+        })
+        .then(() => {
+          queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+          toast({
+            title: "Unidade consumidora excluída com sucesso",
+            description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
+            variant: "success",
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: `Ocorreu um erro ao excluir a unidade consumidora`,
+            description: error.response.data.message,
+            variant: "destructive",
+          });
         });
-      } else {
-        toast({
-          title: `Ocorreu um erro ao excluir a unidade consumidora`,
-          description: response.data.message,
-          variant: "destructive",
-        });
-      }
     } catch (error) {
       console.log(error);
       toast({

@@ -64,29 +64,36 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
 
             if (!confirmed) return;
 
-            const response = await apiClient.delete(
-              `/consumer-units/${row.original.cod_unidade_consumidora}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${cookies.get("token")}`,
-                },
-              }
-            );
+            toast({
+              title: "Excluindo...",
+              description: `A unidade consumidora ${row.original.numero} está sendo excluida`,
+              variant: "loading",
+            });
 
-            if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
-              toast({
-                title: "Unidade consumidora excluída com sucesso",
-                description: `A unidade consumidora ${row.original.numero} foi excluída com sucesso`,
-                variant: "success",
+            await apiClient
+              .delete(
+                `/consumer-units/${row.original.cod_unidade_consumidora}`,
+                {
+                  headers: {
+                    Authorization: `Bearer ${cookies.get("token")}`,
+                  },
+                }
+              )
+              .then(() => {
+                queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+                toast({
+                  title: "Unidade consumidora excluída com sucesso",
+                  description: `A unidade consumidora ${row.original.numero} foi excluída com sucesso`,
+                  variant: "success",
+                });
+              })
+              .catch((error) => {
+                toast({
+                  title: `Ocorreu um erro ao excluir a unidade consumidora`,
+                  description: error.response.data.message,
+                  variant: "destructive",
+                });
               });
-            } else {
-              toast({
-                title: `Ocorreu um erro ao excluir a unidade consumidora`,
-                description: response.data.message,
-                variant: "destructive",
-              });
-            }
           } catch (error: any) {
             toast({
               title: `Erro ao excluir a unidade consumidora`,
@@ -120,7 +127,10 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <Link
-              href={Routes.ConsumerUnitEdit.replace("[id]", row.original.cod_unidade_consumidora)}
+              href={Routes.ConsumerUnitEdit.replace(
+                "[id]",
+                row.original.cod_unidade_consumidora
+              )}
             >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />
