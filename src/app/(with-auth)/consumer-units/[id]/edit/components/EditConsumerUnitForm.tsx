@@ -63,6 +63,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
       uf: data.uf,
       subGroup: data.subgrupo,
       cod_concessionaire: data.cod_concessionaria,
+      optanteTB: data.optanteTB,
     },
     resolver: zodResolver(NewConsumerUnitSchema),
   });
@@ -86,7 +87,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
     const selectedA = selectedSubGroup?.startsWith("A");
-    form.setValue("optanteTB", !selectedA);
+    form.setValue("optanteTB", selectedA);
   }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
