@@ -4,7 +4,7 @@ import { NewAdminAction } from "@/action/new-admin.action";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { Routes } from "@/enums/Routes.enum";
-import { NewAdminSchema, NewAdminSchemaType } from "@/schemas/new-admin.schema";
+import { NewUserSchema, NewUserSchemaType } from "@/schemas/new-admin.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -29,11 +29,11 @@ export default function NewUserPage() {
   const queryClient = useQueryClient();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const form = useForm<NewAdminSchemaType>({
-    resolver: zodResolver(NewAdminSchema),
+  const form = useForm<NewUserSchemaType>({
+    resolver: zodResolver(NewUserSchema),
   });
 
-  async function onSubmit(values: NewAdminSchemaType) {
+  async function onSubmit(values: NewUserSchemaType) {
     try {
       const confirmed = await openAlert({
         title:
