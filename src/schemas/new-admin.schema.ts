@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { maxEmailLength, maxNameLength, minPasswordLength, maxPasswordLength, passwordRegex } from '@/constants/auth';
 
-export const NewUserSchema = z.object({
+export const NewAdminSchema = z.object({
     name: z
         .string()
         .min(1, "O nome é obrigatório")
@@ -20,4 +20,4 @@ export const NewUserSchema = z.object({
         .max(maxPasswordLength, `A senha deve ter no máximo ${maxPasswordLength} caracteres`),
 });
 
-export type NewUserSchemaType = z.infer<typeof NewUserSchema>;
+export type NewAdminSchemaType = z.infer<typeof NewAdminSchema>;
