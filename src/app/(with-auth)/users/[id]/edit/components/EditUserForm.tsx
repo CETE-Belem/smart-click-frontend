@@ -1,11 +1,10 @@
 "use client";
 import { useToast } from "@/components/ui/use-toast";
-import { useAlert } from "@/providers/alert.provider";
 import { IUser } from "@/types/IUser";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "next/navigation";
-import { use, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { NewUserSchema, NewUserSchemaType } from "@/schemas/new-user.schema";
 import { adminEditUserAction } from "@/action/edit-user-action";
@@ -27,7 +26,6 @@ import Image from "next/image";
 export default function EditUserForm({ data }: { data: IUser }) {
   const router = useRouter();
   const { toast } = useToast();
-  const { openAlert } = useAlert();
   const queryClient = useQueryClient();
   const params = useParams();
 
