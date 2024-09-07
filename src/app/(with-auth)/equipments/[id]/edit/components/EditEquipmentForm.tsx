@@ -102,6 +102,13 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
   async function onSubmit(values: NewEquipmentSchemaType) {
     router.prefetch(Routes.Equipments);
     setLoading(true);
+
+    toast({
+      title: "Editando...",
+      description: `O equipamento ${values.name} está sendo editado`,
+      variant: "loading",
+    });
+
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {
       response = await adminEditEquipmentAction(

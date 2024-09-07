@@ -92,6 +92,13 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
     setLoading(true);
+
+    toast({
+      title: "Editando...",
+      description: `A unidade consumidora ${values.number} está sendo editada`,
+      variant: "loading",
+    });
+
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {
       response = await adminEditConsumerUnitAction(
