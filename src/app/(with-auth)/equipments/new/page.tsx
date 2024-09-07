@@ -62,7 +62,7 @@ export default function NewEquipmentPage() {
 
   const form = useForm<NewEquipmentSchemaType>({
     defaultValues: {
-      description: '',
+      description: "",
     },
     resolver: zodResolver(NewEquipmentSchema),
   });
@@ -70,6 +70,13 @@ export default function NewEquipmentPage() {
   async function onSubmit(values: NewEquipmentSchemaType) {
     router.prefetch(Routes.Equipments);
     setLoading(true);
+
+    toast({
+      title: "Criando...",
+      description: `A unidade consumidora ${values.name} está sendo criada`,
+      variant: "loading",
+    });
+
     const response = await newEquipmentAction(values).finally(() => {
       setLoading(false);
     });
@@ -218,7 +225,11 @@ export default function NewEquipmentPage() {
                           disabled={ufLoading || loading}
                         >
                           <FormControl>
-                            <SelectTrigger label="UF" required invalid={!!form.formState.errors.uf}>
+                            <SelectTrigger
+                              label="UF"
+                              required
+                              invalid={!!form.formState.errors.uf}
+                            >
                               <SelectValue
                                 placeholder={ufLoading ? "Carregando..." : "PA"}
                               />
@@ -250,7 +261,11 @@ export default function NewEquipmentPage() {
                           disabled={uf === null || citiesLoading || loading}
                         >
                           <FormControl>
-                            <SelectTrigger label="Cidade" required invalid={!!form.formState.errors.city}>
+                            <SelectTrigger
+                              label="Cidade"
+                              required
+                              invalid={!!form.formState.errors.city}
+                            >
                               <SelectValue placeholder="Belém" />
                             </SelectTrigger>
                           </FormControl>
@@ -282,7 +297,11 @@ export default function NewEquipmentPage() {
                           disabled={loading}
                         >
                           <FormControl>
-                            <SelectTrigger required label="Fase monitorada" invalid={!!form.formState.errors.monitoredPhases}>
+                            <SelectTrigger
+                              required
+                              label="Fase monitorada"
+                              invalid={!!form.formState.errors.monitoredPhases}
+                            >
                               <SelectValue placeholder="Monofásico" />
                             </SelectTrigger>
                           </FormControl>

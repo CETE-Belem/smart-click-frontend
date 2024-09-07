@@ -84,34 +84,38 @@ export default function ConcessionairePage() {
 
       if (!confirmed) return;
 
-      const response = await apiClient.delete(
-        `/concessionaires/${data.cod_concessionaria}`,
-        {
+      toast({
+        title: "Criando...",
+        description: `A concessionária ${data.nome} está sendo criada`,
+        variant: "loading",
+      });
+
+      await apiClient
+        .delete(`/concessionaires/${data.cod_concessionaria}`, {
           headers: {
             Authorization: `Bearer ${cookies.get("token")}`,
           },
-        }
-      );
-
-      if (response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
-        toast({
-          title: "Unidade consumidora excluída com sucesso",
-          description: `A unidade consumidora foi excluída com sucesso`,
-          variant: "success",
+        })
+        .then(() => {
+          queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
+          toast({
+            title: "A concessionária foi excluída com sucesso",
+            description: `A concessionária foi excluída com sucesso`,
+            variant: "success",
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: `Ocorreu um erro ao excluir a concessionária`,
+            description: error.response.data.message,
+            variant: "destructive",
+          });
         });
-      } else {
-        toast({
-          title: `Ocorreu um erro ao excluir a unidade consumidora`,
-          description: response.data.message,
-          variant: "destructive",
-        });
-      }
     } catch (error) {
       console.log(error);
       toast({
-        title: `Erro ao excluir a unidade consumidora`,
-        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.nome}`,
+        title: `Erro ao excluir a concessionária`,
+        description: `Ocorreu um erro ao excluir a concessionária ${data.nome}`,
         variant: "destructive",
       });
     }
