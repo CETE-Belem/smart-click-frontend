@@ -126,7 +126,7 @@ export default function ConcessionairePage() {
       <div className="w-full flex flex-row justify-between">
         <SearchInput />
 
-        <Button variant="link" className="w-fit p-3">
+        <Button variant="link" className="w-fit p-3 gap-2">
           <Filter
             size={24}
             className="fill-white stroke-solaris-primary hover:fill-solaris-primary"

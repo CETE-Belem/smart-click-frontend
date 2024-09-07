@@ -125,8 +125,8 @@ export default function UsersPage() {
         </Button>
 
         {user?.perfil === Role.ADMIN && (
-          <Button variant="solar" className="w-fit p-3" asChild>
-            <Link href={Routes.UserNew}>
+          <Button variant="solar" className="w-fit p-3 gap-2" asChild>
+            <Link href={Routes.AdminNew}>
               <CirclePlus size={24} />
               Adicionar
             </Link>
