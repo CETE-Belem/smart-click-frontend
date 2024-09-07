@@ -57,7 +57,7 @@ export default function NewConcessionairePage() {
 
     toast({
       title: "Criando...",
-      description: `A unidade consumidora ${values.name} está sendo criada`,
+      description: `A concessionária ${values.name} está sendo criada`,
       variant: "loading",
     });
 

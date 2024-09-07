@@ -73,7 +73,7 @@ export default function NewEquipmentPage() {
 
     toast({
       title: "Criando...",
-      description: `A unidade consumidora ${values.name} está sendo criada`,
+      description: `O equipamento ${values.name} está sendo criado`,
       variant: "loading",
     });
 
