@@ -112,7 +112,10 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
 
         return user?.perfil === Role.ADMIN ? (
           <DropdownMenuItem onClick={handleDelete}>
-            <Trash2 size={16} className="text-red-600 hover:text-red-700" />
+            <Trash2
+              size={16}
+              className="text-red-600 hover:text-red-700 mr-2"
+            />
             <span className="text-red-600 hover:text-red-700">Excluir</span>
           </DropdownMenuItem>
         ) : (
