@@ -11,7 +11,7 @@ export interface GetUserResponse {
 export async function GetUserAction(id: string): Promise<GetUserResponse | any> {
     const token = cookies().get("token")?.value
     const data = await api.get<GetUserResponse>(
-        `/concessionaires/${id}`,
+        `/users/${id}`,
         {
             headers: {
                 Authorization: `Bearer ${token}`
