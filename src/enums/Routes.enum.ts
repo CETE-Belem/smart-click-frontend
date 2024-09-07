@@ -15,7 +15,7 @@ export enum Routes {
   ConcessionaireNew = "/concessionaires/new",
   Users = "/users",
   User = "/users/[id]",
-  UserNew = "/users/new",
+  AdminNew = "/users/new",
   UserEdit = "/users/[id]/edit",
   ConfirmEmail = "/confirm-email",
   NoPermission = "/no-permission",
