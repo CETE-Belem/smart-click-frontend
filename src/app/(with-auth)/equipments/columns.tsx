@@ -98,10 +98,11 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
                 },
               })
               .then(() => {
+                queryClient.invalidateQueries({ queryKey: ["equipments"] });
                 toast({
                   title: "Equipamento excluído com sucesso",
                   description: `O equipamento ${row.original.nome} foi excluído com sucesso`,
-                  variant: "destructive",
+                  variant: "success",
                 });
               })
               .catch((error) => {
