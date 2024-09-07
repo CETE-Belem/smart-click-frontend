@@ -1,6 +1,6 @@
 'use server'
 import { api } from "@/lib/axios"
-import { NewUserSchema, NewUserSchemaType } from "@/schemas/new-admin.schema"
+import { NewAdminSchema, NewAdminSchemaType } from "@/schemas/new-admin.schema"
 import { cookies } from "next/headers";
 
 export interface NewUserDataType {
@@ -10,10 +10,10 @@ export interface NewUserDataType {
 }
 
 export async function NewAdminAction(
-    formData: NewUserSchemaType
+    formData: NewAdminSchemaType
 ): Promise<{ success: boolean; message: string }> {
     try {
-        const result = NewUserSchema.safeParse(formData);
+        const result = NewAdminSchema.safeParse(formData);
         const newFormData = result.data!;
         const token = cookies().get("token")?.value;
         const parsedData: NewUserDataType = {
