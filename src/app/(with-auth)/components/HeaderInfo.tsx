@@ -95,7 +95,7 @@ const headerInfoData: HeaderInfoData = {
     subtitle: "Informações do usuário",
     icon: <NotepadText size={24} />,
   },
-  [Routes.UserNew]: {
+  [Routes.AdminNew]: {
     title: "Usuários",
     subtitle: "Cadastrar usuário",
     icon: <Plus size={24} />,
