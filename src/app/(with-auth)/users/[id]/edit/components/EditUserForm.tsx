@@ -22,6 +22,13 @@ import Input from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NewUserImage from "public/images/new-user-image.svg";
 import Image from "next/image";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function EditUserForm({ data }: { data: IUser }) {
   const router = useRouter();
@@ -139,14 +146,28 @@ export default function EditUserForm({ data }: { data: IUser }) {
                 render={({ field }) => (
                   <FormItem className="max-w-96">
                     <FormControl>
-                      <Input
-                        required
-                        {...field}
-                        label="Cargo"
-                        placeholder="Cargo..."
-                        invalid={!!form.formState.errors.role}
-                        disabled={loading}
-                      />
+                      <Select onValueChange={(value) => field.onChange(value)}>
+                        <FormControl>
+                          <SelectTrigger
+                            label="Cargo"
+                            required
+                            invalid={!!form.formState.errors.role}
+                          >
+                            <SelectValue placeholder="Cargo..." />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="-mt-8">
+                          {/* O sistema considera o valor como USUARIO e não USER */}
+                          {Object.values(Role).map((role) => (
+                            <SelectItem
+                              key={role}
+                              value={role === Role.USER ? "USUARIO" : role}
+                            >
+                              {role}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
