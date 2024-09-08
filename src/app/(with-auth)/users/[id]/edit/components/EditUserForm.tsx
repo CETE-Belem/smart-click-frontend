@@ -146,7 +146,10 @@ export default function EditUserForm({ data }: { data: IUser }) {
                 render={({ field }) => (
                   <FormItem className="max-w-96">
                     <FormControl>
-                      <Select onValueChange={(value) => field.onChange(value)}>
+                      <Select
+                        onValueChange={(value) => field.onChange(value)}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger
                             label="Cargo"
