@@ -161,7 +161,7 @@ export const userCardColumns: CardColumnDef<IUser>[] = [
       <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
         <div className="flex flex-row gap-1 items-center">
           <span className="w-1 h-1 bg-[#58585A] rounded-full" />
-          <p className="text-xs">{data.email}</p>
+          <p className="text-xs break-words max-w-[195px]">{data.email}</p>
         </div>
 
         <div className="flex flex-row gap-1 items-center">
