@@ -76,6 +76,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
             toast({
               title: "Excluindo...",
               description: `A concessionária ${row.original.nome} está sendo excluída`,
+              variant: "loading",
             });
 
             await apiClient
