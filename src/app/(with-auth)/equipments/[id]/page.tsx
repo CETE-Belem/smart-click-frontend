@@ -14,6 +14,8 @@ import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
 import dayjs from "dayjs";
 import { useReactToPrint } from "react-to-print"
 import { Printer } from "lucide-react";
+import EquipmentDetailsInfo from "./components/EquipDetailsCard";
+import EquipmentDetailsSkeleton from "./components/EquipmentDetailsSkeleton";
 
 export interface EquipmentChartData {
   date: Date;
@@ -49,6 +51,7 @@ export default function EquipmentInfo() {
 
   const params = useParams();
   const cookies = useCookies();
+  const [online, setOnline] = useState<boolean>(false);
   const [vA, setVA] = useState<number | null>(null);
   const [vB, setVB] = useState<number | null>(null);
   const [vC, setVC] = useState<number | null>(null);
@@ -198,6 +201,13 @@ export default function EquipmentInfo() {
     <div>
       <div className="w-full flex flex-row justify-end items-center py-4 border border-opacity-20 border-black shadow-lg px-4 rounded-md">
         <button onClick={handlePrint} className="flex gap-1 text-sm items-center"><Printer size={24} /> Imprimir</button>
+      </div>
+      <div className="mt-6">
+        {
+          data ? (
+            <EquipmentDetailsInfo equipment={data} online={online} />
+          ) : <EquipmentDetailsSkeleton />
+        }
       </div>
       <div ref={graphRef} className="space-y-4 my-10">
         {//flex-col md:grid md:grid-cols-3
