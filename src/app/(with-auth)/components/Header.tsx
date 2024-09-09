@@ -8,14 +8,25 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { logoutAction } from "@/action/logout.action";
 import { useQueryClient } from "@tanstack/react-query";
 import useUserStore from "@/store/user.store";
+import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
+import { Routes } from "@/enums/Routes.enum";
 
 //TODO: Transform in a composing component
 export default function Header() {
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
+  const cookies = useCookies();
+  const router = useRouter();
+
+  async function handleLogout() {
+    router.prefetch(Routes.Login);
+    cookies.remove("token");
+    queryClient.invalidateQueries();
+    router.push(Routes.Login);
+  }
   return (
     <div className="h-fit lg:h-[9.813rem] solaris-background-header">
       <div className="flex justify-between py-5 p-7 lg:pt-12 lg:pl-16 lg:pr-10">
@@ -29,7 +40,7 @@ export default function Header() {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               {/* <DropdownMenuLabel>Ações</DropdownMenuLabel> */}
-              <DropdownMenuItem onClick={async () => await logoutAction()}>
+              <DropdownMenuItem onClick={handleLogout}>
                 Sair
               </DropdownMenuItem>
             </DropdownMenuContent>

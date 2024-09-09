@@ -56,6 +56,9 @@ export default function ConfirmEmail() {
     })
 
     if (response.success) {
+        cookies.remove("token");
+        if(response.token)
+          cookies.set("token", response.token);
         toast({
             title: "Sucesso",
             description: response?.message,
@@ -79,6 +82,7 @@ export default function ConfirmEmail() {
       toast({
         title: "Sucesso",
         description: response?.message,
+        variant: "success",
       });
     } else {
       toast({

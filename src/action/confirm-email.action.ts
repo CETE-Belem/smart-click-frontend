@@ -14,13 +14,13 @@ export async function confirmEmail(
     const response = await api
       .patch(`/users/${email}/confirm-code`, newFormData)
       .then((response) => response)
-      .catch((error) => error.response.data);
+      .catch((error) => error.response);
 
     if (response.status === 200) {
       return {
         success: true,
         message: "Email confirmado com sucesso",
-        token: response.data.token,
+        token: response.data.accessToken,
       };
     }
 
