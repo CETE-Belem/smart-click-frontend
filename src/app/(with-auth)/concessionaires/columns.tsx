@@ -73,29 +73,35 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
 
             if (!confirmed) return;
 
-            const response = await apiClient.delete(
-              `/concessionaires/${row.original.cod_concessionaria}`,
-              {
+            toast({
+              title: "Excluindo...",
+              description: `A concessionária ${row.original.nome} está sendo excluída`,
+              variant: "loading",
+            });
+
+            await apiClient
+              .delete(`/concessionaires/${row.original.cod_concessionaria}`, {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
                 },
-              }
-            );
-
-            if (response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["concessionaires"] });
-              toast({
-                title: "Concessionária excluída com sucesso",
-                description: `A concessionária ${row.original.nome} foi excluída com sucesso`,
-                variant: "success",
+              })
+              .then(() => {
+                queryClient.invalidateQueries({
+                  queryKey: ["concessionaires"],
+                });
+                toast({
+                  title: "Concessionária excluída com sucesso",
+                  description: `A concessionária ${row.original.nome} foi excluída com sucesso`,
+                  variant: "success",
+                });
+              })
+              .catch((error) => {
+                toast({
+                  title: `Ocorreu um erro ao excluir a concessionária`,
+                  description: error.response.data.message,
+                  variant: "destructive",
+                });
               });
-            } else {
-              toast({
-                title: `Ocorreu um erro ao excluir a concessionária`,
-                description: response.data.message,
-                variant: "destructive",
-              });
-            }
           } catch (error) {
             console.log(error);
             toast({
@@ -130,7 +136,10 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <Link
-              href={Routes.ConcessionaireEdit.replace("[id]", row.original.cod_concessionaria)}
+              href={Routes.ConcessionaireEdit.replace(
+                "[id]",
+                row.original.cod_concessionaria
+              )}
             >
               <DropdownMenuItem>
                 <Edit size={16} className="mr-2" />

@@ -9,7 +9,11 @@ import Pagination from "@/components/pagination";
 import { useSearchParams } from "next/navigation";
 import { GetEquipmentsResponse } from "../../../action/get-equipments.action";
 import Link from "next/link";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useCookies } from "next-client-cookies";
 import { apiClient } from "@/lib/axios-client";
 import SearchInput from "@/components/search";
@@ -73,30 +77,37 @@ export default function EquipmentsPage() {
         cancelText: "Não",
       });
 
-      if(!confirmed) return;
-      
-      const response = await apiClient.delete(`/equipments/${data.cod_equipamento}`, {
-        headers: {
-          Authorization: `Bearer ${cookies.get("token")}`,
-        },
+      if (!confirmed) return;
+
+      toast({
+        title: "Excluindo...",
+        description: `O equipamento ${data.nome} está sendo excluído`,
+        variant: "loading",
       });
 
-      if(response.status === 200) {
-        queryClient.invalidateQueries({ queryKey: ["equipments"] });
-        toast({
-          title: "Equipamento excluído com sucesso",
-          description: `O equipamento ${data.nome} foi excluído com sucesso`,
-          variant: "success",
+      await apiClient
+        .delete(`/equipments/${data.cod_equipamento}`, {
+          headers: {
+            Authorization: `Bearer ${cookies.get("token")}`,
+          },
         })
-      }else{
-        toast({
-          title: `Ocorreu um erro ao excluir o equipamento`,
-          description: response.data.message,
-          variant: "destructive",
+        .then(() => {
+          queryClient.invalidateQueries({ queryKey: ["equipments"] });
+          toast({
+            title: "Equipamento excluído com sucesso",
+            description: `O equipamento ${data.nome} foi excluído com sucesso`,
+            variant: "success",
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: `Ocorreu um erro ao excluir o equipamento ${data.nome}`,
+            description: error.response.data.message,
+            variant: "destructive",
+          });
         });
-      }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       toast({
         title: "Erro ao excluir equipamento",
         description: `Ocorreu um erro ao excluir o equipamento ${data.nome}`,

@@ -63,6 +63,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
       uf: data.uf,
       subGroup: data.subgrupo,
       cod_concessionaire: data.cod_concessionaria,
+      optanteTB: data.optanteTB,
     },
     resolver: zodResolver(NewConsumerUnitSchema),
   });
@@ -86,12 +87,19 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
     const selectedA = selectedSubGroup?.startsWith("A");
-    form.setValue("optanteTB", !selectedA);
+    form.setValue("optanteTB", selectedA);
   }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
     setLoading(true);
+
+    toast({
+      title: "Editando...",
+      description: `A unidade consumidora ${values.number} está sendo editada`,
+      variant: "loading",
+    });
+
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {
       response = await adminEditConsumerUnitAction(

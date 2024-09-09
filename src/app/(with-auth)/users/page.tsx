@@ -1,33 +1,31 @@
 "use client";
+import { GetUsersResponse } from "@/action/get-users.action";
+import { useToast } from "@/components/ui/use-toast";
+import { apiClient } from "@/lib/axios-client";
+import { useAlert } from "@/providers/alert.provider";
+import useUserStore from "@/store/user.store";
 import {
   keepPreviousData,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { GetConsumerUnitsResponse } from "@/action/get-consumer-units.action";
-import { ConsumerUnit } from "@/types/unidade-consumidora";
-import { Routes } from "@/enums/Routes.enum";
-import { Role } from "@/enums/Role.enum";
-import { apiClient } from "@/lib/axios-client";
-import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import { useCookies } from "next-client-cookies";
-
-// Components
-import { CirclePlus, Filter } from "lucide-react";
-import SearchInput from "@/components/search";
-import TotalCountData from "@/components/total-count-data";
-import { Button } from "@/components/ui/button";
-import CardView from "@/components/card-view";
-import useUserStore from "@/store/user.store";
-import { consumerUnitCardColumns, consumerUnitTableColumn } from "./columms";
-import DataTable from "@/components/data-table";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { IUser } from "@/types/IUser";
+import SearchInput from "@/components/search";
+import { Button } from "@/components/ui/button";
+import { CirclePlus, Filter } from "lucide-react";
+import { Role } from "@/enums/Role.enum";
+import { Routes } from "@/enums/Routes.enum";
+import Link from "next/link";
+import TotalCountData from "@/components/total-count-data";
+import CardView from "@/components/card-view";
+import { userCardColumns, usersTableColumn } from "./columns";
+import DataTable from "@/components/data-table";
 import Pagination from "@/components/pagination";
-import { useAlert } from "@/providers/alert.provider";
-import { useToast } from "@/components/ui/use-toast";
 
-export default function ConsumerUnitPage() {
+export default function UsersPage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
@@ -47,34 +45,31 @@ export default function ConsumerUnitPage() {
 
   const query = searchParams.get("query") ?? "";
 
-  const { data, isLoading } = useQuery<GetConsumerUnitsResponse>({
-    queryKey: ["consumer-units", pageIndex, perPage, query],
+  const { data, isLoading } = useQuery<GetUsersResponse>({
+    queryKey: ["users", pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
-      const response = await apiClient.get<GetConsumerUnitsResponse>(
-        `/consumer-units`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          params: {
-            page: pageIndex,
-            limit: perPage,
-            query,
-          },
-        }
-      );
+      const response = await apiClient.get<GetUsersResponse>(`/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: {
+          page: pageIndex,
+          limit: perPage,
+          query,
+        },
+      });
       return response.data;
     },
 
     placeholderData: keepPreviousData,
   });
 
-  async function handleDelete(data: ConsumerUnit) {
+  async function handleDelete(data: IUser) {
     try {
       const confirmed = await openAlert({
-        title: "Excluir Unidade",
-        description: `Tem certeza que deseja excluir a unidade consumidora ${data.numero}`,
+        title: "Excluir Usuário",
+        description: `Tem certeza que deseja excluir o usuário ${data.nome}?`,
         confirmText: "Sim",
         cancelText: "Não",
       });
@@ -83,36 +78,35 @@ export default function ConsumerUnitPage() {
 
       toast({
         title: "Excluindo...",
-        description: `A unidade consumidora ${data.numero} está sendo excluida`,
+        description: `O usuário ${data.nome} está sendo excluído`,
         variant: "loading",
       });
 
       await apiClient
-        .delete(`/consumer-unit/${data.cod_unidade_consumidora}`, {
+        .delete(`/users/${data.cod_usuario}`, {
           headers: {
             Authorization: `Bearer ${cookies.get("token")}`,
           },
         })
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+          queryClient.invalidateQueries({ queryKey: ["users"] });
           toast({
-            title: "Unidade consumidora excluída com sucesso",
-            description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
+            title: "Usuário excluído",
+            description: `O usuário ${data.nome} foi excluído com sucesso`,
             variant: "success",
           });
         })
-        .catch((error) => {
+        .catch(() => {
           toast({
-            title: `Ocorreu um erro ao excluir a unidade consumidora`,
-            description: error.response.data.message,
+            title: "Erro ao excluir usuário",
+            description: `Ocorreu um erro ao excluir o usuário ${data.nome}`,
             variant: "destructive",
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
-        title: `Erro ao excluir a unidade consumidora`,
-        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
+        title: "Erro ao excluir usuário",
+        description: `Ocorreu um erro ao excluir o usuário ${data.nome}`,
         variant: "destructive",
       });
     }
@@ -132,7 +126,7 @@ export default function ConsumerUnitPage() {
 
         {user?.perfil === Role.ADMIN && (
           <Button variant="solar" className="w-fit p-3 gap-2" asChild>
-            <Link href={Routes.ConsumerUnitNew}>
+            <Link href={Routes.AdminNew}>
               <CirclePlus size={24} />
               Adicionar
             </Link>
@@ -142,42 +136,41 @@ export default function ConsumerUnitPage() {
 
       <div className="w-full flex flex-col gap-5">
         <TotalCountData
-          label="Resultados de pesquisa "
-          count={data?.totalConsumerUnits}
+          label="Resultados de pesquisa"
+          count={data?.totalUsers}
         />
 
-        <CardView<ConsumerUnit>
-          accessorKey="cod_unidade_consumidora"
-          data={data?.consumerUnits ?? []}
-          columns={consumerUnitCardColumns}
+        <CardView<IUser>
+          accessorKey="cod_usuario"
+          data={data?.users ?? []}
+          columns={userCardColumns}
           isLoading={isLoading}
           canEdit={user?.perfil === Role.ADMIN}
-          editRoute={Routes.ConsumerUnitEdit}
+          editRoute={Routes.UserEdit}
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
-        <DataTable<ConsumerUnit>
+        <DataTable<IUser>
           columns={
             user?.perfil !== Role.ADMIN
-              ? consumerUnitTableColumn.filter(
-                  (column) => column.id !== "actions"
-                )
-              : consumerUnitTableColumn
+              ? usersTableColumn.filter((column) => column.id !== "actions")
+              : usersTableColumn
           }
           className="hidden sm:table"
-          data={data?.consumerUnits ?? []}
+          data={data?.users ?? []}
           rowSelection={rowSelection}
           setRowSelection={setRowSelection}
           isLoading={isLoading}
         />
+
+        <Pagination
+          className="my-4"
+          pageIndex={pageIndex}
+          perPage={perPage}
+          totalCount={data?.totalUsers ?? 0}
+        />
       </div>
-      <Pagination
-        className="my-4"
-        pageIndex={pageIndex}
-        perPage={perPage}
-        totalCount={data?.totalConsumerUnits ?? 0}
-      />
     </div>
   );
 }

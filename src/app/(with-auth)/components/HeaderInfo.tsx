@@ -3,14 +3,13 @@ import {
   Briefcase,
   Building,
   ChevronsRight,
-  Fish,
   NotebookTextIcon,
   NotepadText,
   Pencil,
-  PenIcon,
   PenSquareIcon,
   Plus,
   Zap,
+  UserRound,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -84,7 +83,27 @@ const headerInfoData: HeaderInfoData = {
   [Routes.ConsumerUnitEdit]: {
     title: "Unidades Consumidoras",
     subtitle: "Editar Unidade Consumidora",
+    icon: <Pencil size={24} />,
+  },
+  [Routes.Users]: {
+    title: "Usuários",
+    subtitle: "Usuários",
+    icon: <UserRound size={24} />,
+  },
+  [Routes.User]: {
+    title: "Usuários",
+    subtitle: "Informações do usuário",
+    icon: <NotepadText size={24} />,
+  },
+  [Routes.AdminNew]: {
+    title: "Usuários",
+    subtitle: "Cadastrar usuário",
     icon: <Plus size={24} />,
+  },
+  [Routes.UserEdit]: {
+    title: "Usuários",
+    subtitle: "Editar usuário",
+    icon: <Pencil size={24} />,
   },
 };
 

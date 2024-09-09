@@ -82,6 +82,13 @@ export default function EditConcessionaireForm({
   async function onSubmit(values: NewConcessionaireSchemaType) {
     router.prefetch(Routes.Concessionaires);
     setLoading(true);
+
+    toast({
+      title: "Editando...",
+      description: `A concessionária ${values.name} está sendo editada`,
+      variant: "loading",
+    });
+
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {
       response = await adminEditConcessionaireAction(
@@ -145,7 +152,7 @@ export default function EditConcessionaireForm({
                   )}
                 />
                 <div className="flex flex-row w-full gap-3 sm:gap-5">
-                <FormField
+                  <FormField
                     control={form.control}
                     name="uf"
                     render={({ field }) => (

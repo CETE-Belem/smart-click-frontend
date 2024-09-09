@@ -55,6 +55,12 @@ export default function NewConcessionairePage() {
     router.prefetch(Routes.Concessionaires);
     setLoading(true);
 
+    toast({
+      title: "Criando...",
+      description: `A concessionária ${values.name} está sendo criada`,
+      variant: "loading",
+    });
+
     const response = await newConcessionaireAction(values).finally(() => {
       setLoading(false);
     });

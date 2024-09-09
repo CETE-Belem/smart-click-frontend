@@ -28,7 +28,11 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
     cell: ({ row }) => {
       const link = `/equipments/${row.original.cod_equipamento}`;
       return (
-        <Link prefetch={false} className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline" href={link}>
+        <Link
+          prefetch={false}
+          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          href={link}
+        >
           {row.getValue("nome")}
         </Link>
       );
@@ -79,30 +83,37 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
               cancelText: "Não",
             });
 
-            if(!confirmed) return;
-            
-            const response = await apiClient.delete(`/equipments/${row.original.cod_equipamento}`, {
-              headers: {
-                Authorization: `Bearer ${cookies.get("token")}`,
-              },
+            if (!confirmed) return;
+
+            toast({
+              title: "Excluindo...",
+              description: `O equipamento ${row.original.nome} está sendo excluído`,
+              variant: "loading",
             });
 
-            if(response.status === 200) {
-              queryClient.invalidateQueries({ queryKey: ["equipments"] });
-              toast({
-                title: "Equipamento excluído com sucesso",
-                description: `O equipamento ${row.original.nome} foi excluído com sucesso`,
-                variant: "destructive",
+            await apiClient
+              .delete(`/equipments/${row.original.cod_equipamento}`, {
+                headers: {
+                  Authorization: `Bearer ${cookies.get("token")}`,
+                },
               })
-            }else{
-              toast({
-                title: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
-                description: response.data.message,
-                variant: "destructive",
+              .then(() => {
+                queryClient.invalidateQueries({ queryKey: ["equipments"] });
+                toast({
+                  title: "Equipamento excluído com sucesso",
+                  description: `O equipamento ${row.original.nome} foi excluído com sucesso`,
+                  variant: "success",
+                });
+              })
+              .catch((error) => {
+                toast({
+                  title: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
+                  description: error.response.data.message,
+                  variant: "destructive",
+                });
               });
-            }
           } catch (error) {
-            console.log(error)
+            console.log(error);
             toast({
               title: "Erro ao excluir equipamento",
               description: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
@@ -111,7 +122,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
           }
         }
 
-        return user?.perfil === Role.ADMIN ?  (
+        return user?.perfil === Role.ADMIN ? (
           <DropdownMenuItem onClick={handleDelete}>
             <Trash2
               size={16}
@@ -119,7 +130,9 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
             />
             <span className="text-red-600 hover:text-red-600">Excluir</span>
           </DropdownMenuItem>
-        ) : <></>;
+        ) : (
+          <></>
+        );
       }
 
       return (

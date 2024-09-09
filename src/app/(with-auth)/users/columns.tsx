@@ -1,45 +1,54 @@
-import { CardColumnDef } from "@/components/card-view";
-import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/use-toast";
+import { Role } from "@/enums/Role.enum";
+import { apiClient } from "@/lib/axios-client";
+import { useAlert } from "@/providers/alert.provider";
+import useUserStore from "@/store/user.store";
+import { IUser } from "@/types/IUser";
+import { useQueryClient } from "@tanstack/react-query";
+import { ColumnDef } from "@tanstack/react-table";
+import { useCookies } from "next-client-cookies";
+import Link from "next/link";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToast } from "@/components/ui/use-toast";
-import { Role } from "@/enums/Role.enum";
-import { Routes } from "@/enums/Routes.enum";
-import { apiClient } from "@/lib/axios-client";
-import { useAlert } from "@/providers/alert.provider";
-import useUserStore from "@/store/user.store";
-import { ConsumerUnit } from "@/types/unidade-consumidora";
-import { useQueryClient } from "@tanstack/react-query";
-import { ColumnDef } from "@tanstack/react-table";
 import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
-import { useCookies } from "next-client-cookies";
-import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
+import { Routes } from "@/enums/Routes.enum";
+import { CardColumnDef } from "@/components/card-view";
 
-export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
+export const usersTableColumn: ColumnDef<IUser>[] = [
   {
-    accessorKey: "numero",
-    header: "Número",
+    accessorKey: "nome",
+    header: "Nome",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("numero")}</div>;
+      const link = `/users/${row.original.cod_usuario}`;
+      return (
+        <Link
+          prefetch={false}
+          href={link}
+          className="texto-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+        >
+          {row.getValue("nome")}
+        </Link>
+      );
     },
   },
   {
-    accessorKey: "cidade",
-    header: "Cidade",
+    accessorKey: "email",
+    header: "E-mail",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("cidade")}</div>;
+      return <div className="texto-xs">{row.getValue("email")}</div>;
     },
   },
   {
-    accessorKey: "uf",
-    header: "UF",
+    accessorKey: "perfil",
+    header: "Perfil",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("uf")}</div>;
+      return <div className="texto-xs">{row.getValue("perfil")}</div>;
     },
   },
   {
@@ -56,8 +65,8 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
         async function handleDelete() {
           try {
             const confirmed = await openAlert({
-              title: "Excluir Unidade",
-              description: `Tem certeza que deseja excluir a unidade consumidora ${row.original.numero}`,
+              title: "Exclluir usuário",
+              description: `Tem certeza que deseja deletar o usuário ${row.original.nome}?`,
               confirmText: "Sim",
               cancelText: "Não",
             });
@@ -66,38 +75,36 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
 
             toast({
               title: "Excluindo...",
-              description: `A unidade consumidora ${row.original.numero} está sendo excluida`,
+              description: `O usuário ${row.original.nome} está sendo deletado`,
               variant: "loading",
             });
 
             await apiClient
-              .delete(
-                `/consumer-units/${row.original.cod_unidade_consumidora}`,
-                {
-                  headers: {
-                    Authorization: `Bearer ${cookies.get("token")}`,
-                  },
-                }
-              )
+              .delete(`/users/${row.original.cod_usuario}`, {
+                headers: {
+                  Authorization: `Bearer ${cookies.get("token")}`,
+                },
+              })
               .then(() => {
-                queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+                queryClient.invalidateQueries({ queryKey: ["users"] });
                 toast({
-                  title: "Unidade consumidora excluída com sucesso",
-                  description: `A unidade consumidora ${row.original.numero} foi excluída com sucesso`,
+                  title: "Usuário deletado",
+                  description: `O usuário ${row.original.nome} foi deletado com sucesso`,
                   variant: "success",
                 });
               })
-              .catch((error) => {
+              .catch(() => {
                 toast({
-                  title: `Ocorreu um erro ao excluir a unidade consumidora`,
-                  description: error.response.data.message,
+                  title: "Erro ao deletar usuário",
+                  description: `Ocorreu um erro ao deletar o usuário ${row.original.nome}`,
                   variant: "destructive",
                 });
               });
-          } catch (error: any) {
+          } catch (error) {
+            console.log(error);
             toast({
-              title: `Erro ao excluir a unidade consumidora`,
-              description: `Ocorreu um erro ao excluir a unidade consumidora ${row.original.numero}, ${error.response.data.message}`,
+              title: "Erro ao deletar usuário",
+              description: `Ocorreu um erro ao deletar o usuário ${row.original.nome}`,
               variant: "destructive",
             });
           }
@@ -107,9 +114,9 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           <DropdownMenuItem onClick={handleDelete}>
             <Trash2
               size={16}
-              className="mr-2 text-red-600 hover:text-red-600"
+              className="text-red-600 hover:text-red-700 mr-2"
             />
-            <span className="text-red-600 hover:text-red-600">Excluir</span>
+            <span className="text-red-600 hover:text-red-700">Excluir</span>
           </DropdownMenuItem>
         ) : (
           <></>
@@ -127,14 +134,10 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <Link
-              href={Routes.ConsumerUnitEdit.replace(
-                "[id]",
-                row.original.cod_unidade_consumidora
-              )}
+              href={Routes.UserEdit.replace("[id]", row.original.cod_usuario)}
             >
               <DropdownMenuItem>
-                <Edit size={16} className="mr-2" />
-                Editar
+                <Edit size={16} className="mr-2" /> Editar
               </DropdownMenuItem>
             </Link>
             <Delete />
@@ -145,25 +148,25 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
   },
 ];
 
-export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
+export const userCardColumns: CardColumnDef<IUser>[] = [
   {
     cell: ({ data }) => (
-      <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
-        {data.numero}
+      <h2 className="text-sm font-semibold mb-2 text-solaris-primary">
+        {data.nome}
       </h2>
     ),
   },
   {
     cell: ({ data }) => (
-      <div className="flex flex-row gap-2 items-center">
+      <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center">
         <div className="flex flex-row gap-1 items-center">
           <span className="w-1 h-1 bg-[#58585A] rounded-full" />
-          <p className="text-xs font-semibold">{data.cidade}</p>
+          <p className="text-xs break-words max-w-[195px]">{data.email}</p>
         </div>
 
         <div className="flex flex-row gap-1 items-center">
           <span className="w-1 h-1 bg-[#58585A] rounded-full" />
-          <p className="text-xs font-semibold">{data.uf}</p>
+          <p className="text-xs font-medium">{data.perfil}</p>
         </div>
       </div>
     ),
