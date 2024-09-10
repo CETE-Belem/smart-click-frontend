@@ -17,6 +17,7 @@ export enum Routes {
   User = "/users/[id]",
   AdminNew = "/users/new",
   UserEdit = "/users/[id]/edit",
+  EditProfile = "/users/[id]/edit/profile",
   ConfirmEmail = "/confirm-email",
   NoPermission = "/no-permission",
   Register = "/register",
