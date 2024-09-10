@@ -3,6 +3,51 @@
 import { api } from "@/lib/axios";
 import { cookies } from "next/headers";
 import { NewUserSchema, NewUserSchemaType } from "@/schemas/new-user.schema";
+import { editProfileSchemaType, editProfileSchemaTransformed } from "@/schemas/edit-profile.schema"
+import { z } from "zod";
+
+export async function userProfileEditAction(
+    formData: editProfileSchemaType,
+    cod_usuario: string
+): Promise<{ success: boolean, message: string }> {
+
+    try {
+        const result = editProfileSchemaTransformed.safeParse(formData);
+        const newFormData = result.data!
+        const token = cookies().get("token")?.value;
+        const parsedData: editProfileSchemaType = {
+            email: newFormData.email,
+            name: newFormData.name,
+            password: newFormData.password,
+            confirmPassword: newFormData.password
+        }
+
+        const response = await api.patch(`/users/${cod_usuario}`, parsedData, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+            .then(response => response)
+            .catch(error => error.response.data)
+
+        if (response.status === 200) {
+            return {
+                success: true,
+                message: "Usuário editado com sucesso"
+            }
+        }
+
+        return {
+            success: false,
+            message: response.message
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: "Erro ao editar o usuário. Exceção: " + error
+        }
+    }
+}
 
 export async function adminEditUserAction(
     formData: NewUserSchemaType,
