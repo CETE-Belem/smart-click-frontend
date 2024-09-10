@@ -91,8 +91,8 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
           <CardTitle>{title}</CardTitle>
           <CardDescription>
             {
-              data ? (
-                `De ${dayjs(data[0]?.date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1]?.date).format("DD/MM/YYYY HH:mm")}`
+              data && data.length > 0 ? (
+                `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
               ) : "Sem dados"
             }
           </CardDescription>

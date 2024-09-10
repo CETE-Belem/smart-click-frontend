@@ -298,10 +298,14 @@ export default function EquipmentInfo() {
                   faseC: e.faseC?.v,
                 };
               })}
+              startDate={date.from}
+              endDate={date.to}
               title="Tensão (V)"
             />
             <EquipInfoGraph
               phaseNumber={phaseNumber}
+              startDate={date.from}
+              endDate={date.to}
               data={chartData?.map((e) => {
                 return {
                   date: e.date,
@@ -314,6 +318,8 @@ export default function EquipmentInfo() {
             />
             <EquipInfoGraph
               phaseNumber={phaseNumber}
+              startDate={date.from}
+              endDate={date.to}
               data={chartData?.map((e) => {
                 return {
                   date: e.date,
