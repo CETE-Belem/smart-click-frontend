@@ -11,6 +11,8 @@ import {
 import { logoutAction } from "@/action/logout.action";
 import { useQueryClient } from "@tanstack/react-query";
 import useUserStore from "@/store/user.store";
+import Link from "next/link";
+import { Routes } from "@/enums/Routes.enum";
 
 //TODO: Transform in a composing component
 export default function Header() {
@@ -27,9 +29,20 @@ export default function Header() {
                 <User size={26} className="text-black" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              className="bg-dropProfile text-white hover:bg-dropProfile"
+              align="end"
+            >
               {/* <DropdownMenuLabel>Ações</DropdownMenuLabel> */}
-              <DropdownMenuItem onClick={async () => await logoutAction()}>
+              <Link
+                href={Routes.EditProfile.replace("[id]", user?.cod_usuario!)}
+              >
+                <DropdownMenuItem>Editar</DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem
+                className="bg-dropProfile hover:bg-dropProfile text-white"
+                onClick={async () => await logoutAction()}
+              >
                 Sair
               </DropdownMenuItem>
             </DropdownMenuContent>
