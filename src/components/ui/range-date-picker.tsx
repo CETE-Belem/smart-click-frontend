@@ -24,13 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DateRange } from "react-day-picker";
+import { DateRange, SelectRangeEventHandler } from "react-day-picker";
 import dayjs from "dayjs";
 
 interface RangeDatePickerProps {
-  date?: DateRange;
+  date: DateRange;
   setDate: (date: DateRange) => void;
-  month?: Date;
+  month: Date;
   setMonth: (date: Date) => void;
 }
 
@@ -62,7 +62,7 @@ export default function RangeDatePicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-fit p-0" align="end">
+      <PopoverContent className="w-fit p-0" align="end" sideOffset={10}>
         <div className="flex items-center justify-around space-x-2 p-3 border-b">
           <Select
             value={format(month, "MMMM", { locale: ptBR })}
@@ -108,7 +108,7 @@ export default function RangeDatePicker({
           <Calendar
             mode="range"
             selected={date}
-            onSelect={setDate}
+            onSelect={setDate as SelectRangeEventHandler}
             month={month}
             onMonthChange={setMonth}
             numberOfMonths={1}
