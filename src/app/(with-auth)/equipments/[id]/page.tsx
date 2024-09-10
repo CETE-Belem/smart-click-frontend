@@ -57,7 +57,7 @@ export default function EquipmentInfo() {
   const { data: chartData, isLoading: isChartLoading } = useQuery<
     EquipmentChartData[]
   >({
-    queryKey: ["equipment-chart", params.id],
+    queryKey: ["equipment-chart", params.id, date.to, date.from],
     queryFn: async () => {
       const token = cookies.get("token");
       const response = await apiClient.get(`/sensor-data/${params.id}/chart`, {
@@ -65,9 +65,9 @@ export default function EquipmentInfo() {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          from: dayjs().startOf("day").toDate(),
-          to: dayjs().endOf("day").toDate(),
-        },
+          from: date.from,
+          to: date.to,
+        }
       });
       return response.data;
     },
@@ -75,17 +75,14 @@ export default function EquipmentInfo() {
   });
 
   const { data, isLoading, refetch, isRefetching } = useQuery<EquipmentSchemaType>({
-    queryKey: ["equipment", params.id, date.to, date.from],
+    queryKey: ["equipment", params.id],
     queryFn: async () => {
+      console.log(date.from, date.to);
       const token = cookies.get("token");
       const response = await apiClient.get(`/equipments/${params.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        params: {
-          from: date.from,
-          to: date.to,
-        }
       });
       return response.data;
     },
