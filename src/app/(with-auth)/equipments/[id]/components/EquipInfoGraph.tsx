@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EquipmentChartData } from "../page";
+import dayjs from "dayjs";
 
 const chartConfig = {
   faseA: {
@@ -42,25 +42,60 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-interface EquipInfoGraphProps {
-  title: string;
-  data: any;
-  phaseNumber?: number;
+export interface EquipmentChartData {
+  date: Date;
+  faseA: {
+    v: number;
+    i: number;
+    potenciaAparente: number;
+    potenciaAtiva: number;
+    FP: number;
+  };
+  faseB?: {
+    v: number;
+    i: number;
+    potenciaAparente: number;
+    potenciaAtiva: number;
+    FP: number;
+  };
+  faseC?: {
+    v: number;
+    i: number;
+    potenciaAparente: number;
+    potenciaAtiva: number;
+    FP: number;
+  };
 }
 
-export default function EquipInfoGraph({title, data, phaseNumber = 1}: EquipInfoGraphProps) {
+export interface ChartData {
+  date: Date
+  faseA: number
+  faseB?: number
+  faseC?: number
+}
+
+interface EquipInfoGraphProps {
+  title: string;
+  data?: ChartData[];
+  phaseNumber?: number;
+  startDate?: Date;
+  endDate?: Date;
+  scale?: "hour" | "day" | "week" | "month" | "year";
+}
+
+export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: EquipInfoGraphProps) {
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>{title}</CardTitle>
-          {/* <CardDescription>
-            {new Date().toLocaleDateString("pt-BR", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </CardDescription> */}
+          <CardDescription>
+            {
+              data ? (
+                `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
+              ) : "Sem dados"
+            }
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
@@ -120,10 +155,39 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1}: EquipInfo
               minTickGap={32}
               tickFormatter={(value) => {
                 const date = new Date(value);
-                return date.toLocaleTimeString("pt-BR", {
-                  hour: "numeric",
-                  minute: "numeric",
-                });
+                switch (scale) {
+                  case "hour":
+                    return date.toLocaleTimeString("pt-BR", {
+                      hour: "numeric",
+                      minute: "numeric",
+                    });
+                  case "day":
+                    return date.toLocaleDateString("pt-BR", {
+                      day: "numeric",
+                      month: "numeric",
+                    });
+                  case "week":
+                    return date.toLocaleDateString("pt-BR", {
+                      day: "numeric",
+                      month: "numeric",
+                    });
+                  case "month":
+                    return date.toLocaleDateString("pt-BR", {
+                      month: "numeric",
+                      year: "numeric",
+                    });
+                  case "year":
+                    return date.toLocaleDateString("pt-BR", {
+                      year: "numeric",
+                    });
+                  default: {
+                    return date.toLocaleDateString("pt-BR", {
+                      day: "numeric",
+                      month: "numeric",
+                      year: "numeric",
+                    });
+                  }
+                }
               }}
             />
             <ChartTooltip
@@ -131,10 +195,40 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1}: EquipInfo
               content={
                 <ChartTooltipContent
                   labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("pt-BR", {
-                      hour: "numeric",
-                      minute: "numeric",
-                    });
+                    const date = new Date(value);
+                    switch (scale) {
+                      case "hour":
+                        return date.toLocaleTimeString("pt-BR", {
+                          hour: "numeric",
+                          minute: "numeric",
+                        });
+                      case "day":
+                        return date.toLocaleDateString("pt-BR", {
+                          day: "numeric",
+                          month: "numeric",
+                        });
+                      case "week":
+                        return date.toLocaleDateString("pt-BR", {
+                          day: "numeric",
+                          month: "numeric",
+                        });
+                      case "month":
+                        return date.toLocaleDateString("pt-BR", {
+                          month: "numeric",
+                          year: "numeric",
+                        });
+                      case "year":
+                        return date.toLocaleDateString("pt-BR", {
+                          year: "numeric",
+                        });
+                      default: {
+                        return date.toLocaleDateString("pt-BR", {
+                          day: "numeric",
+                          month: "numeric",
+                          year: "numeric",
+                        });
+                      }
+                    }
                   }}
                   indicator="dot"
                 />

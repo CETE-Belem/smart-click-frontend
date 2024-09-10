@@ -1,53 +1,35 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import EquipmentCardInfo from "./components/EquipInfoCard";
-import EquipInfoGraph from "./components/EquipInfoGraph";
-import { io } from "socket.io-client";
-import { useParams } from "next/navigation";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useCookies } from "next-client-cookies";
+import { Button } from "@/components/ui/button";
+import RangeDatePicker from "@/components/ui/range-date-picker";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { apiClient } from "@/lib/axios-client";
+import { cn } from "@/lib/utils";
 import { EquipmentSchemaType } from "@/schemas/equipment.schema";
-import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
-import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { useReactToPrint } from "react-to-print"
-import { Printer } from "lucide-react";
+import { Printer, RefreshCw } from "lucide-react";
+import { useCookies } from "next-client-cookies";
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+import { DateRange } from "react-day-picker";
+import { useReactToPrint } from "react-to-print";
+import { io } from "socket.io-client";
 import EquipmentDetailsInfo from "./components/EquipDetailsCard";
+import EquipmentCardInfo from "./components/EquipInfoCard";
+import EquipInfoGraph, {
+  EquipmentChartData
+} from "./components/EquipInfoGraph";
+import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
+import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
 import EquipmentDetailsSkeleton from "./components/EquipmentDetailsSkeleton";
-
-export interface EquipmentChartData {
-  date: Date;
-  faseA: {
-    v: number;
-    i: number;
-    potenciaAparente: number;
-    potenciaAtiva: number;
-    FP: number;
-  };
-  faseB?: {
-    v: number;
-    i: number;
-    potenciaAparente: number;
-    potenciaAtiva: number;
-    FP: number;
-  };
-  faseC?: {
-    v: number;
-    i: number;
-    potenciaAparente: number;
-    potenciaAtiva: number;
-    FP: number;
-  };
-}
 
 export default function EquipmentInfo() {
   const graphRef = useRef<HTMLDivElement>(null);
   const handlePrint = useReactToPrint({
     content: () => graphRef.current,
     documentTitle: "Gráficos",
-  })
+  });
 
   const params = useParams();
   const cookies = useCookies();
@@ -68,6 +50,9 @@ export default function EquipmentInfo() {
   const [fpB, setFpB] = useState<number | null>(null);
   const [fpC, setFpC] = useState<number | null>(null);
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
+  const [selectedFilter, setSelectedFilter] = useState<string>("hoje");
+  const [date, setDate] = useState<DateRange>({from: dayjs().startOf("day").toDate(), to: dayjs().endOf("day").toDate()});
+  const [month, setMonth] = useState<Date>(new Date());
 
   const { data: chartData, isLoading: isChartLoading } = useQuery<
     EquipmentChartData[]
@@ -80,23 +65,27 @@ export default function EquipmentInfo() {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          from: dayjs().startOf('day').toDate(),
-          to: dayjs().endOf('day').toDate(),
-        }
+          from: dayjs().startOf("day").toDate(),
+          to: dayjs().endOf("day").toDate(),
+        },
       });
       return response.data;
     },
     placeholderData: keepPreviousData,
   });
 
-  const { data, isLoading } = useQuery<EquipmentSchemaType>({
-    queryKey: ["equipment", params.id],
+  const { data, isLoading, refetch, isRefetching } = useQuery<EquipmentSchemaType>({
+    queryKey: ["equipment", params.id, date.to, date.from],
     queryFn: async () => {
       const token = cookies.get("token");
       const response = await apiClient.get(`/equipments/${params.id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        params: {
+          from: date.from,
+          to: date.to,
+        }
       });
       return response.data;
     },
@@ -112,6 +101,14 @@ export default function EquipmentInfo() {
           authorization: `bearer ${token}`,
         },
       });
+
+      /**
+       * Online
+       */
+      socket.on(`${data.mac}/smartclick/last_will`, (res) => {
+        setOnline(res.data === "online");
+      });
+
       /**
        * Tensão
        */
@@ -197,41 +194,94 @@ export default function EquipmentInfo() {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (selectedFilter === "hoje") {
+      setDate({from: dayjs().startOf("day").toDate(), to: dayjs().endOf("day").toDate()});
+    }
+    if (selectedFilter === "esseMes") {
+      setDate({from: dayjs().startOf("month").toDate(), to: dayjs().endOf("month").toDate()});
+    }
+    if (selectedFilter === "esseAno") {
+      setDate({from: dayjs().startOf("year").toDate(), to: dayjs().endOf("year").toDate()});
+    }
+  }
+  , [selectedFilter]);
+
   return (
     <div>
       <div className="w-full flex flex-row justify-end items-center py-4 border border-opacity-20 border-black shadow-lg px-4 rounded-md">
-        <button onClick={handlePrint} className="flex gap-1 text-sm items-center"><Printer size={24} /> Imprimir</button>
+        <button
+          onClick={handlePrint}
+          className="flex gap-1 text-sm items-center"
+        >
+          <Printer size={24} /> Imprimir
+        </button>
       </div>
       <div className="mt-6">
-        {
-          data ? (
-            <EquipmentDetailsInfo equipment={data} online={online} />
-          ) : <EquipmentDetailsSkeleton />
-        }
+        {data ? (
+          <EquipmentDetailsInfo equipment={data} online={online} />
+        ) : (
+          <EquipmentDetailsSkeleton />
+        )}
       </div>
       <div ref={graphRef} className="space-y-4 my-10">
-        {//flex-col md:grid md:grid-cols-3
+        {
+          //flex-col md:grid md:grid-cols-3
         }
         <div className="flex gap-5">
           {isLoading ? (
             <EquipmentCardInfoSkeleton />
           ) : (
-            <EquipmentCardInfo value={{ V: vA, I: iA, Pa: paA, Pr: prA, Fp: fpA }} phase="A" />
+            <EquipmentCardInfo
+              value={{ V: vA, I: iA, Pa: paA, Pr: prA, Fp: fpA }}
+              phase="A"
+            />
           )}
           {phaseNumber > 1 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo value={{ V: vB, I: iB, Pa: paB, Pr: prB, Fp: fpB }} phase="B" />
+              <EquipmentCardInfo
+                value={{ V: vB, I: iB, Pa: paB, Pr: prB, Fp: fpB }}
+                phase="B"
+              />
             )
           ) : null}
           {phaseNumber > 2 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo value={{ V: vC, I: iC, Pa: paC, Pr: prC, Fp: fpC }} phase="C" />
+              <EquipmentCardInfo
+                value={{ V: vC, I: iC, Pa: paC, Pr: prC, Fp: fpC }}
+                phase="C"
+              />
             )
           ) : null}
+        </div>
+        <div className="flex flex-row-reverse w-full gap-5">
+          <Button className="p-0 m-0" disabled={isRefetching} onClick={() => refetch()} variant="link" >
+            <RefreshCw size={24} className={cn("text-solaris-primary",{
+              "animate-spin" : isRefetching,
+            })}/>
+          </Button>
+          <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+            <SelectTrigger>
+              <SelectValue/>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="hoje">Hoje</SelectItem>
+              <SelectItem value="esseMes">Esse Mês</SelectItem>
+              <SelectItem value="esseAno">Esse Ano</SelectItem>
+              <SelectItem value="personalizado">Personalizado</SelectItem>
+            </SelectContent>
+          </Select>
+          {
+            selectedFilter === "personalizado" && (
+              <div className="flex gap-2">
+                <RangeDatePicker date={date} setDate={setDate} month={month} setMonth={setMonth} />
+              </div>
+            )
+          }
         </div>
         {isChartLoading ? (
           <>

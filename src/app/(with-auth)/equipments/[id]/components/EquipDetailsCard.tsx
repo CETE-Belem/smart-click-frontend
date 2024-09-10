@@ -25,11 +25,11 @@ export default function EquipmentDetailsInfo({equipment, online}: EquipmentDetai
             <p>UC {equipment.unidade_consumidora.numero}</p>
           </div>
           <div className="flex flex-wrap gap-5">
-            <div className={cn("flex gap-2 items-center text-[#96B562]", {
+            <div className={cn("flex gap-1 items-center text-[#96B562]", {
               "text-[#F87171]": !online,
             })}>
               <Power width={14} height={14} />
-              <p className="text-xs">Ligado</p>
+              <p className="text-xs">{online ? "Ligado" : "Desligado"}</p>
             </div>
             {/* <div className="flex gap-2 items-center">
               <Timer width={14} height={14} />

@@ -22,12 +22,13 @@ const buttonVariants = cva(
         solar: "bg-[#1C5790] text-white flex justify-center items-center text-base font-semibold px-5 py-3 rounded-3xl transition-colors disabled:opacity-50 disabled:pointer-events-none hover:bg-[#12406B] active:bg-[#0B243B]",
         "solar-destructive": "rounded-3xl px-14 py-3 gap-2 disabled:bg-transparent disabled:border-[#EB7575] disabled:border disabled:text-[#EB7575] bg-[#FF0026] text-white hover:bg-[#FF2244]",
         "solar-outline": "border-[#1C5790] text-[#1C5790] border bg-transparent flex justify-center items-center text-base font-semibold px-5 py-3 rounded-3xl transition-colors disabled:opacity-50 disabled:pointer-events-none hover:bg-[#12406B] hover:text-white active:bg-[#0B243B]",
+        "solar-input": "flex items-center w-fit rounded-3xl bg-[#BBBBBB33] shadow-input"
       },
       size: {
         default: "h-12 px-5 py-3",
         sm: "h-9 rounded-md px-3",
         lg: "h-14 rounded-md px-8",
-        icon: "h-10 w-10",
+        icon: "p-2",
         link: "px-0 py-3",
       },
     },
