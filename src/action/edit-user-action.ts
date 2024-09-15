@@ -4,11 +4,9 @@ import { api } from "@/lib/axios";
 import { cookies } from "next/headers";
 import { NewUserSchema, NewUserSchemaType } from "@/schemas/new-user.schema";
 import { editProfileSchemaType, editProfileSchemaTransformed } from "@/schemas/edit-profile.schema"
-import { z } from "zod";
 
 export async function userProfileEditAction(
     formData: editProfileSchemaType,
-    cod_usuario: string
 ): Promise<{ success: boolean, message: string }> {
 
     try {
@@ -17,12 +15,12 @@ export async function userProfileEditAction(
         const token = cookies().get("token")?.value;
         const parsedData: editProfileSchemaType = {
             email: newFormData.email,
-            name: newFormData.name,
+            nome: newFormData.nome,
             password: newFormData.password,
             confirmPassword: newFormData.password
         }
 
-        const response = await api.patch(`/users/${cod_usuario}`, parsedData, {
+        const response = await api.patch(`/users`, parsedData, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
@@ -35,6 +33,13 @@ export async function userProfileEditAction(
                 success: true,
                 message: "Usuário editado com sucesso"
             }
+        }
+
+        if (response.statusCode === 404) {
+            return {
+                success: false,
+                message: "Usuário não encontrado",
+            };
         }
 
         return {
