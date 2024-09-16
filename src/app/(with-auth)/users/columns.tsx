@@ -30,7 +30,7 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
         <Link
           prefetch={false}
           href={link}
-          className="texto-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
         >
           {row.getValue("nome")}
         </Link>
@@ -41,14 +41,14 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
     accessorKey: "email",
     header: "E-mail",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("email")}</div>;
+      return <div className="text-xs">{row.getValue("email")}</div>;
     },
   },
   {
     accessorKey: "perfil",
     header: "Perfil",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("perfil")}</div>;
+      return <div className="text-xs">{row.getValue("perfil")}</div>;
     },
   },
   {
