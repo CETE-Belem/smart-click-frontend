@@ -30,7 +30,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
         <Link
           prefetch={false}
           href={link}
-          className="texto-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
         >
           {row.getValue("nome")}
         </Link>
@@ -41,14 +41,14 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
     accessorKey: "cidade",
     header: "Cidade",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("cidade")}</div>;
+      return <div className="text-xs">{row.getValue("cidade")}</div>;
     },
   },
   {
     accessorKey: "uf",
     header: "UF",
     cell: ({ row }) => {
-      return <div className="texto-xs">{row.getValue("uf")}</div>;
+      return <div className="text-xs">{row.getValue("uf")}</div>;
     },
   },
   {
