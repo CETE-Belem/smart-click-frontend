@@ -1,7 +1,15 @@
 "use client";
 
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import {
   Card,
@@ -25,7 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { EquipmentChartData } from "../page";
+import dayjs from "dayjs";
 
 const chartConfig = {
   faseA: {
@@ -42,132 +50,299 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-interface EquipInfoGraphProps {
-  title: string;
-  data: any;
-  phaseNumber?: number;
+export interface EquipmentChartData {
+  date: Date;
+  faseA: {
+    v: number;
+    i: number;
+    potenciaAparente: number;
+    potenciaAtiva: number;
+    FP: number;
+  };
+  faseB?: {
+    v: number;
+    i: number;
+    potenciaAparente: number;
+    potenciaAtiva: number;
+    FP: number;
+  };
+  faseC?: {
+    v: number;
+    i: number;
+    potenciaAparente: number;
+    potenciaAtiva: number;
+    FP: number;
+  };
 }
 
-export default function EquipInfoGraph({title, data, phaseNumber = 1}: EquipInfoGraphProps) {
+export interface ChartData {
+  date: Date;
+  faseA: number;
+  faseB?: number;
+  faseC?: number;
+}
+
+interface EquipInfoGraphProps {
+  title: string;
+  data?: ChartData[];
+  phaseNumber?: number;
+  startDate?: Date;
+  endDate?: Date;
+  scale?: "hour" | "day" | "week" | "month" | "year";
+  type?: "line" | "bar";
+}
+
+export default function EquipInfoGraph({
+  title,
+  data,
+  phaseNumber = 1,
+  scale,
+  type = "line",
+}: EquipInfoGraphProps) {
+  const getMinMaxValues = () => {
+    let min = Infinity;
+    let max = -Infinity;
+    data?.forEach((item) => {
+      min = Math.min(min, item.faseA, item.faseB ?? 0, item.faseC ?? 0);
+      max = Math.max(max, item.faseA, item.faseB ?? 0, item.faseC ?? 0);
+    });
+    return { min, max };
+  };
+
+  const { min, max } = getMinMaxValues();
+  const yAxisDomain = [Math.floor(min * 1.7), Math.ceil(max * 1.7)];
+
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>{title}</CardTitle>
-          {/* <CardDescription>
-            {new Date().toLocaleDateString("pt-BR", {
-              month: "long",
-              day: "numeric",
-              year: "numeric",
-            })}
-          </CardDescription> */}
+          <CardDescription>
+            {data && data.length > 0
+              ? `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
+              : "Sem dados"}
+          </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient id="fillFaseA" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-faseA)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-faseA)"
-                  stopOpacity={0.1}
-                />
-              </linearGradient>
-              {phaseNumber > 1 && (
-                <linearGradient id="fillFaseB" x1="0" y1="0" x2="0" y2="1">
+        {type === "line" ? (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[300px] w-full"
+          >
+            <AreaChart data={data}>
+              <defs>
+                <linearGradient id="fillFaseA" x1="0" y1="0" x2="0" y2="1">
+                  <stop stopColor="var(--color-faseA)" stopOpacity={0.8} />
                   <stop
-                    offset="5%"
-                    stopColor="var(--color-faseB)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--color-faseB)"
+                    offset="1"
+                    stopColor="var(--color-faseA)"
                     stopOpacity={0.1}
                   />
                 </linearGradient>
+                {phaseNumber > 1 && (
+                  <linearGradient id="fillFaseB" x1="0" y1="0" x2="0" y2="1">
+                    <stop stopColor="var(--color-faseB)" stopOpacity={0.8} />
+                    <stop
+                      offset="1"
+                      stopColor="var(--color-faseB)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                )}
+                {phaseNumber > 2 && (
+                  <linearGradient id="fillFaseC" x1="0" y1="0" x2="0" y2="1">
+                    <stop stopColor="var(--color-faseC)" stopOpacity={0.8} />
+                    <stop
+                      offset="1"
+                      stopColor="var(--color-faseC)"
+                      stopOpacity={0.1}
+                    />
+                  </linearGradient>
+                )}
+              </defs>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={4}
+                minTickGap={24}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  switch (scale) {
+                    case "hour":
+                      return date.toLocaleTimeString("pt-BR", {
+                        hour: "numeric",
+                        minute: "numeric",
+                      });
+                    case "day":
+                    case "week":
+                      return date.toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "numeric",
+                      });
+                    case "month":
+                      return date.toLocaleDateString("pt-BR", {
+                        month: "numeric",
+                        year: "numeric",
+                      });
+                    case "year":
+                      return date.toLocaleDateString("pt-BR", {
+                        year: "numeric",
+                      });
+                    default:
+                      return date.toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "numeric",
+                        year: "numeric",
+                      });
+                  }
+                }}
+              />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+                domain={yAxisDomain}
+                tickFormatter={(value) => value.toLocaleString("pt-BR")}
+              />
+              <ChartTooltip
+                cursor={false}
+                content={
+                  <ChartTooltipContent
+                    labelFormatter={(value) => {
+                      const date = new Date(value);
+                      switch (scale) {
+                        case "hour":
+                          return date.toLocaleTimeString("pt-BR", {
+                            hour: "numeric",
+                            minute: "numeric",
+                          });
+                        case "day":
+                        case "week":
+                          return date.toLocaleDateString("pt-BR", {
+                            day: "numeric",
+                            month: "numeric",
+                          });
+                        case "month":
+                          return date.toLocaleDateString("pt-BR", {
+                            month: "numeric",
+                            year: "numeric",
+                          });
+                        case "year":
+                          return date.toLocaleDateString("pt-BR", {
+                            year: "numeric",
+                          });
+                        default:
+                          return date.toLocaleDateString("pt-BR", {
+                            day: "numeric",
+                            month: "numeric",
+                            year: "numeric",
+                          });
+                      }
+                    }}
+                    indicator="dot"
+                  />
+                }
+              />
+              <Area
+                dataKey="faseA"
+                type="natural"
+                fill="url(#fillFaseA)"
+                stroke="var(--color-faseA)"
+                stackId="a"
+              />
+              {phaseNumber > 1 && (
+                <Area
+                  dataKey="faseB"
+                  type="natural"
+                  fill="url(#fillFaseB)"
+                  stroke="var(--color-faseB)"
+                  stackId="a"
+                />
               )}
               {phaseNumber > 2 && (
-                <linearGradient id="fillFaseC" x1="0" y1="0" x2="0" y2="1">
-                  <stop
-                    offset="5%"
-                    stopColor="var(--color-faseC)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
-                    stopColor="var(--color-faseC)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-              )}
-            </defs>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="date"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleTimeString("pt-BR", {
-                  hour: "numeric",
-                  minute: "numeric",
-                });
-              }}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("pt-BR", {
-                      hour: "numeric",
-                      minute: "numeric",
-                    });
-                  }}
-                  indicator="dot"
+                <Area
+                  dataKey="faseC"
+                  type="natural"
+                  fill="url(#fillFaseC)"
+                  stroke="var(--color-faseC)"
+                  stackId="a"
                 />
-              }
-            />
-            <Area
-              dataKey="faseA"
-              type="natural"
-              fill="url(#fillFaseA)"
-              stroke="var(--color-faseA)"
-              stackId="a"
-            />
-            {phaseNumber > 1 && (
-              <Area
-                dataKey="faseB"
-                type="natural"
-                fill="url(#fillFaseB)"
-                stroke="var(--color-faseB)"
-                stackId="a"
+              )}
+              <ChartLegend content={<ChartLegendContent />} />
+            </AreaChart>
+          </ChartContainer>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[300px] w-full"
+          >
+            <BarChart accessibilityLayer data={data}>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="date"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={4}
+                minTickGap={24}
+                tickFormatter={(value) => {
+                  const date = new Date(value);
+                  switch (scale) {
+                    case "hour":
+                      return date.toLocaleTimeString("pt-BR", {
+                        hour: "numeric",
+                        minute: "numeric",
+                      });
+                    case "day":
+                    case "week":
+                      return date.toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "numeric",
+                      });
+                    case "month":
+                      return date.toLocaleDateString("pt-BR", {
+                        month: "numeric",
+                        year: "numeric",
+                      });
+                    case "year":
+                      return date.toLocaleDateString("pt-BR", {
+                        year: "numeric",
+                      });
+                    default:
+                      return date.toLocaleDateString("pt-BR", {
+                        day: "numeric",
+                        month: "numeric",
+                        year: "numeric",
+                      });
+                  }
+                }}
               />
-            )}
-            {phaseNumber > 2 && (
-              <Area
-                dataKey="faseC"
-                type="natural"
-                fill="url(#fillFaseC)"
-                stroke="var(--color-faseC)"
-                stackId="a"
+              <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+              <ChartLegend content={<ChartLegendContent />} />
+              <Bar
+                dataKey="faseA"
+                fill="var(--color-faseA)"
+                radius={4}
               />
-            )}
-            <ChartLegend content={<ChartLegendContent />} />
-          </AreaChart>
-        </ChartContainer>
+              {phaseNumber > 1 && (
+                <Bar
+                  dataKey="faseB"
+                  fill="var(--color-faseB)"
+                  radius={4}
+                />
+              )}
+              {phaseNumber > 2 && (
+                <Bar
+                  dataKey="faseC"
+                  fill="var(--color-faseC)"
+                  radius={4}
+                />
+              )}
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

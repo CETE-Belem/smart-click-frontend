@@ -66,6 +66,10 @@
   }
 }
 
+.rdp-vhidden {
+  @apply hidden;
+}
+
 @layer base {
   * {
     @apply border-border;
