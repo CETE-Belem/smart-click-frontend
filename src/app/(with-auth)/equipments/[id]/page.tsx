@@ -2,7 +2,13 @@
 
 import { Button } from "@/components/ui/button";
 import RangeDatePicker from "@/components/ui/range-date-picker";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { apiClient } from "@/lib/axios-client";
 import { cn } from "@/lib/utils";
 import { EquipmentSchemaType } from "@/schemas/equipment.schema";
@@ -18,7 +24,7 @@ import { io } from "socket.io-client";
 import EquipmentDetailsInfo from "./components/EquipDetailsCard";
 import EquipmentCardInfo from "./components/EquipInfoCard";
 import EquipInfoGraph, {
-  EquipmentChartData
+  EquipmentChartData,
 } from "./components/EquipInfoGraph";
 import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
 import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
@@ -45,8 +51,14 @@ export default function EquipmentInfo() {
   const [prC, setPrC] = useState<number | null>(null);
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
   const [selectedFilter, setSelectedFilter] = useState<string>("hoje");
-  const [date, setDate] = useState<DateRange>({from: dayjs().startOf("day").toDate(), to: dayjs().endOf("day").toDate()});
+  const [date, setDate] = useState<DateRange>({
+    from: dayjs().startOf("day").toDate(),
+    to: dayjs().endOf("day").toDate(),
+  });
   const [month, setMonth] = useState<Date>(new Date());
+  const [scale, setScale] = useState<
+    "hour" | "day" | "week" | "month" | "year"
+  >("hour");
 
   const { data: chartData, isLoading: isChartLoading } = useQuery<
     EquipmentChartData[]
@@ -61,27 +73,28 @@ export default function EquipmentInfo() {
         params: {
           from: date.from,
           to: date.to,
-        }
-      });
-      return response.data;
-    },
-    placeholderData: keepPreviousData,
-  });
-
-  const { data, isLoading, refetch, isRefetching } = useQuery<EquipmentSchemaType>({
-    queryKey: ["equipment", params.id],
-    queryFn: async () => {
-      console.log(date.from, date.to);
-      const token = cookies.get("token");
-      const response = await apiClient.get(`/equipments/${params.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
         },
       });
       return response.data;
     },
     placeholderData: keepPreviousData,
   });
+
+  const { data, isLoading, refetch, isRefetching } =
+    useQuery<EquipmentSchemaType>({
+      queryKey: ["equipment", params.id],
+      queryFn: async () => {
+        console.log(date.from, date.to);
+        const token = cookies.get("token");
+        const response = await apiClient.get(`/equipments/${params.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        return response.data;
+      },
+      placeholderData: keepPreviousData,
+    });
 
   const token = cookies.get("token");
   useEffect(() => {
@@ -159,16 +172,30 @@ export default function EquipmentInfo() {
 
   useEffect(() => {
     if (selectedFilter === "hoje") {
-      setDate({from: dayjs().startOf("day").toDate(), to: dayjs().endOf("day").toDate()});
+      setDate({
+        from: dayjs().startOf("day").toDate(),
+        to: dayjs().endOf("day").toDate(),
+      });
+      setScale("hour");
     }
     if (selectedFilter === "esseMes") {
-      setDate({from: dayjs().startOf("month").toDate(), to: dayjs().endOf("month").toDate()});
+      setDate({
+        from: dayjs().startOf("month").toDate(),
+        to: dayjs().endOf("month").toDate(),
+      });
+      setScale("day");
     }
     if (selectedFilter === "esseAno") {
-      setDate({from: dayjs().startOf("year").toDate(), to: dayjs().endOf("year").toDate()});
+      setDate({
+        from: dayjs().startOf("year").toDate(),
+        to: dayjs().endOf("year").toDate(),
+      });
+      setScale("month");
     }
-  }
-  , [selectedFilter]);
+    if (selectedFilter === "personalizado") {
+      setScale("month");
+    }
+  }, [selectedFilter]);
 
   return (
     <div>
@@ -195,41 +222,40 @@ export default function EquipmentInfo() {
           {isLoading ? (
             <EquipmentCardInfoSkeleton />
           ) : (
-            <EquipmentCardInfo
-              value={{ V: vA, I: iA, Pr: prA }}
-              phase="A"
-            />
+            <EquipmentCardInfo value={{ V: vA, I: iA, Pr: prA }} phase="A" />
           )}
           {phaseNumber > 1 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo
-                value={{ V: vB, I: iB, Pr: prB }}
-                phase="B"
-              />
+              <EquipmentCardInfo value={{ V: vB, I: iB, Pr: prB }} phase="B" />
             )
           ) : null}
           {phaseNumber > 2 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo
-                value={{ V: vC, I: iC, Pr: prC }}
-                phase="C"
-              />
+              <EquipmentCardInfo value={{ V: vC, I: iC, Pr: prC }} phase="C" />
             )
           ) : null}
         </div>
         <div className="flex flex-row-reverse w-full gap-5">
-          <Button className="p-0 m-0" disabled={isRefetching} onClick={() => refetch()} variant="link" >
-            <RefreshCw size={24} className={cn("text-solaris-primary",{
-              "animate-spin" : isRefetching,
-            })}/>
+          <Button
+            className="p-0 m-0"
+            disabled={isRefetching}
+            onClick={() => refetch()}
+            variant="link"
+          >
+            <RefreshCw
+              size={24}
+              className={cn("text-solaris-primary", {
+                "animate-spin": isRefetching,
+              })}
+            />
           </Button>
           <Select value={selectedFilter} onValueChange={setSelectedFilter}>
             <SelectTrigger>
-              <SelectValue/>
+              <SelectValue />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="hoje">Hoje</SelectItem>
@@ -238,13 +264,16 @@ export default function EquipmentInfo() {
               <SelectItem value="personalizado">Personalizado</SelectItem>
             </SelectContent>
           </Select>
-          {
-            selectedFilter === "personalizado" && (
-              <div className="flex gap-2">
-                <RangeDatePicker date={date} setDate={setDate} month={month} setMonth={setMonth} />
-              </div>
-            )
-          }
+          {selectedFilter === "personalizado" && (
+            <div className="flex gap-2">
+              <RangeDatePicker
+                date={date}
+                setDate={setDate}
+                month={month}
+                setMonth={setMonth}
+              />
+            </div>
+          )}
         </div>
         {isChartLoading ? (
           <>
@@ -255,6 +284,8 @@ export default function EquipmentInfo() {
         ) : (
           <>
             <EquipInfoGraph
+              scale={scale}
+              type={selectedFilter !== "hoje" ? "bar" : "line"}
               phaseNumber={phaseNumber}
               data={chartData?.map((e) => {
                 return {
@@ -269,6 +300,8 @@ export default function EquipmentInfo() {
               title="Tensão (V)"
             />
             <EquipInfoGraph
+              scale={scale}
+              type={selectedFilter !== "hoje" ? "bar" : "line"}
               phaseNumber={phaseNumber}
               startDate={date.from}
               endDate={date.to}
@@ -283,6 +316,8 @@ export default function EquipmentInfo() {
               title="Corrente (A)"
             />
             <EquipInfoGraph
+              scale={scale}
+              type={selectedFilter !== "hoje" ? "bar" : "line"}
               phaseNumber={phaseNumber}
               startDate={date.from}
               endDate={date.to}
