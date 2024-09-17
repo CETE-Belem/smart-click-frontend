@@ -40,15 +40,9 @@ export default function EquipmentInfo() {
   const [iA, setIA] = useState<number | null>(null);
   const [iB, setIB] = useState<number | null>(null);
   const [iC, setIC] = useState<number | null>(null);
-  const [paA, setPaA] = useState<number | null>(null);
-  const [paB, setPaB] = useState<number | null>(null);
-  const [paC, setPaC] = useState<number | null>(null);
   const [prA, setPrA] = useState<number | null>(null);
   const [prB, setPrB] = useState<number | null>(null);
   const [prC, setPrC] = useState<number | null>(null);
-  const [fpA, setFpA] = useState<number | null>(null);
-  const [fpB, setFpB] = useState<number | null>(null);
-  const [fpC, setFpC] = useState<number | null>(null);
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
   const [selectedFilter, setSelectedFilter] = useState<string>("hoje");
   const [date, setDate] = useState<DateRange>({from: dayjs().startOf("day").toDate(), to: dayjs().endOf("day").toDate()});
@@ -144,34 +138,6 @@ export default function EquipmentInfo() {
       socket.on(`${data.mac}/smartclick/prfc`, (res) => {
         setPrC(res.data);
       });
-
-      /**
-       * Potência Aparente
-       * todo: remove this
-       */
-      socket.on(`${data.mac}/smartclick/pafa`, (res) => {
-        setPaA(res.data);
-      });
-      socket.on(`${data.mac}/smartclick/pafb`, (res) => {
-        setPaB(res.data);
-      });
-      socket.on(`${data.mac}/smartclick/pafc`, (res) => {
-        setPaC(res.data);
-      });
-
-      /**
-       * Fator de Potência
-       * todo: remove this
-       */
-      socket.on(`${data.mac}/smartclick/fpfa`, (res) => {
-        setFpA(res.data);
-      });
-      socket.on(`${data.mac}/smartclick/fpfb`, (res) => {
-        setFpB(res.data);
-      });
-      socket.on(`${data.mac}/smartclick/fpfc`, (res) => {
-        setFpC(res.data);
-      });
     }
   }, [data, token]);
 
@@ -225,12 +191,12 @@ export default function EquipmentInfo() {
         {
           //flex-col md:grid md:grid-cols-3
         }
-        <div className="flex gap-5">
+        <div className="flex flex-wrap gap-5">
           {isLoading ? (
             <EquipmentCardInfoSkeleton />
           ) : (
             <EquipmentCardInfo
-              value={{ V: vA, I: iA, Pa: paA, Pr: prA, Fp: fpA }}
+              value={{ V: vA, I: iA, Pr: prA }}
               phase="A"
             />
           )}
@@ -239,7 +205,7 @@ export default function EquipmentInfo() {
               <EquipmentCardInfoSkeleton />
             ) : (
               <EquipmentCardInfo
-                value={{ V: vB, I: iB, Pa: paB, Pr: prB, Fp: fpB }}
+                value={{ V: vB, I: iB, Pr: prB }}
                 phase="B"
               />
             )
@@ -249,7 +215,7 @@ export default function EquipmentInfo() {
               <EquipmentCardInfoSkeleton />
             ) : (
               <EquipmentCardInfo
-                value={{ V: vC, I: iC, Pa: paC, Pr: prC, Fp: fpC }}
+                value={{ V: vC, I: iC, Pr: prC }}
                 phase="C"
               />
             )

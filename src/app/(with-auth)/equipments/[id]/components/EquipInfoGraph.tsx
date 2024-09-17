@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
   Card,
@@ -68,10 +68,10 @@ export interface EquipmentChartData {
 }
 
 export interface ChartData {
-  date: Date
-  faseA: number
-  faseB?: number
-  faseC?: number
+  date: Date;
+  faseA: number;
+  faseB?: number;
+  faseC?: number;
 }
 
 interface EquipInfoGraphProps {
@@ -83,49 +83,57 @@ interface EquipInfoGraphProps {
   scale?: "hour" | "day" | "week" | "month" | "year";
 }
 
-export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: EquipInfoGraphProps) {
+export default function EquipInfoGraph({
+  title,
+  data,
+  phaseNumber = 1,
+  scale,
+}: EquipInfoGraphProps) {
+  const getMinMaxValues = () => {
+    let min = Infinity
+    let max = -Infinity
+    data?.forEach(item => {
+      min = Math.min(min, item.faseA, item.faseB ?? 0, item.faseC ?? 0)
+      max = Math.max(max, item.faseA, item.faseB ?? 0, item.faseC ?? 0)
+    })
+    return { min, max }
+  }
+
+  const { min, max } = getMinMaxValues()
+  const yAxisDomain = [Math.floor(min * 1.7), Math.ceil(max * 1.7)]
+  
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
         <div className="grid flex-1 gap-1 text-center sm:text-left">
           <CardTitle>{title}</CardTitle>
           <CardDescription>
-            {
-              data && data.length > 0 ? (
-                `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
-              ) : "Sem dados"
-            }
+            {data && data.length > 0
+              ? `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
+              : "Sem dados"}
           </CardDescription>
         </div>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
+          className="aspect-auto h-[300px] w-full"
         >
           <AreaChart data={data}>
             <defs>
               <linearGradient id="fillFaseA" x1="0" y1="0" x2="0" y2="1">
+                <stop stopColor="var(--color-faseA)" stopOpacity={0.8} />
                 <stop
-                  offset="5%"
-                  stopColor="var(--color-faseA)"
-                  stopOpacity={0.8}
-                />
-                <stop
-                  offset="95%"
+                  offset="1"
                   stopColor="var(--color-faseA)"
                   stopOpacity={0.1}
                 />
               </linearGradient>
               {phaseNumber > 1 && (
                 <linearGradient id="fillFaseB" x1="0" y1="0" x2="0" y2="1">
+                  <stop stopColor="var(--color-faseB)" stopOpacity={0.8} />
                   <stop
-                    offset="5%"
-                    stopColor="var(--color-faseB)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
+                    offset="1"
                     stopColor="var(--color-faseB)"
                     stopOpacity={0.1}
                   />
@@ -133,13 +141,9 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
               )}
               {phaseNumber > 2 && (
                 <linearGradient id="fillFaseC" x1="0" y1="0" x2="0" y2="1">
+                  <stop stopColor="var(--color-faseC)" stopOpacity={0.8} />
                   <stop
-                    offset="5%"
-                    stopColor="var(--color-faseC)"
-                    stopOpacity={0.8}
-                  />
-                  <stop
-                    offset="95%"
+                    offset="1"
                     stopColor="var(--color-faseC)"
                     stopOpacity={0.1}
                   />
@@ -162,10 +166,6 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
                       minute: "numeric",
                     });
                   case "day":
-                    return date.toLocaleDateString("pt-BR", {
-                      day: "numeric",
-                      month: "numeric",
-                    });
                   case "week":
                     return date.toLocaleDateString("pt-BR", {
                       day: "numeric",
@@ -180,15 +180,21 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
                     return date.toLocaleDateString("pt-BR", {
                       year: "numeric",
                     });
-                  default: {
+                  default:
                     return date.toLocaleDateString("pt-BR", {
                       day: "numeric",
                       month: "numeric",
                       year: "numeric",
                     });
-                  }
                 }
               }}
+            />
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              domain={yAxisDomain}
+              tickFormatter={(value) => value.toLocaleString("pt-BR")}
             />
             <ChartTooltip
               cursor={false}
@@ -203,10 +209,6 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
                           minute: "numeric",
                         });
                       case "day":
-                        return date.toLocaleDateString("pt-BR", {
-                          day: "numeric",
-                          month: "numeric",
-                        });
                       case "week":
                         return date.toLocaleDateString("pt-BR", {
                           day: "numeric",
@@ -221,13 +223,12 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
                         return date.toLocaleDateString("pt-BR", {
                           year: "numeric",
                         });
-                      default: {
+                      default:
                         return date.toLocaleDateString("pt-BR", {
                           day: "numeric",
                           month: "numeric",
                           year: "numeric",
                         });
-                      }
                     }
                   }}
                   indicator="dot"
@@ -247,7 +248,7 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
                 type="natural"
                 fill="url(#fillFaseB)"
                 stroke="var(--color-faseB)"
-                stackId="a"
+                stackId="b"
               />
             )}
             {phaseNumber > 2 && (
@@ -256,7 +257,7 @@ export default function EquipInfoGraph({title, data, phaseNumber = 1, scale }: E
                 type="natural"
                 fill="url(#fillFaseC)"
                 stroke="var(--color-faseC)"
-                stackId="a"
+                stackId="c"
               />
             )}
             <ChartLegend content={<ChartLegendContent />} />

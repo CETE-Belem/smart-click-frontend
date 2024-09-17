@@ -21,7 +21,7 @@ export default function EquipmentDetailsInfo({equipment, online}: EquipmentDetai
         <CardTitle className="text-3xl">Equipamento {equipment.nome}</CardTitle>
         <CardDescription className="flex flex-col justify-between gap-5">
           <div className="flex gap-5">
-            <p>Concessionária: {equipment.concessionaria.nome}</p>
+            <p>Concessionária: {equipment.unidade_consumidora.concessionaria.nome}</p>
             <p>UC {equipment.unidade_consumidora.numero}</p>
           </div>
           <div className="flex flex-wrap gap-5">
