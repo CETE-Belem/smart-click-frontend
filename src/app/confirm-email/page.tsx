@@ -23,6 +23,7 @@ import { confirmEmail } from "@/action/confirm-email.action";
 import { resendConfirmationCode } from "@/action/resend-confirmation-code.action";
 import { Routes } from "@/enums/Routes.enum";
 import { useCookies } from "next-client-cookies";
+import { ChevronLeftIcon } from "lucide-react";
 
 export default function ConfirmEmail() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -48,34 +49,33 @@ export default function ConfirmEmail() {
 
   async function onSubmit(data: ConfirmEmailType) {
     setLoading(true);
-    if(!email) return router.push(Routes.Login);
-    
+    if (!email) return router.push(Routes.Login);
+
     router.prefetch(Routes.MainPage);
     const response = await confirmEmail(data, email).finally(() => {
-        setLoading(false)
-    })
+      setLoading(false);
+    });
 
     if (response.success) {
-        cookies.remove("token");
-        if(response.token)
-          cookies.set("token", response.token);
-        toast({
-            title: "Sucesso",
-            description: response?.message,
-            variant: "success"
-        })
-        router.push(Routes.MainPage)
+      cookies.remove("token");
+      if (response.token) cookies.set("token", response.token);
+      toast({
+        title: "Sucesso",
+        description: response?.message,
+        variant: "success",
+      });
+      router.push(Routes.MainPage);
     } else {
-        toast({
-            title: "Erro",
-            description: response?.message,
-            variant: "destructive"
-        })
+      toast({
+        title: "Erro",
+        description: response?.message,
+        variant: "destructive",
+      });
     }
   }
 
   async function handleResendCode() {
-    if(!email) return router.push(Routes.Login);
+    if (!email) return router.push(Routes.Login);
     const response = await resendConfirmationCode(email);
 
     if (response.success) {
@@ -102,6 +102,10 @@ export default function ConfirmEmail() {
       </div>
       <div className="bg-white shadow-2xl rounded-t-[64px] py-8 flex flex-col justify-center items-center lg:flex-1 lg:max-w-screen-sm lg:rounded-tl-none lg:rounded-br-[64px] lg:py-16">
         <div className="space-y-6 max-w-96 w-full">
+          <Link href={Routes.Login} className="flex gap-1 text-solaris-primary">
+            <ChevronLeftIcon size={24} className="cursor-pointer" />
+            Voltar
+          </Link>
           <h1 className="text-5xl font-bold text-[#333333] lg:max-w-[12ch]">
             Crie uma conta
           </h1>
@@ -131,7 +135,12 @@ export default function ConfirmEmail() {
                 Confirmar conta
               </Button>
             </form>
-            <Button onClick={handleResendCode} variant="link" size="link" className="text-xs">
+            <Button
+              onClick={handleResendCode}
+              variant="link"
+              size="link"
+              className="text-xs"
+            >
               Não recebeu nada? Reenviar código.
             </Button>
           </div>
