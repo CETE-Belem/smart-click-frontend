@@ -25,7 +25,16 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
     accessorKey: "numero",
     header: "Número",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("numero")}</div>;
+      const link = `/consumer-units/${row.original.cod_unidade_consumidora}`;
+      return (
+        <Link
+          prefetch={false}
+          href={link}
+          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+        >
+          {row.getValue("numero")}
+        </Link>
+      );
     },
   },
   {
