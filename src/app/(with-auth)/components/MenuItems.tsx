@@ -16,9 +16,11 @@ export default function MenuItems() {
           <UserRound size={24} />
         </SidebarMenuItem>
       )}
-      <SidebarMenuItem href={Routes.Concessionaires} label="Concessionárias">
-        <Zap height={24} width={24} />
-      </SidebarMenuItem>
+      {user?.perfil === Role.ADMIN && (
+        <SidebarMenuItem href={Routes.Concessionaires} label="Concessionárias">
+          <Zap height={24} width={24} />
+        </SidebarMenuItem>
+      )}
       <SidebarMenuItem
         href={Routes.ConsumerUnits}
         label="Unidades Consumidoras"
@@ -28,16 +30,6 @@ export default function MenuItems() {
       <SidebarMenuItem href={Routes.Equipments} label="Equipamentos">
         <Briefcase height={24} width={24} />
       </SidebarMenuItem>
-      {user?.perfil === Role.ADMIN && (
-        <SidebarMenuItem href={Routes.Concessionaires} label="Concessionárias">
-          <Zap height={24} width={24} />
-        </SidebarMenuItem>
-      )}
-      {user?.perfil === Role.ADMIN && (
-        <SidebarMenuItem href={Routes.Users} label="Usuários">
-          <UserRound size={24} />
-        </SidebarMenuItem>
-      )}
     </>
   );
 }
