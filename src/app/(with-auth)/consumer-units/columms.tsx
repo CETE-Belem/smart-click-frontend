@@ -156,11 +156,16 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
 
 export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
   {
-    cell: ({ data }) => (
-      <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
-        {data.numero}
-      </h2>
-    ),
+    cell: ({ data }) => {
+      const link = `/consumer-units/${data.cod_unidade_consumidora}`;
+      return (
+        <Link prefetch={false} href={link}>
+          <h2 className="text-base font-extrabold text-[#1C5790] dark:text-blue-500 hover:underline">
+            {data.numero}
+          </h2>
+        </Link>
+      );
+    },
   },
   {
     cell: ({ data }) => (
