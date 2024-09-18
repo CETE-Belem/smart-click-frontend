@@ -156,16 +156,11 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
 
 export const concessionaireCardColumns: CardColumnDef<Concessionaire>[] = [
   {
-    cell: ({ data }) => {
-      const link = `/concessionaires/${data.cod_concessionaria}`;
-      return (
-        <Link prefetch={false} href={link}>
-          <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
-            {data.nome}
-          </h2>
-        </Link>
-      );
-    },
+    cell: ({ data }) => (
+      <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
+        {data.nome}
+      </h2>
+    ),
   },
   {
     cell: ({ data }) => (

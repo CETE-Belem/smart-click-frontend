@@ -27,7 +27,7 @@ import Pagination from "@/components/pagination";
 import { useAlert } from "@/providers/alert.provider";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function ConsumerUnitsPage() {
+export default function ConsumerUnitPage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();

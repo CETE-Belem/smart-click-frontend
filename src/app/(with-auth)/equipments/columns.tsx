@@ -169,15 +169,9 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
 
 export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
   {
-    cell: ({ data }) => {
-      const link = `/equipments/${data.cod_equipamento}`;
-
-      return (
-        <Link href={link} prefetch={false}>
-          <h2 className="text-xs font-bold hover:underline">{data.nome}</h2>
-        </Link>
-      );
-    },
+    cell: ({ data }) => (
+      <h2 className="text-xs font-semibold">{data.nome}</h2>
+    ),
   },
   {
     cell: ({ data }) => <p className="text-xs text-black">{data.descricao}</p>,
