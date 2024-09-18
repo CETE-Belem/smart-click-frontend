@@ -27,7 +27,6 @@ import { useCookies } from "next-client-cookies";
 import { useState } from "react";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import { getConsumerUnitEquipmentsAction } from "@/action/get-consumer-unit.action";
 
 export default function ConsumerUnitEquipments() {
   const [rowSelection, setRowSelection] = useState({});
@@ -53,7 +52,7 @@ export default function ConsumerUnitEquipments() {
   const query = searchParams.get("query") ?? "";
 
   const { data, isLoading } = useQuery<GetEquipmentsResponse>({
-    queryKey: ["consumer-units-equipments", pageIndex, perPage, query],
+    queryKey: ["consumer-units-equipments", id, pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
       const response = await apiClient.get<GetEquipmentsResponse>(
@@ -73,8 +72,6 @@ export default function ConsumerUnitEquipments() {
     },
     placeholderData: keepPreviousData,
   });
-
-  console.log(data?.equipments);
 
   async function handleDelete(data: Equipments) {
     try {
