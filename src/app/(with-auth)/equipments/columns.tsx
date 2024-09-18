@@ -170,7 +170,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
 export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
   {
     cell: ({ data }) => (
-      <h2 className="text-xs font-semibold mb-2">{data.nome}</h2>
+      <h2 className="text-xs font-semibold">{data.nome}</h2>
     ),
   },
   {
@@ -181,10 +181,10 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
   },
   {
     cell: ({ data }) => (
-      <div className="flex gap-1 items-center justify-start">
+      <div className="flex gap-1 items-center justify-start mt-2">
         <span className="w-1 h-1 bg-[#58585A] rounded-full" />
         <p className="text-xs">
-          Unidade Consumidora {data.unidade_consumidora.numero}
+          Unidade Consumidora {data.unidade_consumidora?.numero}
         </p>
       </div>
     ),
