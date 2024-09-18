@@ -182,7 +182,7 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
       <div className="flex gap-1 items-center justify-start mt-2">
         <span className="w-1 h-1 bg-[#58585A] rounded-full" />
         <p className="text-xs">
-          Unidade Consumidora {data.unidade_consumidora.numero}
+          Unidade Consumidora {data.unidade_consumidora?.numero}
         </p>
       </div>
     ),
