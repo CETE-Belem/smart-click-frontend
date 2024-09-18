@@ -30,7 +30,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
         <Link
           prefetch={false}
           href={link}
-          className="text-base font-extrabold text-[#1C5790] dark:text-blue-500 hover:underline"
+          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
         >
           {row.getValue("nome")}
         </Link>
