@@ -359,7 +359,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
               disabled={loading}
               loading={loading}
             >
-              Finalizar Cadastro
+              Finalizar Edição
             </Button>
           </form>
         </Form>
