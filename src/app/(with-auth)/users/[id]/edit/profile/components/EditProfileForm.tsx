@@ -22,6 +22,7 @@ import Input from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import NewUserImage from "public/images/new-user-image.svg";
 import Image from "next/image";
+import useUserStore from "@/store/user.store";
 
 export default function EditProfileForm({
   data,
@@ -31,6 +32,7 @@ export default function EditProfileForm({
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const setUser  = useUserStore(state => state.setUser);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -42,13 +44,9 @@ export default function EditProfileForm({
     resolver: zodResolver(editProfileSchema),
   });
 
-  console.log(data.password);
-
   async function onSubmit(formData: editProfileSchemaType) {
     router.prefetch(Routes.Users);
     setLoading(true);
-
-    console.log(formData.password);
 
     toast({
       title: "Editando usuário...",
@@ -68,11 +66,12 @@ export default function EditProfileForm({
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["users"] });
       queryClient.invalidateQueries({
         queryKey: ["users"],
       });
-      router.push(Routes.Users);
+      setUser(response.data);
+      router.refresh();
+      setTimeout(() => router.push(Routes.Users), 500);
     } else {
       toast({
         title: "Erro",
@@ -90,7 +89,7 @@ export default function EditProfileForm({
         </h1>
         <Form {...form}>
           <form
-            className="w-full max-w-[500px]"
+            className="w-full max-w-96 flex flex-col"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <div className="space-y-6">
@@ -180,11 +179,11 @@ export default function EditProfileForm({
             <Button
               type="submit"
               variant="solar"
-              className="w-full max-w-[500px] mt-12"
+              className="w-full max-w-96 mt-12"
               loading={loading}
               disabled={loading}
             >
-              Finalizar Cadastro
+              Finalizar Edição
             </Button>
           </form>
         </Form>

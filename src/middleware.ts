@@ -12,7 +12,18 @@ const noNeedAuth = [
   "/recover-password/password",
 ];
 
-const AdminPages = [Routes.EquipmentsNew, Routes.Concessionaires, Routes.Concessionaire, Routes.ConcessionaireEdit, Routes.ConcessionaireNew, Routes.ConsumerUnitNew, Routes.ConsumerUnitEdit, Routes.Users, Routes.AdminNew, Routes.User];
+const AdminPages = [
+  Routes.EquipmentsNew,
+  Routes.Concessionaires,
+  Routes.Concessionaire,
+  Routes.ConcessionaireEdit,
+  Routes.ConcessionaireNew,
+  Routes.ConsumerUnitNew,
+  Routes.ConsumerUnitEdit,
+  Routes.Users,
+  Routes.AdminNew,
+  Routes.User,
+];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;

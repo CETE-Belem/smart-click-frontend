@@ -21,6 +21,7 @@ type HeaderInfoData = {
     title: string;
     subtitle: string;
     icon: JSX.Element;
+    adminOnly?: boolean;
   };
 };
 
@@ -103,6 +104,12 @@ const headerInfoData: HeaderInfoData = {
   [Routes.UserEdit]: {
     title: "Usuários",
     subtitle: "Editar usuário",
+    adminOnly: true,
+    icon: <Pencil size={24} />,
+  },
+  [Routes.EditProfile]: {
+    title: "Editar Perfil",
+    subtitle: "Editar perfil",
     icon: <Pencil size={24} />,
   },
 };
@@ -126,6 +133,7 @@ export default function HeaderInfo() {
       icon: data?.icon,
       subtitle: data?.subtitle,
       url: `/${currentLinkArray.join("/")}`,
+      adminOnly: data?.adminOnly,
     };
   });
 
@@ -158,14 +166,17 @@ export default function HeaderInfo() {
                     {index === finalLinksArray.length - 1 ? (
                       <p className="text-sm">{item.subtitle}</p>
                     ) : (
-                      <Link
-                        className="focus:outline-none focus:ring-1 focus:ring-ring rounded-sm focus:ring-offset-2 focus:ring-offset-transparent"
-                        href={`${item.url}`}
-                      >
-                        <p className="text-sm hover:underline">
-                          {item.subtitle}
-                        </p>
-                      </Link>
+                      <>
+                        {
+                          !item.adminOnly ? (
+                            <Link href={item.url}>
+                              {item.subtitle}
+                            </Link>
+                          ) : (
+                            <p className="text-sm">{item.subtitle}</p>
+                          )
+                        }
+                      </>
                     )}
                   </div>
                   {index !== finalLinksArray.length - 1 && (

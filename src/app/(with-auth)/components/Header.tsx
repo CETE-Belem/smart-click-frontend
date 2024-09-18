@@ -49,8 +49,12 @@ export default function Header() {
               >
                 <DropdownMenuItem>Editar</DropdownMenuItem>
               </Link>
-
-              <DropdownMenuItem onClick={handleLogout}>Sair</DropdownMenuItem>
+              <DropdownMenuItem
+                className="bg-dropProfile hover:bg-dropProfile text-white"
+                onClick={handleLogout}
+              >
+                Sair
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <div className="hidden lg:block">
