@@ -16,9 +16,11 @@ export default function MenuItems() {
           <UserRound size={24} />
         </SidebarMenuItem>
       )}
-      <SidebarMenuItem href={Routes.Concessionaires} label="Concessionárias">
-        <Zap height={24} width={24} />
-      </SidebarMenuItem>
+      {user?.perfil === Role.ADMIN && (
+        <SidebarMenuItem href={Routes.Concessionaires} label="Concessionárias">
+          <Zap height={24} width={24} />
+        </SidebarMenuItem>
+      )}
       <SidebarMenuItem
         href={Routes.ConsumerUnits}
         label="Unidades Consumidoras"

@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import useUserStore from "@/store/user.store";
+import Link from "next/link";
 import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/enums/Routes.enum";
@@ -38,9 +39,20 @@ export default function Header() {
                 <User size={26} className="text-black" />
               </div>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent
+              className="bg-dropProfile text-white hover:bg-dropProfile"
+              align="end"
+            >
               {/* <DropdownMenuLabel>Ações</DropdownMenuLabel> */}
-              <DropdownMenuItem onClick={handleLogout}>
+              <Link
+                href={Routes.EditProfile.replace("[id]", user?.cod_usuario!)}
+              >
+                <DropdownMenuItem>Editar</DropdownMenuItem>
+              </Link>
+              <DropdownMenuItem
+                className="bg-dropProfile hover:bg-dropProfile text-white"
+                onClick={handleLogout}
+              >
                 Sair
               </DropdownMenuItem>
             </DropdownMenuContent>

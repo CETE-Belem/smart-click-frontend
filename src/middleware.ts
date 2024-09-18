@@ -14,6 +14,12 @@ const noNeedAuth = [
 
 const AdminPages = [
   Routes.EquipmentsNew,
+  Routes.Concessionaires,
+  Routes.Concessionaire,
+  Routes.ConcessionaireEdit,
+  Routes.ConcessionaireNew,
+  Routes.ConsumerUnitNew,
+  Routes.ConsumerUnitEdit,
   Routes.Users,
   Routes.AdminNew,
   Routes.User,

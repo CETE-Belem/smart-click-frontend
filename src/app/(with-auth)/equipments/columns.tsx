@@ -20,6 +20,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "@/providers/alert.provider";
 import useUserStore from "@/store/user.store";
 import { Role } from "@/enums/Role.enum";
+import { cn } from "@/lib/utils";
 
 export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
   {
@@ -42,7 +43,14 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
     accessorKey: "descricao",
     header: "Descrição",
     cell: ({ row }) => (
-      <div className="text-xs text-black/50">{row.getValue("descricao")}</div>
+      <div
+        className={cn(
+          !row.getValue("descricao") && "text-center",
+          "text-xs text-black/50"
+        )}
+      >
+        {row.getValue("descricao") ?? "-"}
+      </div>
     ),
   },
   {
@@ -166,7 +174,7 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
     ),
   },
   {
-    cell: ({ data }) => <p className="text-xs">{data.descricao}</p>,
+    cell: ({ data }) => <p className="text-xs text-black">{data.descricao}</p>,
   },
   {
     cell: ({ data }) => <p className="text-xs">{data.mac}</p>,
@@ -175,7 +183,9 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
     cell: ({ data }) => (
       <div className="flex gap-1 items-center justify-start mt-2">
         <span className="w-1 h-1 bg-[#58585A] rounded-full" />
-        <p className="text-xs">Unidade Consumidora {data.unidade_consumidora.numero}</p>
+        <p className="text-xs">
+          Unidade Consumidora {data.unidade_consumidora?.numero}
+        </p>
       </div>
     ),
   },
