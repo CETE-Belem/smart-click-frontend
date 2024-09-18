@@ -150,11 +150,16 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
 
 export const userCardColumns: CardColumnDef<IUser>[] = [
   {
-    cell: ({ data }) => (
-      <h2 className="text-sm font-semibold mb-2 text-solaris-primary">
-        {data.nome}
-      </h2>
-    ),
+    cell: ({ data }) => {
+      const link = `/users/${data.cod_usuario}`;
+      return (
+        <Link prefetch={false} href={link}>
+          <h2 className="text-xs font-bold mb-2 hover:underline">
+            {data.nome}
+          </h2>
+        </Link>
+      );
+    },
   },
   {
     cell: ({ data }) => (

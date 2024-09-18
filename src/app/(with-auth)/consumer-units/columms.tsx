@@ -25,7 +25,16 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
     accessorKey: "numero",
     header: "Número",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("numero")}</div>;
+      const link = `/consumer-units/${row.original.cod_unidade_consumidora}`;
+      return (
+        <Link
+          prefetch={false}
+          href={link}
+          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+        >
+          {row.getValue("numero")}
+        </Link>
+      );
     },
   },
   {
@@ -147,11 +156,16 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
 
 export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
   {
-    cell: ({ data }) => (
-      <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
-        {data.numero}
-      </h2>
-    ),
+    cell: ({ data }) => {
+      const link = `/consumer-units/${data.cod_unidade_consumidora}`;
+      return (
+        <Link prefetch={false} href={link}>
+          <h2 className="text-base font-extrabold text-[#1C5790] dark:text-blue-500 hover:underline">
+            {data.numero}
+          </h2>
+        </Link>
+      );
+    },
   },
   {
     cell: ({ data }) => (
