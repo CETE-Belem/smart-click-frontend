@@ -86,8 +86,10 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
 
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
-    const selectedA = selectedSubGroup?.startsWith("A");
-    form.setValue("optanteTB", selectedA);
+    const selectedA = selectedSubGroup?.startsWith("B");
+    if(selectedA) {
+      form.setValue("optanteTB", true);
+    }
   }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
