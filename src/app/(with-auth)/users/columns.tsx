@@ -73,11 +73,11 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
 
             if (!confirmed) return;
 
-            toast({
-              title: "Excluindo...",
-              description: `O usuário ${row.original.nome} está sendo deletado`,
-              variant: "loading",
-            });
+            // toast({
+            //   title: "Excluindo...",
+            //   description: `O usuário ${row.original.nome} está sendo deletado`,
+            //   variant: "loading",
+            // });
 
             await apiClient
               .delete(`/users/${row.original.cod_usuario}`, {

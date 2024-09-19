@@ -93,11 +93,11 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
 
             if (!confirmed) return;
 
-            toast({
-              title: "Excluindo...",
-              description: `O equipamento ${row.original.nome} está sendo excluído`,
-              variant: "loading",
-            });
+            // toast({
+            //   title: "Excluindo...",
+            //   description: `O equipamento ${row.original.nome} está sendo excluído`,
+            //   variant: "loading",
+            // });
 
             await apiClient
               .delete(`/equipments/${row.original.cod_equipamento}`, {

@@ -71,11 +71,11 @@ export default function NewEquipmentPage() {
     router.prefetch(Routes.Equipments);
     setLoading(true);
 
-    toast({
-      title: "Criando...",
-      description: `O equipamento ${values.name} está sendo criado`,
-      variant: "loading",
-    });
+    // toast({
+    //   title: "Criando...",
+    //   description: `O equipamento ${values.name} está sendo criado`,
+    //   variant: "loading",
+    // });
 
     const response = await newEquipmentAction(values).finally(() => {
       setLoading(false);

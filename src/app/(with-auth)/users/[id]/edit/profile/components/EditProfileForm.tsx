@@ -48,11 +48,11 @@ export default function EditProfileForm({
     router.prefetch(Routes.Users);
     setLoading(true);
 
-    toast({
-      title: "Editando usuário...",
-      description: `O usuário ${data.nome} está sendo editado.`,
-      variant: "loading",
-    });
+    // toast({
+    //   title: "Editando usuário...",
+    //   description: `O usuário ${data.nome} está sendo editado.`,
+    //   variant: "loading",
+    // });
 
     let response: any = null;
 

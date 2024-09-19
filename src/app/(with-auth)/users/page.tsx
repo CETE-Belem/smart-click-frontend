@@ -76,11 +76,11 @@ export default function UsersPage() {
 
       if (!confirmed) return;
 
-      toast({
-        title: "Excluindo...",
-        description: `O usuário ${data.nome} está sendo excluído`,
-        variant: "loading",
-      });
+      // toast({
+      //   title: "Excluindo...",
+      //   description: `O usuário ${data.nome} está sendo excluído`,
+      //   variant: "loading",
+      // });
 
       await apiClient
         .delete(`/users/${data.cod_usuario}`, {

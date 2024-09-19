@@ -73,11 +73,11 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
 
             if (!confirmed) return;
 
-            toast({
-              title: "Excluindo...",
-              description: `A concessionária ${row.original.nome} está sendo excluída`,
-              variant: "loading",
-            });
+            // toast({
+            //   title: "Excluindo...",
+            //   description: `A concessionária ${row.original.nome} está sendo excluída`,
+            //   variant: "loading",
+            // });
 
             await apiClient
               .delete(`/concessionaires/${row.original.cod_concessionaria}`, {

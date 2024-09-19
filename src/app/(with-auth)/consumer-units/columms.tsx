@@ -73,11 +73,11 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
 
             if (!confirmed) return;
 
-            toast({
-              title: "Excluindo...",
-              description: `A unidade consumidora ${row.original.numero} está sendo excluida`,
-              variant: "loading",
-            });
+            // toast({
+            //   title: "Excluindo...",
+            //   description: `A unidade consumidora ${row.original.numero} está sendo excluida`,
+            //   variant: "loading",
+            // });
 
             await apiClient
               .delete(

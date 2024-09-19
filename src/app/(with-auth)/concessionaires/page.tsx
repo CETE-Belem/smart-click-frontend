@@ -84,11 +84,11 @@ export default function ConcessionairePage() {
 
       if (!confirmed) return;
 
-      toast({
-        title: "Criando...",
-        description: `A concessionária ${data.nome} está sendo criada`,
-        variant: "loading",
-      });
+      // toast({
+      //   title: "Criando...",
+      //   description: `A concessionária ${data.nome} está sendo criada`,
+      //   variant: "loading",
+      // });
 
       await apiClient
         .delete(`/concessionaires/${data.cod_concessionaria}`, {

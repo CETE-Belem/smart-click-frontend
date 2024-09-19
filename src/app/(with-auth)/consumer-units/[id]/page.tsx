@@ -84,11 +84,11 @@ export default function ConsumerUnitEquipments() {
 
       if (!confirmed) return;
 
-      toast({
-        title: "Excluindo...",
-        description: `O equipamento ${data.nome} está sendo excluido`,
-        variant: "loading",
-      });
+      // toast({
+      //   title: "Excluindo...",
+      //   description: `O equipamento ${data.nome} está sendo excluido`,
+      //   variant: "loading",
+      // });
 
       await apiClient
         .delete(`/equipments/${data.cod_equipamento}`, {
