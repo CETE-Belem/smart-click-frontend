@@ -82,7 +82,7 @@ export default function RecoverPassword() {
     }
 
     return (
-        <main className="h-screen solaris-background flex flex-col lg:flex-row-reverse">
+        <main className="min-h-screen solaris-background flex flex-col lg:flex-row-reverse">
             <div className="flex-1 py-12 md:py-20 lg:flex lg:items-center lg:justify-center">
                 <div className="relative w-40 h-40 mx-auto md:w-60 md:h-60 lg:w-80 lg:h-80">
                     <Image src={WhiteLogo} alt="Logo do Smart Click" fill />
