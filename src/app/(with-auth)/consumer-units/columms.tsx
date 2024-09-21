@@ -160,7 +160,7 @@ export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
       const link = `/consumer-units/${data.cod_unidade_consumidora}`;
       return (
         <Link prefetch={false} href={link}>
-          <h2 className="text-sm font-bold text-solaris-primary underline">
+          <h2 className="text-sm font-bold mb-1 text-solaris-primary underline">
             {data.numero}
           </h2>
         </Link>
