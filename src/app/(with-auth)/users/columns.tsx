@@ -30,7 +30,7 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
         <Link
           prefetch={false}
           href={link}
-          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-xs font-bold cursor-pointer text-solaris-primary underline"
         >
           {row.getValue("nome")}
         </Link>
@@ -154,7 +154,7 @@ export const userCardColumns: CardColumnDef<IUser>[] = [
       const link = `/users/${data.cod_usuario}`;
       return (
         <Link prefetch={false} href={link}>
-          <h2 className="text-xs font-bold mb-2 hover:underline">
+          <h2 className="text-sm font-bold text-solaris-primary mb-2 underline">
             {data.nome}
           </h2>
         </Link>
