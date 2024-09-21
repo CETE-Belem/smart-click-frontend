@@ -30,7 +30,7 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
         <Link
           prefetch={false}
           href={link}
-          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-xs font-bold cursor-pointer text-solaris-primary underline"
         >
           {row.getValue("nome")}
         </Link>
@@ -160,7 +160,7 @@ export const concessionaireCardColumns: CardColumnDef<Concessionaire>[] = [
       const link = `/concessionaires/${data.cod_concessionaria}`;
       return (
         <Link prefetch={false} href={link}>
-          <h2 className="text-sm font-semibold mb-2 text-solaris-primary ">
+          <h2 className="text-xs font-bold mb-2 text-solaris-primary ">
             {data.nome}
           </h2>
         </Link>
