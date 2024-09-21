@@ -30,7 +30,7 @@ export const consumerUnitTableColumn: ColumnDef<ConsumerUnit>[] = [
         <Link
           prefetch={false}
           href={link}
-          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-xs font-bold cursor-pointer text-solaris-primary underline"
         >
           {row.getValue("numero")}
         </Link>
@@ -160,7 +160,7 @@ export const consumerUnitCardColumns: CardColumnDef<ConsumerUnit>[] = [
       const link = `/consumer-units/${data.cod_unidade_consumidora}`;
       return (
         <Link prefetch={false} href={link}>
-          <h2 className="text-base font-extrabold text-[#1C5790] dark:text-blue-500 hover:underline">
+          <h2 className="text-sm font-bold text-solaris-primary underline">
             {data.numero}
           </h2>
         </Link>
