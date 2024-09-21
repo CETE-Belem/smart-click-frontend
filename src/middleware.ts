@@ -21,6 +21,8 @@ const AdminPages = [
   Routes.ConsumerUnitNew,
   Routes.ConsumerUnitEdit,
   Routes.Users,
+  Routes.User,
+  Routes.UserEdit,
   Routes.AdminNew,
   Routes.User,
 ];
