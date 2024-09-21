@@ -174,7 +174,7 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
 
       return (
         <Link href={link} prefetch={false}>
-          <h2 className="text-sm text-solaris-primary font-bold underline">
+          <h2 className="text-sm text-solaris-primary mb-1 font-bold underline">
             {data.nome}
           </h2>
         </Link>
@@ -183,9 +183,7 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
   },
   {
     cell: ({ data }) => (
-      <p className="text-xs mt-1 text-black truncate max-w-48">
-        {data.descricao}
-      </p>
+      <p className="text-xs text-black truncate max-w-48">{data.descricao}</p>
     ),
   },
   {
