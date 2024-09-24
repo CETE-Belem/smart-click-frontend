@@ -111,7 +111,7 @@ export default function EquipInfoGraph({
 
   const { min, max } = getMinMaxValues();
   const yAxisDomain = [Math.floor(min * 1.7), Math.ceil(max * 1.7)];
-
+  data?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
