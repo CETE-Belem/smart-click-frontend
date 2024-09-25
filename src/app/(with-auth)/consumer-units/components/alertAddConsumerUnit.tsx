@@ -87,13 +87,14 @@ export const AlertAddConsumerUnit = () => {
             required
             value={value}
             onChange={(e) => setValue(e.target.value)}
+            type="text"
           />
         </AlertDialogDescription>
 
         <Button
           variant="solar"
           onClick={() => addConsumerUnit({ numero: value } as ConsumerUnit)}
-          disabled={loading}
+          disabled={value === ""}
           loading={loading}
         >
           <AlertDialogAction className="bg-transparent hover:bg-transparent">
