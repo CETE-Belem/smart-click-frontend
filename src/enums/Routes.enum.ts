@@ -5,6 +5,7 @@ export enum Routes {
   EquipmentsNew = "/equipments/new",
   EquipmentsEdit = "/equipments/[id]/edit",
   Equipment = "/equipments/[id]",
+  EquipmentConstant = "/equipments/[id]/constants",
   ConsumerUnits = "/consumer-units",
   ConsumerUnit = "/consumer-units/[id]",
   ConsumerUnitNew = "/consumer-units/new",
