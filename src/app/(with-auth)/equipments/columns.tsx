@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit, MoreHorizontal, Trash2 } from "lucide-react";
+import { Edit, MoreHorizontal, NotebookText, Trash2 } from "lucide-react";
 import { Equipments } from "../../../types/equipments";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { CardColumnDef } from "../../../components/card-view";
@@ -160,6 +160,12 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
               </DropdownMenuItem>
             </Link>
             <Delete />
+            <Link href={`/equipments/${row.original.cod_equipamento}/constants`}>
+              <DropdownMenuItem>
+                <NotebookText size={16} className="mr-2" />
+                Constantes
+              </DropdownMenuItem>
+            </Link>
           </DropdownMenuContent>
         </DropdownMenu>
       );
