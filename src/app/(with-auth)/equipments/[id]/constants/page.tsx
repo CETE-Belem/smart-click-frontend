@@ -121,15 +121,15 @@ export default function EquipmentConstantsPage() {
           <CardDescription>
             <div className="grid grid-cols-3 gap-8 w-full justify-between items-center">
               <div className="flex flex-col items-center justify-center">
-                <p className="text-2xl">{vA ?? "-"}</p>
+                <p className="text-2xl">{vA?.toFixed(2) ?? "-"}</p>
                 <p className="text-2xs">Fase A - Tensão (V)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <p className="text-2xl">{vB ?? "-"}</p>
+                <p className="text-2xl">{vB?.toFixed(2) ?? "-"}</p>
                 <p className="text-2xs">Fase B - Tensão (V)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <p className="text-2xl">{vC ?? "-"}</p>
+                <p className="text-2xl">{vC?.toFixed(2) ?? "-"}</p>
                 <p className="text-2xs">Fase C - Tensão (V)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
@@ -145,15 +145,15 @@ export default function EquipmentConstantsPage() {
                 <p className="text-2xs">Constante Fase C - Tensão (V)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <p className="text-2xl">{iA ?? "-"}</p>
+                <p className="text-2xl">{iA?.toFixed(2) ?? "-"}</p>
                 <p className="text-2xs">Fase A - Corrente (A)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <p className="text-2xl">{iB ?? "-"}</p>
+                <p className="text-2xl">{iB?.toFixed(2) ?? "-"}</p>
                 <p className="text-2xs">Fase B - Corrente (A)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
-                <p className="text-2xl">{iC ?? "-"}</p>
+                <p className="text-2xl">{iC?.toFixed(2) ?? "-"}</p>
                 <p className="text-2xs">Fase C - Corrente (A)</p>
               </div>
               <div className="flex flex-col items-center justify-center">
