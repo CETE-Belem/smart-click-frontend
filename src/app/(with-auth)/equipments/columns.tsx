@@ -163,7 +163,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
             <Link href={`/equipments/${row.original.cod_equipamento}/constants`}>
               <DropdownMenuItem>
                 <NotebookText size={16} className="mr-2" />
-                Constantes
+                Assistente de Calibração
               </DropdownMenuItem>
             </Link>
           </DropdownMenuContent>
