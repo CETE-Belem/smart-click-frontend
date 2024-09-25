@@ -58,7 +58,6 @@ export default function ConfirmEmail() {
 
     if (response.success) {
       cookies.remove("token");
-      if (response.token) cookies.set("token", response.token);
       toast({
         title: "Sucesso",
         description: response?.message,
