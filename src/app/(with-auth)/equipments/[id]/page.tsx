@@ -78,7 +78,6 @@ export default function EquipmentInfo() {
       });
       return response.data;
     },
-    placeholderData: keepPreviousData,
   });
 
   const { data, isLoading } =
