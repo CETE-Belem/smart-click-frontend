@@ -118,6 +118,7 @@ export default function EquipmentInfo() {
        */
       socket.on(`${data.mac}/smartclick/tfa`, (res) => {
         setVA(res.data);
+        setOnline(true);
       });
       socket.on(`${data.mac}/smartclick/tfb`, (res) => {
         setVB(res.data);
