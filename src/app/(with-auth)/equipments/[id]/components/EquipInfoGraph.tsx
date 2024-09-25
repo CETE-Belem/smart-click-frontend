@@ -100,6 +100,8 @@ export default function EquipInfoGraph({
   phaseNumber = 1,
   scale,
   type = "line",
+  startDate,
+  endDate,
 }: EquipInfoGraphProps) {
   const getMinMaxValues = () => {
     let min = Infinity;
@@ -121,7 +123,7 @@ export default function EquipInfoGraph({
           <CardTitle>{title}</CardTitle>
           <CardDescription>
             {data && data.length > 0
-              ? `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
+              ? `De ${dayjs(startDate).format("DD/MM/YYYY HH:mm")} a ${dayjs(endDate).format("DD/MM/YYYY HH:mm")}`
               : "Sem dados"}
           </CardDescription>
         </div>
