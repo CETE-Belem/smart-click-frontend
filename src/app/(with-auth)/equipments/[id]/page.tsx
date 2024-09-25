@@ -110,7 +110,7 @@ export default function EquipmentInfo() {
        * Online
        */
       socket.on(`${data.mac}/smartclick/last_will`, (res) => {
-        setOnline(res.data === "online");
+        setOnline(res.data === "offline" ? false : true);
       });
 
       /**
