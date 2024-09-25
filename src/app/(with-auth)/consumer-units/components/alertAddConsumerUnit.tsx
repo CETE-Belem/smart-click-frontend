@@ -1,5 +1,6 @@
 "use client";
 
+import { linkConsumerUnitAction } from "@/action/edit-user-action";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,12 +14,12 @@ import { Button } from "@/components/ui/button";
 import Input from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
-import { apiClient } from "@/lib/axios-client";
+import { Routes } from "@/enums/Routes.enum";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { useQueryClient } from "@tanstack/react-query";
-import { set } from "date-fns";
 import { CirclePlus, X } from "lucide-react";
 import { useCookies } from "next-client-cookies";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export const AlertAddConsumerUnit = () => {
@@ -26,37 +27,33 @@ export const AlertAddConsumerUnit = () => {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [value, setValue] = useState<string>("");
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function addConsumerUnit(data: ConsumerUnit) {
-    try {
-      await apiClient
-        .patch(`/consumer-unit/me`, {
-          headers: {
-            Authorization: `Bearer ${cookies.get("token")}`,
-          },
-        })
-        .then(() => {
-          queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
-          toast({
-            title: "Unidade consumidora excluída com sucesso",
-            description: `A unidade consumidora ${data.numero} foi excluída com sucesso`,
-            variant: "success",
-          });
-        })
-        .catch((error) => {
-          toast({
-            title: `Ocorreu um erro ao excluir a unidade consumidora`,
-            description: error.response.data.message,
-            variant: "destructive",
-          });
+    router.prefetch(Routes.ConsumerUnits);
+    setLoading(true);
+
+    const response = await linkConsumerUnitAction(data).finally(() => {
+      setLoading(false);
+    });
+
+    if (response.success) {
+      if (response.success) {
+        toast({
+          title: "Sucesso",
+          description: response.message,
+          variant: "success",
         });
-    } catch (error) {
-      console.log(error);
-      toast({
-        title: `Erro ao excluir a unidade consumidora`,
-        description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
-        variant: "destructive",
-      });
+        queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+        router.push(Routes.ConsumerUnits);
+      } else {
+        toast({
+          title: `Erro ao excluir a unidade consumidora`,
+          description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
+          variant: "destructive",
+        });
+      }
     }
   }
   return (
@@ -96,6 +93,8 @@ export const AlertAddConsumerUnit = () => {
         <Button
           variant="solar"
           onClick={() => addConsumerUnit({ numero: value } as ConsumerUnit)}
+          disabled={loading}
+          loading={loading}
         >
           <AlertDialogAction className="bg-transparent hover:bg-transparent">
             Concluir
