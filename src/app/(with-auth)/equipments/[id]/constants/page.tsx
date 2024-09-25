@@ -48,8 +48,8 @@ export default function EquipmentConstantsPage() {
 
   useEffect(() => {
     const token = cookies.get("token");
-    const socket = io("ws://localhost:3000", {
-      path: "/socket.io",
+    const socket = io("wss://smartclick.zenithinova.com.br", {
+      path: "/api/socket.io",
       extraHeaders: {
         authorization: `bearer ${token}`,
       },
