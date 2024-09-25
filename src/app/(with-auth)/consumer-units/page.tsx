@@ -26,6 +26,7 @@ import { useState } from "react";
 import Pagination from "@/components/pagination";
 import { useAlert } from "@/providers/alert.provider";
 import { useToast } from "@/components/ui/use-toast";
+import { AlertAddConsumerUnit } from "./components/alertAddConsumerUnit";
 
 export default function ConsumerUnitsPage() {
   const cookies = useCookies();
@@ -34,6 +35,7 @@ export default function ConsumerUnitsPage() {
   const searchParams = useSearchParams();
   const { openAlert } = useAlert();
   const { toast } = useToast();
+  const isAdmin = user?.perfil === Role.ADMIN;
 
   const [rowSelection, setRowSelection] = useState({});
 
@@ -122,21 +124,21 @@ export default function ConsumerUnitsPage() {
     <div className="w-full flex flex-col gap-5">
       <div className="w-full flex flex-row justify-between">
         <SearchInput />
-
         <Button variant="link" className="w-fit p-3">
           <Filter
             size={24}
             className="fill-white stroke-solaris-primary hover:fill-solaris-primary"
           />
         </Button>
-
-        {user?.perfil === Role.ADMIN && (
+        {isAdmin ? (
           <Button variant="solar" className="w-fit p-3 gap-2" asChild>
             <Link href={Routes.ConsumerUnitNew}>
               <CirclePlus size={24} />
               Adicionar
             </Link>
           </Button>
+        ) : (
+          <AlertAddConsumerUnit />
         )}
       </div>
 
