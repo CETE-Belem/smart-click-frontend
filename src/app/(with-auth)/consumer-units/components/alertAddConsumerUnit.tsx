@@ -6,8 +6,6 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
@@ -18,13 +16,16 @@ import { useToast } from "@/components/ui/use-toast";
 import { apiClient } from "@/lib/axios-client";
 import { ConsumerUnit } from "@/types/unidade-consumidora";
 import { useQueryClient } from "@tanstack/react-query";
+import { set } from "date-fns";
 import { CirclePlus, X } from "lucide-react";
 import { useCookies } from "next-client-cookies";
+import { useState } from "react";
 
 export const AlertAddConsumerUnit = () => {
   const cookies = useCookies();
   const queryClient = useQueryClient();
   const { toast } = useToast();
+  const [value, setValue] = useState<string>("");
 
   async function addConsumerUnit(data: ConsumerUnit) {
     try {
@@ -70,7 +71,7 @@ export const AlertAddConsumerUnit = () => {
           Adicionar
         </Button>
       </AlertDialogTrigger>
-      <AlertDialogContent className="flex flex-col gap-9 items-center justify-center p-14 overflow-hidden border-none max-w-72 rounded-3xl">
+      <AlertDialogContent className="max-w-72 sm:max-w-96 flex flex-col gap-8 items-center justify-center p-9 overflow-hidden border-none rounded-[1.25rem]">
         <AlertDialogCancel asChild>
           <Button className="self-end p-2 border-none">
             <X size={24} className="text-black" />
@@ -83,14 +84,23 @@ export const AlertAddConsumerUnit = () => {
         </AlertDialogTitle>
         <AlertDialogDescription className="flex flex-col gap-4 text-center">
           <Label>Unidade Consumidora</Label>
-          <Input placeholder="0 0 0 0 0 0 0 0" className="text-center" />
+          <Input
+            placeholder="0 0 0 0 0 0 0 0"
+            className="text-center"
+            required
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+          />
         </AlertDialogDescription>
 
-        <AlertDialogAction asChild className="">
-          <Button variant="solar" onClick={() => addConsumerUnit}>
+        <Button
+          variant="solar"
+          onClick={() => addConsumerUnit({ numero: value } as ConsumerUnit)}
+        >
+          <AlertDialogAction className="bg-transparent hover:bg-transparent">
             Concluir
-          </Button>
-        </AlertDialogAction>
+          </AlertDialogAction>
+        </Button>
       </AlertDialogContent>
     </AlertDialog>
   );
