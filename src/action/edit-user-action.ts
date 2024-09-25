@@ -7,6 +7,52 @@ import {
   editProfileSchemaType,
   editProfileSchemaTransformed,
 } from "@/schemas/edit-profile.schema";
+import { ConsumerUnit } from "@/types/unidade-consumidora";
+
+export async function linkConsumerUnitAction(
+  consumerUnit: ConsumerUnit
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const newConsumerUnit = consumerUnit.numero;
+    const token = cookies().get("token")?.value;
+
+    const response = await api
+      .patch(
+        `/consumer-unit/me`, newConsumerUnit, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => response)
+      .catch((error) => error.response.data);
+
+      if (response.status === 200) {
+        return {
+          success: true,
+          message: "A unidade consumidora foi atrelada com sucesso",
+        };
+      }
+  
+      if (response.statusCode === 404) {
+        return {
+          success: false,
+          message: "Unidade consumidora não encontrada",
+        };
+      }
+  
+      return {
+        success: false,
+        message: response.message,
+      };
+    
+  } catch (error) {
+    return {
+      success: false,
+      message: "Erro ao vincular a unidade consumidora. Exceção: " + error
+    }
+  }
+}
 
 export async function userProfileEditAction(
   formData: editProfileSchemaType
