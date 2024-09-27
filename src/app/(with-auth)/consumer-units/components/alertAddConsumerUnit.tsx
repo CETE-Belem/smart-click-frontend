@@ -1,5 +1,4 @@
 "use client";
-
 import { linkConsumerUnitAction } from "@/action/edit-user-action";
 import {
   AlertDialog,
@@ -15,55 +14,80 @@ import Input from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Routes } from "@/enums/Routes.enum";
-import { ConsumerUnit } from "@/types/unidade-consumidora";
+import {
+  LinkConsumerUnitSchema,
+  LinkConsumerUnitSchemaType,
+} from "@/schemas/link-consumer-unit.schema";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { CirclePlus, X } from "lucide-react";
-import { useCookies } from "next-client-cookies";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 
 export const AlertAddConsumerUnit = () => {
-  const cookies = useCookies();
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const [value, setValue] = useState<string>("");
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
 
-  async function addConsumerUnit(data: ConsumerUnit) {
+  const form = useForm<LinkConsumerUnitSchemaType>({
+    defaultValues: {
+      number: "",
+    },
+    resolver: zodResolver(LinkConsumerUnitSchema),
+  });
+
+  async function linkConsumerUnit(values: LinkConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnits);
     setLoading(true);
 
-    const response = await linkConsumerUnitAction(data).finally(() => {
-      setLoading(false);
-    });
-
-    if (response.success) {
-      if (response.success) {
+    await linkConsumerUnitAction(values)
+      .then((response) => {
+        console.log(response);
+        if (response.success) {
+          toast({
+            title: "Sucesso",
+            description: response.message,
+            variant: "success",
+          });
+          queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
+          router.push(Routes.ConsumerUnits);
+          setOpen(false);
+        } else {
+          toast({
+            title: "Erro",
+            description: response.message,
+            variant: "destructive",
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
         toast({
-          title: "Sucesso",
-          description: response.message,
-          variant: "success",
-        });
-        queryClient.invalidateQueries({ queryKey: ["consumer-units"] });
-        router.push(Routes.ConsumerUnits);
-      } else {
-        toast({
-          title: `Erro ao excluir a unidade consumidora`,
-          description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
+          title: "Erro",
+          description: error.message,
           variant: "destructive",
         });
-      }
-    }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
+
   return (
-    <AlertDialog>
+    <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger>
-        <Button
-          onClick={() => addConsumerUnit}
-          variant="solar"
-          className="w-fit p-3 gap-2"
-        >
+        <Button variant="solar" className="w-fit p-3 gap-2">
           <CirclePlus size={24} />
           Adicionar
         </Button>
@@ -75,32 +99,47 @@ export const AlertAddConsumerUnit = () => {
           </Button>
         </AlertDialogCancel>
 
-        <AlertDialogTitle className="text-3xl font-bold text-secondary-foreground text-center items-stretch">
-          <span className="text-solaris-primary">Registrar</span> unidade
-          consumidora
-        </AlertDialogTitle>
-        <AlertDialogDescription className="flex flex-col gap-4 text-center">
-          <Label>Unidade Consumidora</Label>
-          <Input
-            placeholder="0 0 0 0 0 0 0 0"
-            className="text-center"
-            required
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            type="text"
-          />
-        </AlertDialogDescription>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(linkConsumerUnit)}>
+            <AlertDialogTitle className="text-3xl font-bold text-secondary-foreground text-center items-stretch">
+              <span className="text-solaris-primary">Registrar</span> unidade
+              consumidora
+            </AlertDialogTitle>
+            <AlertDialogDescription className="flex flex-col gap-4 text-center">
+              <FormField
+                control={form.control}
+                name="number"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        label="Número da unidade consumidora"
+                        placeholder="0 0 0 0 0 0 0 0"
+                        className="text-center"
+                        required
+                        invalid={!!!form.formState.errors.number}
+                        disabled={loading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </AlertDialogDescription>
 
-        <Button
-          variant="solar"
-          onClick={() => addConsumerUnit({ numero: value } as ConsumerUnit)}
-          disabled={value === ""}
-          loading={loading}
-        >
-          <AlertDialogAction className="bg-transparent hover:bg-transparent">
-            Concluir
-          </AlertDialogAction>
-        </Button>
+            <Button
+              type="submit"
+              variant="solar"
+              disabled={value === ""}
+              loading={loading}
+            >
+              <AlertDialogAction className="bg-transparent hover:bg-transparent">
+                Concluir
+              </AlertDialogAction>
+            </Button>
+          </form>
+        </Form>
       </AlertDialogContent>
     </AlertDialog>
   );
