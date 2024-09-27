@@ -10,6 +10,7 @@ import {
   Plus,
   Zap,
   UserRound,
+  ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
@@ -112,6 +113,26 @@ const headerInfoData: HeaderInfoData = {
     subtitle: "Editar perfil",
     icon: <Pencil size={24} />,
   },
+  [Routes.Rates]: {
+    title: "Tarifas",
+    subtitle: "Tarifas",
+    icon: <ClipboardList size={24} />,
+  },
+  [Routes.Rate]: {
+    title: "Tarifas",
+    subtitle: "Informações da Tarifa",
+    icon: <NotepadText size={24} />,
+  },
+  [Routes.RateNew]: {
+    title: "Tarifas",
+    subtitle: "Cadastrar Tarifa",
+    icon: <Plus size={24} />,
+  },
+  [Routes.RateEdit]: {
+    title: "Tarifas",
+    subtitle: "Editar Tarifa",
+    icon: <Pencil size={24} />,
+  },
 };
 
 export default function HeaderInfo() {
@@ -167,15 +188,11 @@ export default function HeaderInfo() {
                       <p className="text-sm">{item.subtitle}</p>
                     ) : (
                       <>
-                        {
-                          !item.adminOnly ? (
-                            <Link href={item.url}>
-                              {item.subtitle}
-                            </Link>
-                          ) : (
-                            <p className="text-sm">{item.subtitle}</p>
-                          )
-                        }
+                        {!item.adminOnly ? (
+                          <Link href={item.url}>{item.subtitle}</Link>
+                        ) : (
+                          <p className="text-sm">{item.subtitle}</p>
+                        )}
                       </>
                     )}
                   </div>
