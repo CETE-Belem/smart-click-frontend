@@ -7,18 +7,28 @@ import {
   editProfileSchemaType,
   editProfileSchemaTransformed,
 } from "@/schemas/edit-profile.schema";
-import { ConsumerUnit } from "@/types/unidade-consumidora";
+
+import { LinkConsumerUnitSchema, LinkConsumerUnitSchemaType } from "@/schemas/link-consumer-unit.schema";
+
+export interface LinkConsumerUnitDataType {
+  numero: string;
+}
+
 
 export async function linkConsumerUnitAction(
-  consumerUnit: ConsumerUnit
+  formData: LinkConsumerUnitSchemaType
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const newConsumerUnit = consumerUnit.numero;
+    const result = LinkConsumerUnitSchema.safeParse(formData);
+    const newFormData = result.data!;
     const token = cookies().get("token")?.value;
+    const parsedData: LinkConsumerUnitDataType = {
+      numero: newFormData.number,
+    };
 
     const response = await api
       .patch(
-        `/consumer-unit/me`, newConsumerUnit, {
+        `/consumer-units/me`, parsedData, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -26,6 +36,8 @@ export async function linkConsumerUnitAction(
       )
       .then((response) => response)
       .catch((error) => error.response.data);
+
+      console.log(response);
 
       if (response.status === 200) {
         return {
@@ -38,6 +50,13 @@ export async function linkConsumerUnitAction(
         return {
           success: false,
           message: "Unidade consumidora não encontrada",
+        };
+      }
+
+      if (response.statusCode === 409) {
+        return {
+          success: false,
+          message: "A Unidade Consumidora já pertence a outro usuário",
         };
       }
   
