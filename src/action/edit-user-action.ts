@@ -10,16 +10,20 @@ import {
 
 import { LinkConsumerUnitSchema, LinkConsumerUnitSchemaType } from "@/schemas/link-consumer-unit.schema";
 
+export interface LinkConsumerUnitDataType {
+  numero: string;
+}
+
 
 export async function linkConsumerUnitAction(
-  data: LinkConsumerUnitSchemaType
+  formData: LinkConsumerUnitSchemaType
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const result = LinkConsumerUnitSchema.safeParse(data);
-    const newConsumerUnit = result.data!;
+    const result = LinkConsumerUnitSchema.safeParse(formData);
+    const newFormData = result.data!;
     const token = cookies().get("token")?.value;
-    const parsedData: LinkConsumerUnitSchemaType = {
-      number: newConsumerUnit.number,
+    const parsedData: LinkConsumerUnitDataType = {
+      numero: newFormData.number,
     };
 
     const response = await api
