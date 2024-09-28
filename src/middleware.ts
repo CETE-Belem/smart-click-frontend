@@ -25,6 +25,11 @@ const AdminPages = [
   Routes.UserEdit,
   Routes.AdminNew,
   Routes.User,
+  Routes.Rates,
+  Routes.RatesForConcessionaire,
+  Routes.Rate,
+  Routes.RateNew,
+  Routes.RateEdit,
 ];
 
 export async function middleware(request: NextRequest) {
