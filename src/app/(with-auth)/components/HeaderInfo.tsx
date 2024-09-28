@@ -117,6 +117,11 @@ const headerInfoData: HeaderInfoData = {
     subtitle: "Assistente de Calibração",
     icon: <NotebookTextIcon size={24} />,
   },
+  [Routes.ConcessionaireRates]: {
+    title: "Tarifas",
+    subtitle: "Tarifas",
+    icon: <NotepadText size={24} />,
+  },
 };
 
 export default function HeaderInfo() {
