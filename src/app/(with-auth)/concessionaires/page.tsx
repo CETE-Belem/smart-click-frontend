@@ -30,7 +30,7 @@ import { useAlert } from "@/providers/alert.provider";
 import { useToast } from "@/components/ui/use-toast";
 import { Concessionaire } from "@/types/concessionaire";
 
-export default function ConcessionairePage() {
+export default function ConcessionairesPage() {
   const cookies = useCookies();
   const user = useUserStore((state) => state.user);
   const queryClient = useQueryClient();
@@ -164,8 +164,8 @@ export default function ConcessionairePage() {
           columns={
             user?.perfil !== Role.ADMIN
               ? concessionaireTableColumn.filter(
-                  (column) => column.id !== "actions"
-                )
+                (column) => column.id !== "actions"
+              )
               : concessionaireTableColumn
           }
           className="hidden sm:table"

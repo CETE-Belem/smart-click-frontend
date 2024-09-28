@@ -31,7 +31,7 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
       return (
         <Link
           prefetch={false}
-          className="text-xs cursor-pointer text-blue-600 dark:text-blue-500 hover:underline"
+          className="text-xs font-bold cursor-pointer text-solaris-primary underline"
           href={link}
         >
           {row.getValue("nome")}
@@ -180,13 +180,17 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
 
       return (
         <Link href={link} prefetch={false}>
-          <h2 className="text-xs font-bold hover:underline">{data.nome}</h2>
+          <h2 className="text-sm text-solaris-primary mb-1 font-bold underline">
+            {data.nome}
+          </h2>
         </Link>
       );
     },
   },
   {
-    cell: ({ data }) => <p className="text-xs text-black">{data.descricao}</p>,
+    cell: ({ data }) => (
+      <p className="text-xs text-black truncate max-w-48">{data.descricao}</p>
+    ),
   },
   {
     cell: ({ data }) => <p className="text-xs">{data.mac}</p>,
