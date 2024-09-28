@@ -79,11 +79,11 @@ export default function EquipmentsPage() {
 
       if (!confirmed) return;
 
-      toast({
-        title: "Excluindo...",
-        description: `O equipamento ${data.nome} está sendo excluído`,
-        variant: "loading",
-      });
+      // toast({
+      //   title: "Excluindo...",
+      //   description: `O equipamento ${data.nome} está sendo excluído`,
+      //   variant: "loading",
+      // });
 
       await apiClient
         .delete(`/equipments/${data.cod_equipamento}`, {

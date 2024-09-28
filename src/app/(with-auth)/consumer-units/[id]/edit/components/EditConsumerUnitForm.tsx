@@ -86,19 +86,21 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
 
   useEffect(() => {
     const selectedSubGroup = form.watch("subGroup");
-    const selectedA = selectedSubGroup?.startsWith("A");
-    form.setValue("optanteTB", selectedA);
+    const selectedA = selectedSubGroup?.startsWith("B");
+    if(selectedA) {
+      form.setValue("optanteTB", true);
+    }
   }, [form.watch("subGroup")]);
 
   async function onSubmit(values: NewConsumerUnitSchemaType) {
     router.prefetch(Routes.ConsumerUnit);
     setLoading(true);
 
-    toast({
-      title: "Editando...",
-      description: `A unidade consumidora ${values.number} está sendo editada`,
-      variant: "loading",
-    });
+    // toast({
+    //   title: "Editando...",
+    //   description: `A unidade consumidora ${values.number} está sendo editada`,
+    //   variant: "loading",
+    // });
 
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {
@@ -359,7 +361,7 @@ export default function EditConsumerUnitForm({ data }: { data: ConsumerUnit }) {
               disabled={loading}
               loading={loading}
             >
-              Finalizar Cadastro
+              Finalizar Edição
             </Button>
           </form>
         </Form>

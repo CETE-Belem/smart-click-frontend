@@ -64,11 +64,11 @@ export default function NewConsumerUnitPage() {
     router.prefetch(Routes.ConsumerUnits);
     setLoading(true);
 
-    toast({
-      title: "Criando...",
-      description: `A unidade consumidora ${values.number} está sendo criada`,
-      variant: "loading",
-    });
+    // toast({
+    //   title: "Criando...",
+    //   description: `A unidade consumidora ${values.number} está sendo criada`,
+    //   variant: "loading",
+    // });
 
     const response = await newConsumerUnitAction(values).finally(() => {
       setLoading(false);

@@ -103,11 +103,11 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
     router.prefetch(Routes.Equipments);
     setLoading(true);
 
-    toast({
-      title: "Editando...",
-      description: `O equipamento ${values.name} está sendo editado`,
-      variant: "loading",
-    });
+    // toast({
+    //   title: "Editando...",
+    //   description: `O equipamento ${values.name} está sendo editado`,
+    //   variant: "loading",
+    // });
 
     let response: any = null;
     if (user?.perfil === Role.ADMIN) {

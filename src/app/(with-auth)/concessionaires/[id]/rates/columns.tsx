@@ -19,36 +19,38 @@ import { Trash2, MoreHorizontal, Edit, NotepadText } from "lucide-react";
 import { CardColumnDef } from "@/components/card-view";
 import Link from "next/link";
 import { Routes } from "@/enums/Routes.enum";
+import { Rates } from "@/types/rates";
+import dayjs from "dayjs";
 
-export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
+export const ratesTableColumn: ColumnDef<Rates>[] = [
   {
-    accessorKey: "nome",
-    header: "Nome",
+    accessorKey: "dt_tarifa",
+    header: "Data da Resolução",
     cell: ({ row }) => {
-      const link = `/concessionaires/${row.original.cod_concessionaria}`;
       return (
-        <Link
-          prefetch={false}
-          href={link}
-          className="text-xs font-bold cursor-pointer text-solaris-primary underline"
-        >
-          {row.getValue("nome")}
-        </Link>
+        <p className="text-xs">{dayjs(row.getValue("dt_tarifa")).format("DD/MM/YYYY")}</p>
       );
     },
   },
   {
-    accessorKey: "cidade",
-    header: "Cidade",
+    accessorKey: "valor",
+    header: "Valor convencional",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("cidade")}</div>;
+      return <div className="text-xs">{row.getValue("valor")}</div>;
     },
   },
   {
-    accessorKey: "uf",
-    header: "UF",
+    accessorKey: "subgrupo",
+    header: "Subgrupo",
     cell: ({ row }) => {
-      return <div className="text-xs">{row.getValue("uf")}</div>;
+      return <div className="text-xs">{row.getValue("subgrupo")}</div>;
+    },
+  },
+  {
+    id: "ver-horarios",
+    header: "",
+    cell: ({ row }) => {
+      return <Button className="text-sm" variant="solar">Ver Horários</Button>;
     },
   },
   {
@@ -65,8 +67,8 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
         async function handleDelete() {
           try {
             const confirmed = await openAlert({
-              title: "Excluir Concessionária",
-              description: `Tem certeza que deseja excluir a concessionária ${row.original.nome}`,
+              title: "Excluir Tarifa",
+              description: `Tem certeza que deseja excluir a tarifa da concessionária para o subgrupo ${row.original.subgrupo}`,
               confirmText: "Sim",
               cancelText: "Não",
             });
@@ -80,24 +82,24 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
             // });
 
             await apiClient
-              .delete(`/concessionaires/${row.original.cod_concessionaria}`, {
+              .delete(`/rates/${row.original.cod_tarifa}`, {
                 headers: {
                   Authorization: `Bearer ${cookies.get("token")}`,
                 },
               })
               .then(() => {
                 queryClient.invalidateQueries({
-                  queryKey: ["concessionaires"],
+                  queryKey: ["rates"],
                 });
                 toast({
-                  title: "Concessionária excluída com sucesso",
-                  description: `A concessionária ${row.original.nome} foi excluída com sucesso`,
+                  title: "Tarifa excluída com sucesso",
+                  description: `A tarifa do subgrupo ${row.original.subgrupo} foi excluída com sucesso`,
                   variant: "success",
                 });
               })
               .catch((error) => {
                 toast({
-                  title: `Ocorreu um erro ao excluir a concessionária`,
+                  title: `Ocorreu um erro ao excluir a tarifa`,
                   description: error.response.data.message,
                   variant: "destructive",
                 });
@@ -105,8 +107,8 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           } catch (error) {
             console.log(error);
             toast({
-              title: `Erro ao excluir a concessionária`,
-              description: `Ocorreu um erro ao excluir a concessionária ${row.original.nome}`,
+              title: `Erro ao excluir a tarifa`,
+              description: `Ocorreu um erro ao excluir a tarifa de subgrupo ${row.original.subgrupo}`,
               variant: "destructive",
             });
           }
@@ -135,22 +137,12 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-
             <Link
-              href={Routes.ConcessionaireRates.replace(
-                "[id]",
-                row.original.cod_concessionaria
-              )}
-            >
-              <DropdownMenuItem>
-                <NotepadText size={16} className="mr-2" />
-                Tarifas
-              </DropdownMenuItem>
-            </Link>
-            <Link
-              href={Routes.ConcessionaireEdit.replace(
-                "[id]",
-                row.original.cod_concessionaria
+              href={Routes.RatesEdit
+                .replace("[id]", row.original.cod_concessionaria)
+                .replace(
+                "[id-rates]",
+                row.original.cod_tarifa
               )}
             >
               <DropdownMenuItem>
@@ -166,32 +158,27 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
   },
 ];
 
-export const concessionaireCardColumns: CardColumnDef<Concessionaire>[] = [
+export const ratesCardColumns: CardColumnDef<Rates>[] = [
   {
     cell: ({ data }) => {
-      const link = `/concessionaires/${data.cod_concessionaria}`;
       return (
-        <Link prefetch={false} href={link}>
-          <h2 className="text-xs font-bold mb-2 text-solaris-primary ">
-            {data.nome}
-          </h2>
-        </Link>
+        <p className="text-sm">{dayjs(data.dt_tarifa).format("DD/MM/yyyy")}</p>
       );
     },
   },
   {
     cell: ({ data }) => (
-      <div className="flex flex-row gap-2 items-center">
-        <div className="flex flex-row gap-1 items-center">
-          <span className="w-1 h-1 bg-[#58585A] rounded-full" />
-          <p className="text-xs font-semibold">{data.cidade}</p>
-        </div>
-
-        <div className="flex flex-row gap-1 items-center">
-          <span className="w-1 h-1 bg-[#58585A] rounded-full" />
-          <p className="text-xs font-semibold">{data.uf}</p>
-        </div>
-      </div>
+      <div className="text-xs">{data.valor}</div>
+    ),
+  },
+  {
+    cell: ({ data }) => (
+      <div className="text-xs">{data.subgrupo}</div>
+    ),
+  },
+  {
+    cell: ({ data }) => (
+      <Button className="text-sm" variant="solar">Ver Horários</Button>
     ),
   },
 ];

@@ -12,8 +12,8 @@ export default function MobileMenu() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="link" size="icon" className="shrink-0 lg:hidden">
-          <div className="flex h-12 w-12 p-3 bg-[#F5F5F5] rounded-full items-center justify-center">
+        <Button variant="link" size="default" className="shrink-0 lg:hidden h-10 w-10 p-0">
+          <div className="flex h-10 w-10 p-3 bg-[#F5F5F5] rounded-full items-center justify-center">
             <Menu size={24} className="text-black" />
           </div>
         </Button>

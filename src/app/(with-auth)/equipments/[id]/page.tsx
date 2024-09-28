@@ -60,11 +60,12 @@ export default function EquipmentInfo() {
     "hour" | "day" | "week" | "month" | "year"
   >("hour");
 
-  const { data: chartData, isLoading: isChartLoading } = useQuery<
+  const { data: chartData, isLoading: isChartLoading, refetch, isRefetching } = useQuery<
     EquipmentChartData[]
   >({
     queryKey: ["equipment-chart", params.id, date.to, date.from],
     queryFn: async () => {
+      console.log(date)
       const token = cookies.get("token");
       const response = await apiClient.get(`/sensor-data/${params.id}/chart`, {
         headers: {
@@ -77,10 +78,9 @@ export default function EquipmentInfo() {
       });
       return response.data;
     },
-    placeholderData: keepPreviousData,
   });
 
-  const { data, isLoading, refetch, isRefetching } =
+  const { data, isLoading } =
     useQuery<EquipmentSchemaType>({
       queryKey: ["equipment", params.id],
       queryFn: async () => {
@@ -110,7 +110,7 @@ export default function EquipmentInfo() {
        * Online
        */
       socket.on(`${data.mac}/smartclick/last_will`, (res) => {
-        setOnline(res.data === "online");
+        setOnline(res.data === "offline" ? false : true);
       });
 
       /**
@@ -118,6 +118,7 @@ export default function EquipmentInfo() {
        */
       socket.on(`${data.mac}/smartclick/tfa`, (res) => {
         setVA(res.data);
+        setOnline(true);
       });
       socket.on(`${data.mac}/smartclick/tfb`, (res) => {
         setVB(res.data);

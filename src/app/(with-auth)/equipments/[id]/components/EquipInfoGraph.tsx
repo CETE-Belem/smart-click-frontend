@@ -7,6 +7,8 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Line,
+  LineChart,
   XAxis,
   YAxis,
 } from "recharts";
@@ -98,6 +100,8 @@ export default function EquipInfoGraph({
   phaseNumber = 1,
   scale,
   type = "line",
+  startDate,
+  endDate,
 }: EquipInfoGraphProps) {
   const getMinMaxValues = () => {
     let min = Infinity;
@@ -110,8 +114,8 @@ export default function EquipInfoGraph({
   };
 
   const { min, max } = getMinMaxValues();
-  const yAxisDomain = [Math.floor(min * 1.7), Math.ceil(max * 1.7)];
-
+  const yAxisDomain = [Math.ceil(min), Math.ceil(max * 1.01)];
+  data?.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   return (
     <Card>
       <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
@@ -119,7 +123,7 @@ export default function EquipInfoGraph({
           <CardTitle>{title}</CardTitle>
           <CardDescription>
             {data && data.length > 0
-              ? `De ${dayjs(data[0].date).format("DD/MM/YYYY HH:mm")} a ${dayjs(data[data.length - 1].date).format("DD/MM/YYYY HH:mm")}`
+              ? `De ${dayjs(startDate).format("DD/MM/YYYY HH:mm")} a ${dayjs(endDate).format("DD/MM/YYYY HH:mm")}`
               : "Sem dados"}
           </CardDescription>
         </div>
@@ -130,37 +134,13 @@ export default function EquipInfoGraph({
             config={chartConfig}
             className="aspect-auto h-[300px] w-full"
           >
-            <AreaChart data={data}>
-              <defs>
-                <linearGradient id="fillFaseA" x1="0" y1="0" x2="0" y2="1">
-                  <stop stopColor="var(--color-faseA)" stopOpacity={0.8} />
-                  <stop
-                    offset="1"
-                    stopColor="var(--color-faseA)"
-                    stopOpacity={0.1}
-                  />
-                </linearGradient>
-                {phaseNumber > 1 && (
-                  <linearGradient id="fillFaseB" x1="0" y1="0" x2="0" y2="1">
-                    <stop stopColor="var(--color-faseB)" stopOpacity={0.8} />
-                    <stop
-                      offset="1"
-                      stopColor="var(--color-faseB)"
-                      stopOpacity={0.1}
-                    />
-                  </linearGradient>
-                )}
-                {phaseNumber > 2 && (
-                  <linearGradient id="fillFaseC" x1="0" y1="0" x2="0" y2="1">
-                    <stop stopColor="var(--color-faseC)" stopOpacity={0.8} />
-                    <stop
-                      offset="1"
-                      stopColor="var(--color-faseC)"
-                      stopOpacity={0.1}
-                    />
-                  </linearGradient>
-                )}
-              </defs>
+            <LineChart
+            accessibilityLayer
+             data={data}
+             margin={{
+              left: 12,
+              right: 12,
+            }}>
               <CartesianGrid vertical={false} />
               <XAxis
                 dataKey="date"
@@ -246,33 +226,36 @@ export default function EquipInfoGraph({
                   />
                 }
               />
-              <Area
+              <Line
                 dataKey="faseA"
                 type="natural"
                 fill="url(#fillFaseA)"
                 stroke="var(--color-faseA)"
-                stackId="a"
+                strokeWidth={2}
+                dot={false}
               />
               {phaseNumber > 1 && (
-                <Area
+                <Line
                   dataKey="faseB"
                   type="natural"
                   fill="url(#fillFaseB)"
                   stroke="var(--color-faseB)"
-                  stackId="a"
+                  strokeWidth={2}
+                  dot={false}
                 />
               )}
               {phaseNumber > 2 && (
-                <Area
+                <Line
                   dataKey="faseC"
                   type="natural"
                   fill="url(#fillFaseC)"
                   stroke="var(--color-faseC)"
-                  stackId="a"
+                  strokeWidth={2}
+                  dot={false}
                 />
               )}
               <ChartLegend content={<ChartLegendContent />} />
-            </AreaChart>
+            </LineChart>
           </ChartContainer>
         ) : (
           <ChartContainer
@@ -281,6 +264,11 @@ export default function EquipInfoGraph({
           >
             <BarChart accessibilityLayer data={data}>
               <CartesianGrid vertical={false} />
+              <YAxis
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
               <XAxis
                 dataKey="date"
                 tickLine={false}

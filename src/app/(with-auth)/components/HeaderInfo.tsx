@@ -113,6 +113,16 @@ const headerInfoData: HeaderInfoData = {
     subtitle: "Editar perfil",
     icon: <Pencil size={24} />,
   },
+  [Routes.EquipmentConstant]: {
+    title: "Equipamento",
+    subtitle: "Assistente de Calibração",
+    icon: <NotebookTextIcon size={24} />,
+  },
+  [Routes.ConcessionaireRates]: {
+    title: "Tarifas",
+    subtitle: "Tarifas",
+    icon: <NotepadText size={24} />,
+  },
   [Routes.Rates]: {
     title: "Tarifas",
     subtitle: "Tarifas",

@@ -46,11 +46,11 @@ export default function NewUserPage() {
 
       if (!confirmed) return;
 
-      toast({
-        title: "Criando...",
-        description: `O usuário ${values.name} está sendo criado`,
-        variant: "loading",
-      });
+      // toast({
+      //   title: "Criando...",
+      //   description: `O usuário ${values.name} está sendo criado`,
+      //   variant: "loading",
+      // });
 
       const response = await NewAdminAction(values).finally(() => {
         setLoading(false);
