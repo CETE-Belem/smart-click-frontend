@@ -121,7 +121,7 @@ const headerInfoData: HeaderInfoData = {
   [Routes.ConcessionaireRates]: {
     title: "Tarifas",
     subtitle: "Tarifas",
-    icon: <NotepadText size={24} />,
+    icon: <ClipboardList size={24} />,
   },
   [Routes.Rates]: {
     title: "Tarifas",
