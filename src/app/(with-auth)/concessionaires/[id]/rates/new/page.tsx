@@ -27,6 +27,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { NewRateSchema, NewRateSchemaType } from "@/schemas/new-rates.schema";
 import { DatePicker } from "@/components/ui/date-picker";
 import { X } from "lucide-react";
+import { Routes } from "@/enums/Routes.enum";
+import { newRateAction } from "@/action/new-rate.action";
 
 export default function NewRatesPage() {
   const router = useRouter();
@@ -37,36 +39,36 @@ export default function NewRatesPage() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const form = useForm<NewRateSchemaType>({
-    defaultValues: {},
     resolver: zodResolver(NewRateSchema),
   });
 
   async function onSubmit(values: NewRateSchemaType) {
-    // router.prefetch(Routes.ConcessionaireRates.replace("[id]", id as string));
-    // setLoading(true);
-    // toast({
-    //   title: "Criando...",
-    //   description: `O equipamento ${values.name} está sendo criado`,
-    //   variant: "loading",
-    // });
-    // const response = await newEquipmentAction(values).finally(() => {
-    //   setLoading(false);
-    // });
-    // if (response.success) {
-    //   toast({
-    //     title: "Sucesso",
-    //     description: response.message,
-    //     variant: "success",
-    //   });
-    //   queryClient.invalidateQueries({ queryKey: ["equipments"] });
-    //   router.push(Routes.Equipments);
-    // } else {
-    //   toast({
-    //     title: "Erro",
-    //     description: response.message,
-    //     variant: "destructive",
-    //   });
-    // }
+    router.prefetch(Routes.ConcessionaireRates);
+    setLoading(true);
+    toast({
+      title: "Criando...",
+      description: `A tarifa para o dia ${values.dt_tarifa} está sendo criado`,
+      variant: "loading",
+    });
+    const response = await newRateAction(values, id.toString()).finally(() => {
+      setLoading(false);
+    });
+
+    if (response.sucess) {
+      toast({
+        title: "Sucesso",
+        description: response.message,
+        variant: "success",
+      });
+      queryClient.invalidateQueries({ queryKey: ["Concessionaire-rates"] });
+      router.push(Routes.ConcessionaireRates);
+    } else {
+      toast({
+        title: "Erro",
+        description: response.message,
+        variant: "destructive",
+      });
+    }
   }
 
   const {
@@ -139,7 +141,7 @@ export default function NewRatesPage() {
                   <FormField
                     control={form.control}
                     name="subgrupo"
-                    render={({ field, fieldState }) => (
+                    render={({ field }) => (
                       <FormItem className="max-w-24 w-full">
                         <FormControl>
                           <Select
@@ -150,7 +152,7 @@ export default function NewRatesPage() {
                             <SelectTrigger
                               label="Subgrupo"
                               required
-                              invalid={!!fieldState.error} // Marca como inválido se houver erro
+                              invalid={!!form.formState.errors.subgrupo}
                             >
                               <SelectValue placeholder="A1" />
                             </SelectTrigger>
@@ -169,9 +171,7 @@ export default function NewRatesPage() {
                             </SelectContent>
                           </Select>
                         </FormControl>
-                        <FormMessage>
-                          {fieldState.error ? fieldState.error.message : null}
-                        </FormMessage>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
