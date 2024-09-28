@@ -20,6 +20,7 @@ interface DatePickerProps {
   placeholder: string;
   date: Date;
   setDate: (date: Date | undefined) => void;
+  className?: string;
 }
 
 export function DatePicker({
@@ -27,11 +28,12 @@ export function DatePicker({
   placeholder,
   date = new Date(),
   setDate,
-}: DatePickerProps) {
+  className,
+}: DatePickerProps & { className?: string }) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <div className="flex flex-col gap-[10px]">
+        <div className={cn("flex flex-col gap-[10px]", className)}>
           <Label className="text-sm font-medium text-[#333333] opacity-70">
             {label}
           </Label>
@@ -40,7 +42,8 @@ export function DatePicker({
             variant="solar-input"
             className={cn(
               "w-[280px] justify-start text-left font-normal",
-              !date && "text-muted-foreground"
+              !date && "text-muted-foreground",
+              className
             )}
           >
             {date ? (
