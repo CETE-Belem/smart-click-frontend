@@ -183,7 +183,7 @@ export default function NewRatesPage() {
                 control={form.control}
                 name="intervalos_tarifas"
                 render={() => (
-                  <>
+                  <div className="flex flex-col gap-5 max-h-80 overflow-y-auto">
                     {intervalos.map((field, index) => (
                       <div
                         key={field.id}
@@ -293,7 +293,7 @@ export default function NewRatesPage() {
                         </div>
                       </div>
                     ))}
-                  </>
+                  </div>
                 )}
               />
 
