@@ -14,7 +14,11 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAlert } from "@/providers/alert.provider";
 import useUserStore from "@/store/user.store";
 import { Concessionaire } from "@/types/concessionaire";
-import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useCookies } from "next-client-cookies";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -44,7 +48,6 @@ export default function ConcessionairesRates() {
 
   const query = searchParams.get("query") ?? "";
 
-
   const { data, isLoading } = useQuery<GetRatesResponse>({
     queryKey: ["rates", id, pageIndex, perPage, query],
     queryFn: async () => {
@@ -66,7 +69,7 @@ export default function ConcessionairesRates() {
 
     placeholderData: keepPreviousData,
   });
-  
+
   return (
     <div className="w-full flex flex-col gap-5">
       <div className="w-full flex flex-row justify-between">
@@ -78,7 +81,7 @@ export default function ConcessionairesRates() {
           />
         </Button>
         <Button variant="solar" className="w-fit p-3 gap-2" asChild>
-          <Link href={Routes.RatesNew.replace("[id]", id as string)}>
+          <Link href={Routes.RateNew.replace("[id]", id as string)}>
             <CirclePlus size={24} />
             Adicionar
           </Link>
@@ -103,9 +106,7 @@ export default function ConcessionairesRates() {
         <DataTable<Rates>
           columns={
             user?.perfil !== Role.ADMIN
-              ? ratesTableColumn.filter(
-                (column) => column.id !== "actions"
-              )
+              ? ratesTableColumn.filter((column) => column.id !== "actions")
               : ratesTableColumn
           }
           className="hidden sm:table"
