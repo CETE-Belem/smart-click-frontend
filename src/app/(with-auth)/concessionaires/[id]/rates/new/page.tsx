@@ -54,7 +54,7 @@ export default function NewRatesPage() {
       setLoading(false);
     });
 
-    if (response.sucess) {
+    if (response.success) {
       toast({
         title: "Sucesso",
         description: response.message,

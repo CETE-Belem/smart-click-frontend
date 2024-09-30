@@ -138,7 +138,7 @@ export const ratesTableColumn: ColumnDef<Rates>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
             <Link
-              href={Routes.RatesEdit
+              href={Routes.RateEdit
                 .replace("[id]", row.original.cod_concessionaria)
                 .replace(
                 "[id-rates]",

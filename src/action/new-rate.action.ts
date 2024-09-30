@@ -14,71 +14,61 @@ export interface NewRateDataType {
   dt_tarifa: Date;
   subgrupo: string;
   valor: number;
-  intervalos_tarifas: IntervalRateSchemaType[];
+  intervalos_tarifas: IntervalRateSchemaType;
 }
 
 export async function newRateAction(
   formData: NewRateSchemaType,
   cod_concessionaria: string
-): Promise<{ sucess: boolean; message: string }> {
-    console.log(formData);
+): Promise<{ success: boolean; message: string }> {
   try {
-
-    const resultInterval = IntervalRateSchema.safeParse(formData.intervalos_tarifas);
-    const newFormDataInterval = resultInterval.data!;
-
-    const result = NewRateSchema.safeParse(formData);
-    const newFormData = result.data!;
     const token = cookies().get("token")?.value;
     const parsedData: NewRateDataType = {
-        cod_concessionaria: cod_concessionaria,
-        dt_tarifa: newFormData?.dt_tarifa,
-        subgrupo: newFormData.subgrupo,
-        valor: newFormData.valor,
-        intervalos_tarifas: [newFormDataInterval],
+      cod_concessionaria: cod_concessionaria,
+      dt_tarifa: formData.dt_tarifa,
+      subgrupo: formData.subgrupo,
+      valor: formData.valor,
+      intervalos_tarifas: formData.intervalos_tarifas,
     };
 
-    
     const response = await api
-    .post("/rates", parsedData, {
+      .post("/rates", parsedData, {
         headers: {
-            Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
-    })
-    .then((response) => response)
-    .catch((error) => error.response.data);
-    
-    console.log(response);
+      })
+      .then((response) => response)
+      .catch((error) => error.response.data);
 
-    if (response.status === 200) {
+    if (response.status === 201) {
       return {
-        sucess: true,
+        success: true,
         message: "Tarifa criada com sucesso",
       };
     }
 
     if (response.status === 400) {
       return {
-        sucess: false,
+        success: false,
         message: "Pelo menos um Intervalo deve ser fornecido",
       };
     }
 
     if (response.status === 404) {
       return {
-        sucess: false,
+        success: false,
         message: "A concessionária não foi encontrada",
       };
     }
 
     return {
-      sucess: false,
+      success: false,
       message: response.message,
     };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return {
-      sucess: false,
+      success: false,
       message: "Erro ao criar tarifa. Exceção " + error,
     };
   }

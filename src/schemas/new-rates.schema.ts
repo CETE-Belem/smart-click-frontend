@@ -46,6 +46,10 @@ export const IntervalRateSchema = z.array(
         required_error: "O valor é obrigatório",
       })
       .nullable()
+      .refine(
+        (value) => value === null || !isNaN(parseFloat(value)),
+        "O valor deve ser um número válido"
+      )
       .transform((v) => (v === null ? null : parseFloat(v))),
     tipo: z.string().nullable(),
   })
@@ -63,6 +67,7 @@ export const NewRateSchema = z.object({
     .string({
       required_error: "O valor é obrigatório",
     })
+    .refine((v) => !isNaN(parseFloat(v)), "O valor deve ser um número válido")
     .transform((v) => parseFloat(v)),
   intervalos_tarifas: IntervalRateSchema,
 });
