@@ -65,9 +65,10 @@ export async function middleware(request: NextRequest) {
     }
 
     // Verifica permissões de administrador para páginas administrativas
+    console.log(AdminPages.includes(request.nextUrl.pathname as Routes));
     if (
       (request.nextUrl.pathname.includes("/admin") ||
-        AdminPages.includes(request.nextUrl.pathname as Routes)) &&
+        AdminPages.includes(request.nextUrl.pathname.replace(/[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i, '[id]') as Routes)) &&
       verified.role !== Role.ADMIN
     ) {
       return Response.redirect(new URL("/no-permission", request.url));
