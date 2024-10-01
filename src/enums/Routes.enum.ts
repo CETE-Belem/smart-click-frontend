@@ -17,7 +17,7 @@ export enum Routes {
   Rate = "/rates/[id]",
   RatesForConcessionaire = "/concessionaires/[id]/rates",
   RateNew = "/concessionaires/[id]/rates/new",
-  RateEdit = "/concessionaires/[id]/rates/[id-rates]",
+  RateEdit = "/concessionaires/[id]/rates/[id-rates]/edit",
   ConcessionaireEdit = "/concessionaires/[id]/edit",
   ConcessionaireNew = "/concessionaires/new",
   Users = "/users",
