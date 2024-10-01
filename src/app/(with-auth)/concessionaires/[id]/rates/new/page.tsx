@@ -61,7 +61,7 @@ export default function NewRatesPage() {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["Concessionaire-rates"] });
-      router.push(Routes.ConcessionaireRates);
+      router.push(Routes.ConcessionaireRates.replace("[id]", id.toString()));
     } else {
       toast({
         title: "Erro",
