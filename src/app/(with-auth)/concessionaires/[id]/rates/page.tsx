@@ -23,7 +23,7 @@ import { useCookies } from "next-client-cookies";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { apiClient } from "@/lib/axios-client";
-import { GetRatesResponse } from "@/action/get-concessionaire-rates-action";
+import { GetRatesResponse } from "@/action/get-rates.action";
 import { Rates } from "@/types/rates";
 import { ratesCardColumns, ratesTableColumn } from "./columns";
 
@@ -70,6 +70,48 @@ export default function ConcessionairesRates() {
     placeholderData: keepPreviousData,
   });
 
+  async function handleDelete(data: Rates) {
+    try {
+      const confirmed = await openAlert({
+        title: "Deseja excluir a tarifa selecionada?",
+        description: `Tem certeza que deseja excluir a tarifa para o subgrupo ${data.subgrupo}?`,
+        confirmText: "Sim",
+        cancelText: "Não",
+      });
+
+      if (!confirmed) return;
+
+      await apiClient
+        .delete(`/concessionaires/${id}/rates/${data.cod_tarifa}`, {
+          headers: {
+            Authorization: `Bearer ${cookies.get("token")}`,
+          },
+        })
+        .then(() => {
+          queryClient.invalidateQueries({ queryKey: ["rates"] });
+          toast({
+            title: "Tarifa excluída com sucesso",
+            description: `A tarifa para o subgrupo ${data.subgrupo} foi excluída com sucesso`,
+            variant: "success",
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: "Ocorreu um erro ao excluir a tarifa",
+            description: error.response.data.message,
+            variant: "destructive",
+          });
+        });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Erro ao excluir tarifa",
+        description: `Ocorreu um erro ao excluir a tarifa para o subgrupo ${data.subgrupo}`,
+        variant: "destructive",
+      });
+    }
+  }
+
   return (
     <div className="w-full flex flex-col gap-5">
       <div className="w-full flex flex-row justify-between">
@@ -100,7 +142,7 @@ export default function ConcessionairesRates() {
           canEdit={user?.perfil === Role.ADMIN}
           editRoute={Routes.ConcessionaireEdit}
           canDelete={user?.perfil === Role.ADMIN}
-          //handleDelete={handleDelete}
+          handleDelete={handleDelete}
         />
 
         <DataTable<Rates>
