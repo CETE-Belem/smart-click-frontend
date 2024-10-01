@@ -13,7 +13,6 @@ import DataTable from "@/components/data-table";
 import { useToast } from "@/components/ui/use-toast";
 import { useAlert } from "@/providers/alert.provider";
 import useUserStore from "@/store/user.store";
-import { Concessionaire } from "@/types/concessionaire";
 import {
   keepPreviousData,
   useQuery,
@@ -82,7 +81,7 @@ export default function ConcessionairesRates() {
       if (!confirmed) return;
 
       await apiClient
-        .delete(`/concessionaires/${id}/rates/${data.cod_tarifa}`, {
+        .delete(`/rates/${data.cod_tarifa}`, {
           headers: {
             Authorization: `Bearer ${cookies.get("token")}`,
           },
