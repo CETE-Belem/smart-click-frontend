@@ -26,7 +26,7 @@ const AdminPages = [
   Routes.AdminNew,
   Routes.User,
   Routes.Rates,
-  Routes.RatesForConcessionaire,
+  Routes.ConcessionaireRates,
   Routes.Rate,
   Routes.RateNew,
   Routes.RateEdit,
