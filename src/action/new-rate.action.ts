@@ -2,9 +2,7 @@
 
 import { api } from "@/lib/axios";
 import {
-  NewRateSchema,
   NewRateSchemaType,
-  IntervalRateSchema,
   IntervalRateSchemaType,
 } from "@/schemas/new-rates.schema";
 import { cookies } from "next/headers";
