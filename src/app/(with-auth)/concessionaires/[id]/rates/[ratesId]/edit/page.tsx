@@ -5,10 +5,12 @@ import EditRateForm from "./component/EditRateForm";
 export default async function EditRatePage({
   params,
 }: {
-  params: { id: string };
+  params: { ratesId: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const { data } = await getRateAction(params.id);
+  console.log(params.ratesId);
+
+  const { data } = await getRateAction(params.ratesId);
   return (
     <Suspense>
       <EditRateForm data={data} />
