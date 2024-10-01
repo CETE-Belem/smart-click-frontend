@@ -4,12 +4,17 @@ import { api } from "@/lib/axios";
 import { cookies } from "next/headers";
 import { Rates } from "@/types/rates";
 
-export async function getRateAction(id: string): Promise<Rates> {
+export interface GetRateResponse {
+  rate: Rates;
+}
+
+export async function getRateAction(id: string): Promise<GetRateResponse | any > {
   const token = cookies().get("token")?.value;
-  const response = await api.get(`/rates/${id}`, {
+  const data = await api.get<GetRateResponse>(`/rates/${id}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return response.data;
+
+  return data;
 }
