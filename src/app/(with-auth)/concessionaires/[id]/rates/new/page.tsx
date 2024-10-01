@@ -1,5 +1,5 @@
 "use client";
-import NewEquipmentImage from "@/../public/images/new-equipment-image.svg";
+import NewRateImage from "@/../public/images/new-rates-image.svg";
 import Image from "next/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -329,7 +329,7 @@ export default function NewRatesPage() {
       <div className="flex justify-center items-start w-full h-full">
         <Image
           className="w-full h-auto max-w-[500px]"
-          src={NewEquipmentImage}
+          src={NewRateImage}
           alt="New Equipment"
         />
       </div>
