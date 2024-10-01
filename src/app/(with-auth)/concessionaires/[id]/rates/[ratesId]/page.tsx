@@ -1,5 +1,3 @@
-export default function RatesEdit(){
-  return (
-    <h1>Rates Edit</h1>
-  )
+export default function RatePage() {
+  return <h1>Tela da tarifa</h1>;
 }
