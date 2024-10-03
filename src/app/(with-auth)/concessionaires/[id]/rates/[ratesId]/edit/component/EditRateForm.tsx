@@ -30,10 +30,9 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import NewRateImage from "@/../public/images/new-rates-image.svg";
+import { convertMinutesToTimeString } from "@/lib/utils";
 
 export default function EditRateEdit({ data }: { data: Rates }) {
-  console.log(data);
-
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -46,7 +45,14 @@ export default function EditRateEdit({ data }: { data: Rates }) {
       dt_tarifa: new Date(data.dt_tarifa),
       subgrupo: data.subgrupo,
       valor: data.valor,
-      intervalos_tarifas: data.intervalos_tarifas,
+      intervalos_tarifas: data.intervalos_tarifas.flatMap((intervalo) => {
+        return {
+          de: convertMinutesToTimeString(intervalo.de),
+          ate: convertMinutesToTimeString(intervalo.ate),
+          valor: intervalo.valor,
+          tipo: intervalo.tipo,
+        };
+      }),
     },
     resolver: zodResolver(NewRateSchema),
   });
@@ -119,6 +125,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                           invalid={!!form.formState.errors.valor}
                           disabled={loading}
                           className="w-full"
+                          type="number"
                         />
                       </FormControl>
                       <FormMessage />
@@ -261,6 +268,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             disabled={loading}
                             defaultValue={field.valor ?? ""} // Corrigido para `field.valor`
                             className="w-full"
+                            type="number"
                           />
                           <FormMessage>
                             {

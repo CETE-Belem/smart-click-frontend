@@ -105,6 +105,7 @@ export default function NewRatesPage() {
                           {...field}
                           placeholder="R$ 0,00"
                           className="w-full"
+                          type="number"
                         />
                       </FormControl>
                       <FormMessage>
@@ -246,6 +247,7 @@ export default function NewRatesPage() {
                             )}
                             disabled={loading}
                             className="w-full"
+                            type="number"
                           />
                           <FormMessage>
                             {

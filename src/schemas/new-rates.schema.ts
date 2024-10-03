@@ -1,23 +1,5 @@
 import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
 import { z } from "zod";
-
-// Ative o plugin de parsing com formatos customizados
-dayjs.extend(customParseFormat);
-
-function convertTimeToMinutes(time: string): number {
-  const timeObject = dayjs(time, "HH:mm");
-
-  // Validação se o parsing foi bem-sucedido
-  if (!timeObject.isValid()) {
-    throw new Error("Formato de tempo inválido");
-  }
-
-  const hours = timeObject.hour();
-  const minutes = timeObject.minute();
-
-  return hours * 60 + minutes;
-}
 
 export const IntervalRateSchema = z.array(
   z.object({
@@ -27,9 +9,6 @@ export const IntervalRateSchema = z.array(
       .refine(
         (value) => value === null || dayjs(value, "HH:mm", true).isValid(),
         "Formato de hora inválido"
-      )
-      .transform((value) =>
-        value === null ? null : convertTimeToMinutes(value)
       ),
     ate: z
       .string()
@@ -37,12 +16,9 @@ export const IntervalRateSchema = z.array(
       .refine(
         (value) => value === null || dayjs(value, "HH:mm", true).isValid(),
         "Formato de hora inválido"
-      )
-      .transform((value) =>
-        value === null ? null : convertTimeToMinutes(value)
       ),
     valor: z
-      .string({
+      .number({
         required_error: "O valor é obrigatório",
       })
       .nullable()
@@ -64,7 +40,7 @@ export const NewRateSchema = z.object({
     required_error: "Subgrupo é obrigatório",
   }),
   valor: z
-    .string({
+    .number({
       required_error: "O valor é obrigatório",
     })
     .refine((v) => !isNaN(parseFloat(v)), "O valor deve ser um número válido")

@@ -135,7 +135,6 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
-
             <Link
               href={Routes.ConcessionaireRates.replace(
                 "[id]",

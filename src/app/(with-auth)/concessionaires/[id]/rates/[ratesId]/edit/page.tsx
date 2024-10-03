@@ -8,7 +8,6 @@ export default async function EditRatePage({
   params: { ratesId: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  console.log(params.ratesId);
 
   const { data } = await getRateAction(params.ratesId);
   return (
