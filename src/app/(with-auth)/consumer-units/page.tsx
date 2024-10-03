@@ -85,7 +85,7 @@ export default function ConsumerUnitsPage() {
 
       toast({
         title: "Excluindo...",
-        description: `A unidade consumidora ${data.numero} está sendo excluida`,
+        description: `A unidade consumidora ${data.numero} está sendo excluída`,
         variant: "loading",
       });
 
