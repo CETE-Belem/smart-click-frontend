@@ -27,16 +27,12 @@ export function convertMinutesToTimeString(minutes: number): string {
   let hours = Math.floor(minutes / 60);
   const remainingMinutes = minutes % 60;
 
-  console.log(hours, remainingMinutes); // Debugging
-
   if (hours == 24) hours = 0;
 
   // Formatar manualmente a string de horas e minutos
   const timeString = `${hours.toString().padStart(2, "0")}:${remainingMinutes
     .toString()
     .padStart(2, "0")}`;
-
-  console.log(timeString); // Debugging
 
   return timeString; // Devolver o tempo no formato HH:mm
 }

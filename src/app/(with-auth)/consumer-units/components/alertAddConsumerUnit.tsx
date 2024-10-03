@@ -51,7 +51,6 @@ export const AlertAddConsumerUnit = () => {
       setLoading(false);
     });
 
-    console.log(response);
     if (response.success) {
       toast({
         title: "Sucesso",

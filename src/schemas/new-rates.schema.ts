@@ -1,3 +1,4 @@
+import { convertTimeToMinutes } from "@/lib/utils";
 import dayjs from "dayjs";
 import { z } from "zod";
 
@@ -9,24 +10,31 @@ export const IntervalRateSchema = z.array(
       .refine(
         (value) => value === null || dayjs(value, "HH:mm", true).isValid(),
         "Formato de hora inválido"
-      ),
+      )
+      .transform((value) => {
+        if (value === null) {
+          return null;
+        }
+        return convertTimeToMinutes(value, "HH:mm");
+      }),
     ate: z
       .string()
       .nullable()
       .refine(
         (value) => value === null || dayjs(value, "HH:mm", true).isValid(),
         "Formato de hora inválido"
-      ),
+      )
+      .transform((value) => {
+        if (value === null) {
+          return null;
+        }
+        return convertTimeToMinutes(value, "HH:mm");
+      }),
     valor: z
       .number({
         required_error: "O valor é obrigatório",
       })
-      .nullable()
-      .refine(
-        (value) => value === null || !isNaN(parseFloat(value)),
-        "O valor deve ser um número válido"
-      )
-      .transform((v) => (v === null ? null : parseFloat(v))),
+      .nullable(),
     tipo: z.string().nullable(),
   })
 );
@@ -39,12 +47,9 @@ export const NewRateSchema = z.object({
   subgrupo: z.string({
     required_error: "Subgrupo é obrigatório",
   }),
-  valor: z
-    .number({
-      required_error: "O valor é obrigatório",
-    })
-    .refine((v) => !isNaN(parseFloat(v)), "O valor deve ser um número válido")
-    .transform((v) => parseFloat(v)),
+  valor: z.number({
+    required_error: "O valor é obrigatório",
+  }),
   intervalos_tarifas: IntervalRateSchema,
 });
 

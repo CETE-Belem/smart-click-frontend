@@ -31,12 +31,16 @@ import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import NewRateImage from "@/../public/images/new-rates-image.svg";
 import { convertMinutesToTimeString } from "@/lib/utils";
+import useMask from "@/hooks/useMask";
 
 export default function EditRateEdit({ data }: { data: Rates }) {
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const params = useParams();
+  const { handleChange } = useMask({
+    mask: "00:00",
+  });
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -80,7 +84,6 @@ export default function EditRateEdit({ data }: { data: Rates }) {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["rates"] });
       queryClient.invalidateQueries({ queryKey: ["rates", params.id] });
       router.push(
         Routes.ConcessionaireRates.replace("[id]", params.id.toString())
@@ -229,6 +232,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             disabled={loading}
                             defaultValue={field.de ?? ""} // Corrigido para `field.de`
                             className="w-full"
+                            onInput={handleChange}
                           />
                           <FormMessage>
                             {
@@ -248,6 +252,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             disabled={loading}
                             defaultValue={field.ate ?? ""} // Corrigido para `field.ate`
                             className="w-full"
+                            onInput={handleChange}
                           />
                           <FormMessage>
                             {

@@ -29,12 +29,16 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { X } from "lucide-react";
 import { Routes } from "@/enums/Routes.enum";
 import { newRateAction } from "@/action/new-rate.action";
+import useMask from "@/hooks/useMask";
 
 export default function NewRatesPage() {
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { id } = useParams();
+  const { handleChange } = useMask({
+    mask: "00:00",
+  });
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -86,6 +90,9 @@ export default function NewRatesPage() {
         <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
           <span className="text-solaris-primary">Cadastrar</span> nova tarifa
         </h1>
+        <pre className="mt-2 rounded-md bg-slate-950 p-4 w-full">
+          <code className="text-white">{JSON.stringify(form.watch(), null, 2)}</code>
+        </pre>
         <Form {...form}>
           <form
             className="flex flex-col gap-5 w-full max-w-[500px]"
@@ -106,6 +113,7 @@ export default function NewRatesPage() {
                           placeholder="R$ 0,00"
                           className="w-full"
                           type="number"
+                          onChange={(e) => field.onChange(Number(e.target.value))}
                         />
                       </FormControl>
                       <FormMessage>
@@ -210,6 +218,7 @@ export default function NewRatesPage() {
                             {...form.register(`intervalos_tarifas.${index}.de`)}
                             disabled={loading}
                             className="w-full"
+                            onInput={handleChange}
                           />
                           <FormMessage>
                             {
@@ -228,6 +237,7 @@ export default function NewRatesPage() {
                             )}
                             disabled={loading}
                             className="w-full"
+                            onInput={handleChange}
                           />
                           <FormMessage>
                             {
@@ -242,9 +252,9 @@ export default function NewRatesPage() {
                           <Input
                             label="Valor do intervalo"
                             placeholder="R$ 0,00"
-                            {...form.register(
-                              `intervalos_tarifas.${index}.valor`
-                            )}
+                            {...form.register(`intervalos_tarifas.${index}.valor`, {
+                              setValueAs: (value) => value === "" ? undefined : Number(value), // Converte a string para número
+                            })}
                             disabled={loading}
                             className="w-full"
                             type="number"

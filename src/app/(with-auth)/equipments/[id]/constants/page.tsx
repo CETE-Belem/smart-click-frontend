@@ -55,7 +55,6 @@ export default function EquipmentConstantsPage() {
       },
     });
     socket.on("connect", () => {
-      console.log("connected");
       socket.emit("getConstants", JSON.stringify({ id }));
     });
 

@@ -65,7 +65,6 @@ export default function EquipmentInfo() {
   >({
     queryKey: ["equipment-chart", params.id, date.to, date.from],
     queryFn: async () => {
-      console.log(date)
       const token = cookies.get("token");
       const response = await apiClient.get(`/sensor-data/${params.id}/chart`, {
         headers: {
@@ -84,7 +83,6 @@ export default function EquipmentInfo() {
     useQuery<EquipmentSchemaType>({
       queryKey: ["equipment", params.id],
       queryFn: async () => {
-        console.log(date.from, date.to);
         const token = cookies.get("token");
         const response = await apiClient.get(`/equipments/${params.id}`, {
           headers: {
