@@ -69,6 +69,7 @@ export default function UserConsumerUnit() {
           },
         }
       );
+      console.log(response.data);
       return response.data;
     },
     placeholderData: keepPreviousData,
