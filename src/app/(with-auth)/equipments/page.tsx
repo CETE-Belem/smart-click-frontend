@@ -1,7 +1,7 @@
 "use client";
 import { CirclePlus, Filter } from "lucide-react";
 
-import { equipmentsCardColumns, equipmentsTableColumn } from "./columns";
+import { customMobileActions, equipmentsCardColumns, equipmentsTableColumn } from "./columns";
 import { useState } from "react";
 import { Equipments } from "../../../types/equipments";
 import { Button } from "@/components/ui/button";
@@ -152,6 +152,7 @@ export default function EquipmentsPage() {
           canEdit
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
+          customMobileActions={customMobileActions}
         />
         <DataTable<Equipments>
           columns={equipmentsTableColumn}

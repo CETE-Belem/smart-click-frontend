@@ -27,6 +27,7 @@ interface CardViewProps<T extends Record<string, any>> {
   canEdit?: boolean;
   editRoute?: string;
   handleDelete?: (data: T) => void;
+  customMobileActions?: (data: T) => JSX.Element;
 }
 
 export interface CardColumnDef<T> {
@@ -42,6 +43,7 @@ export default function CardView<T extends Record<string, any>>({
   editRoute,
   canDelete = false,
   handleDelete = () => {},
+  customMobileActions,
 }: CardViewProps<T>) {
   return (
     <div className="flex flex-col w-full sm:hidden gap-3">
@@ -70,6 +72,7 @@ export default function CardView<T extends Record<string, any>>({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                      {customMobileActions && customMobileActions(item)}
                       {canEdit && (
                         <Link href={editRoute?.replace("[id]", item[accessorKey]) ?? ""}>
                           <DropdownMenuItem>
@@ -89,6 +92,7 @@ export default function CardView<T extends Record<string, any>>({
                           </span>
                         </DropdownMenuItem>
                       )}
+                      
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
