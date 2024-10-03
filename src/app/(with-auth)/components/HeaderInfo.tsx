@@ -92,8 +92,8 @@ const headerInfoData: HeaderInfoData = {
     icon: <UserRound size={24} />,
   },
   [Routes.User]: {
-    title: "Usuários",
-    subtitle: "Informações do usuário",
+    title: "UCs do Usuário",
+    subtitle: "Unidades Consumidoras do usuário",
     icon: <NotepadText size={24} />,
   },
   [Routes.AdminNew]: {
