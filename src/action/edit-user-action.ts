@@ -8,6 +8,68 @@ import {
   editProfileSchemaTransformed,
 } from "@/schemas/edit-profile.schema";
 
+import {
+  LinkConsumerUnitSchema,
+  LinkConsumerUnitSchemaType,
+} from "@/schemas/link-consumer-unit.schema";
+
+export interface LinkConsumerUnitDataType {
+  numero: string;
+}
+
+export async function linkConsumerUnitAction(
+  formData: LinkConsumerUnitSchemaType
+): Promise<{ success: boolean; message: string }> {
+  try {
+    const result = LinkConsumerUnitSchema.safeParse(formData);
+    const newFormData = result.data!;
+    const token = cookies().get("token")?.value;
+    const parsedData: LinkConsumerUnitDataType = {
+      numero: newFormData.number,
+    };
+
+    const response = await api
+      .patch(`/consumer-units/me`, parsedData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => response)
+      .catch((error) => error.response.data);
+
+    if (response.status === 200) {
+      return {
+        success: true,
+        message: "A unidade consumidora foi atrelada com sucesso",
+      };
+    }
+
+    if (response.statusCode === 404) {
+      return {
+        success: false,
+        message: "Unidade consumidora não encontrada",
+      };
+    }
+
+    if (response.statusCode === 409) {
+      return {
+        success: false,
+        message: "A Unidade Consumidora já pertence a outro usuário",
+      };
+    }
+
+    return {
+      success: false,
+      message: response.message,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: "Erro ao vincular a unidade consumidora. Exceção: " + error,
+    };
+  }
+}
+
 export async function userProfileEditAction(
   formData: editProfileSchemaType
 ): Promise<{ success: boolean; message: string; data?: any }> {
