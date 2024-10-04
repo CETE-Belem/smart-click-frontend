@@ -202,15 +202,18 @@ export const ratesCardColumns: CardColumnDef<Rates>[] = [
   {
     cell: ({ data }) => {
       return (
-        <p className="text-sm">{dayjs(data.dt_tarifa).format("DD/MM/yyyy")}</p>
+        <div className="mb-4 min-w-[200px] gap-4 w-full flex flex-col items-center">
+          <div className="w-full flex flex-row justify-between items-center">
+            <p className="text-xs">
+              {dayjs(data.dt_tarifa).format("DD/MM/yyyy")}
+            </p>
+            <p className="text-xs font-semibold">R${data.valor}</p>
+            <p className="text-xs">{data.subgrupo}</p>
+          </div>
+          <span></span>
+        </div>
       );
     },
-  },
-  {
-    cell: ({ data }) => <div className="text-xs">{data.valor}</div>,
-  },
-  {
-    cell: ({ data }) => <div className="text-xs">{data.subgrupo}</div>,
   },
   {
     cell: ({ data }) => (
@@ -255,77 +258,88 @@ function RatesInfoDialog({
       <AlertDialogTrigger>{children}</AlertDialogTrigger>
       <AlertDialogContent className="max-w-72 sm:max-w-96 flex flex-col gap-8 items-center justify-center p-9 overflow-hidden border-none rounded-[1.25rem]">
         <div className="w-full flex justify-between">
-        <AlertDialogTitle className="text-3xl font-bold text-secondary-foreground text-center items-stretch">
-          Horários
-        </AlertDialogTitle>
-        <AlertDialogCancel asChild>
-          <Button className="self-end p-2 h-fit border-none">
-            <X size={24} className="text-black" />
-          </Button>
-        </AlertDialogCancel>
+          <AlertDialogTitle className="text-3xl font-bold text-secondary-foreground text-center items-stretch">
+            Horários
+          </AlertDialogTitle>
+          <AlertDialogCancel asChild>
+            <Button className="self-end p-2 h-fit border-none">
+              <X size={24} className="text-black" />
+            </Button>
+          </AlertDialogCancel>
         </div>
         <div className="w-full h-fit">
-        {data && data.length > 0 ? (
-          <ChartContainer config={chartConfig} className="min-h-72 w-full">
-            <BarChart
-              accessibilityLayer
-              data={data?.map((item: any) => ({
-                name: `${convertMinutesToHourLabel(item.de)} - ${convertMinutesToHourLabel(item.ate)}`,
-                valor: item.valor,
-                tipo: item.tipo,
-              }))}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" tick={{ fontSize: 12 }} />
-              <YAxis
-                tickFormatter={(value) => `R$${value}`}
-                tick={{ fontSize: 12 }}
-              />
-              <ChartTooltip content={<ChartTooltipContent />} />
-              <ChartLegend
-                verticalAlign="bottom"
-                payload={[
-                  { value: "Fora de Ponta", type: "square", color: "#5CB66D" },
-                  { value: "Intermediaria", type: "square", color: "#66BB00" },
-                  { value: "Ponta", type: "square", color: "#FF0000" },
-                ]}
-              />
-              <Bar dataKey="valor">
-                <LabelList position="top" dataKey="valor" fillOpacity={1} content={
-                  (props: any) => {
-                    return (
-                      <text
-                        x={props.x + props.width / 2}
-                        y={props.y}
-                        dy={-10}
-                        fontSize={12}
-                        textAnchor="middle"
-                        fill={props.fill}
-                      >
-                        {`R$${props.value}`}
-                      </text>
-                    );
-                  }
-                } />
-                {data?.map((entry: any, index: number) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      entry.tipo === "FORA_DE_PONTA"
-                        ? "#5CB66D"
-                        : entry.tipo === "PONTA"
-                          ? "#FF0000"
-                          : "#66BB00"
-                    }
+          {data && data.length > 0 ? (
+            <ChartContainer config={chartConfig} className="min-h-72 w-full">
+              <BarChart
+                accessibilityLayer
+                data={data?.map((item: any) => ({
+                  name: `${convertMinutesToHourLabel(item.de)} - ${convertMinutesToHourLabel(item.ate)}`,
+                  valor: item.valor,
+                  tipo: item.tipo,
+                }))}
+                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <YAxis
+                  tickFormatter={(value) => `R$${value}`}
+                  tick={{ fontSize: 12 }}
+                />
+                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartLegend
+                  verticalAlign="bottom"
+                  payload={[
+                    {
+                      value: "Fora de Ponta",
+                      type: "square",
+                      color: "#5CB66D",
+                    },
+                    {
+                      value: "Intermediaria",
+                      type: "square",
+                      color: "#66BB00",
+                    },
+                    { value: "Ponta", type: "square", color: "#FF0000" },
+                  ]}
+                />
+                <Bar dataKey="valor">
+                  <LabelList
+                    position="top"
+                    dataKey="valor"
+                    fillOpacity={1}
+                    content={(props: any) => {
+                      return (
+                        <text
+                          x={props.x + props.width / 2}
+                          y={props.y}
+                          dy={-10}
+                          fontSize={12}
+                          textAnchor="middle"
+                          fill={props.fill}
+                        >
+                          {`R$${props.value}`}
+                        </text>
+                      );
+                    }}
                   />
-                ))}
-              </Bar>
-            </BarChart>
-          </ChartContainer>
-        ) : (
-          <p>Nenhum dado disponível para exibir o gráfico.</p>
-        )}
+                  {data?.map((entry: any, index: number) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        entry.tipo === "FORA_DE_PONTA"
+                          ? "#5CB66D"
+                          : entry.tipo === "PONTA"
+                            ? "#FF0000"
+                            : "#66BB00"
+                      }
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ChartContainer>
+          ) : (
+            <p>Nenhum dado disponível para exibir o gráfico.</p>
+          )}
         </div>
       </AlertDialogContent>
     </AlertDialog>
