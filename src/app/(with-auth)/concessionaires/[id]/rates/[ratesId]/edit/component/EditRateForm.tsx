@@ -85,6 +85,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
         variant: "success",
       });
       queryClient.invalidateQueries({ queryKey: ["rates", params.id] });
+      queryClient.invalidateQueries({ queryKey: ["rates-interval", data.cod_tarifa] });
       router.push(
         Routes.ConcessionaireRates.replace("[id]", params.id.toString())
       );
