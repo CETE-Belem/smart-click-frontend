@@ -27,11 +27,7 @@ export default function MenuItems() {
           <Zap height={24} width={24} />
         </SidebarMenuItem>
       )}
-      {user?.perfil === Role.ADMIN && (
-        <SidebarMenuItem href={Routes.Rates} label="Tarifas">
-          <ClipboardList height={24} width={24} />
-        </SidebarMenuItem>
-      )}
+
       <SidebarMenuItem
         href={Routes.ConsumerUnits}
         label="Unidades Consumidoras"
