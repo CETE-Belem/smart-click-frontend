@@ -45,6 +45,7 @@ import { Equipments } from "@/types/equipments";
 import {
   adminEditEquipmentAction,
   userEditEquipmentAction,
+  UserEditEquipmentDataType,
 } from "@/action/edit-equipment.action";
 
 export default function EditEquipmentForm({ data }: { data: Equipments }) {
@@ -119,7 +120,7 @@ export default function EditEquipmentForm({ data }: { data: Equipments }) {
       });
     } else {
       response = await userEditEquipmentAction(
-        values,
+        values as UserEditEquipmentDataType,
         params.id.toString()
       ).finally(() => {
         setLoading(false);

@@ -8,9 +8,9 @@ import {
 import { cookies } from "next/headers";
 import { NewEquipmentDataType } from "./new-equipment.action";
 
-interface UserEditEquipmentDataType {
+export interface UserEditEquipmentDataType {
   name: string;
-  description: string | null;
+  description: string | null | undefined;
 }
 
 export async function userEditEquipmentAction(

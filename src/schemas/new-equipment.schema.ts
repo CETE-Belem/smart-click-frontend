@@ -22,8 +22,7 @@ export const NewEquipmentSchema = z.object({
   description: z
     .string()
     .max(255, "A descrição deve ter no máximo 255 caracteres")
-    .optional()
-    .nullable(),
+    .optional(),
   city: z
     .string({
       required_error: "Campo obrigatório",
