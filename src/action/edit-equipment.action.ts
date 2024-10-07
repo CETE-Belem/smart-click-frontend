@@ -10,7 +10,7 @@ import { NewEquipmentDataType } from "./new-equipment.action";
 
 interface UserEditEquipmentDataType {
   name: string;
-  description: string;
+  description: string | null;
 }
 
 export async function userEditEquipmentAction(
@@ -23,7 +23,7 @@ export async function userEditEquipmentAction(
     const token = cookies().get("token")?.value;
     const parsedData: UserEditEquipmentDataType = {
       name: newFormData.name,
-      description: newFormData.description,
+      description: newFormData.description || null,
     };
 
     const response = await api
@@ -33,7 +33,7 @@ export async function userEditEquipmentAction(
         },
       })
       .then((response) => response)
-      .catch((error) => error.response.data);
+      .catch((error) => error.response);
 
     if (response.status === 200) {
       return {
@@ -42,16 +42,9 @@ export async function userEditEquipmentAction(
       };
     }
 
-    if (response.statusCode === 404) {
-      return {
-        success: false,
-        message: "Equipamento não encontrado",
-      };
-    }
-
     return {
       success: false,
-      message: response.message,
+      message: response.data.message,
     };
   } catch (error) {
     return {
@@ -72,7 +65,7 @@ export async function adminEditEquipmentAction(
     const parsedData: NewEquipmentDataType = {
       mac: newFormData.mac,
       name: newFormData.name,
-      description: newFormData.description,
+      description: newFormData.description || null,
       numeroUnidadeConsumidora: newFormData.consumerUnityNumber,
       uf: newFormData.uf,
       cidade: newFormData.city,
@@ -87,7 +80,7 @@ export async function adminEditEquipmentAction(
         },
       })
       .then((response) => response)
-      .catch((error) => error.response.data);
+      .catch((error) => error.response);
 
     if (response.status === 200) {
       return {
@@ -96,16 +89,9 @@ export async function adminEditEquipmentAction(
       };
     }
 
-    if (response.statusCode === 404) {
-      return {
-        success: false,
-        message: "Equipamento não encontrado",
-      };
-    }
-
     return {
       success: false,
-      message: response.message,
+      message: response.data.message,
     };
   } catch (error) {
     return {

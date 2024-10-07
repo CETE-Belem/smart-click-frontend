@@ -10,7 +10,7 @@ import { cookies } from "next/headers";
 export interface NewEquipmentDataType {
   mac: string;
   name: string;
-  description: string;
+  description: string | null;
   numeroUnidadeConsumidora: string;
   uf: string;
   cidade: string;
@@ -28,7 +28,7 @@ export async function newEquipmentAction(
     const parsedData: NewEquipmentDataType = {
       mac: newFormData.mac,
       name: newFormData.name,
-      description: newFormData.description,
+      description: newFormData.description || null,
       numeroUnidadeConsumidora: newFormData.consumerUnityNumber,
       uf: newFormData.uf,
       cidade: newFormData.city,

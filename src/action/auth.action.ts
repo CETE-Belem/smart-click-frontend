@@ -12,7 +12,7 @@ export async function authAction(
     const response = await api
       .post("/auth/login", formData)
       .then((response) => response)
-      .catch((error) => error.response.data);
+      .catch((error) => error.response);
 
     if (response.status === 201) {
       cookies().set("token", response.data.accessToken);
@@ -20,27 +20,6 @@ export async function authAction(
         success: true,
         message: "Usuário autenticado com sucesso",
         user: response.data.user,
-      };
-    }
-
-    if (response.statusCode === 401) {
-      return {
-        success: false,
-        message: "Credenciais inválidas",
-      };
-    }
-
-    if (response.statusCode === 403) {
-      return {
-        success: false,
-        message: "Captcha inválido",
-      };
-    }
-
-    if (response.statusCode === 404) {
-      return {
-        success: false,
-        message: "Usuário não encontrado",
       };
     }
 

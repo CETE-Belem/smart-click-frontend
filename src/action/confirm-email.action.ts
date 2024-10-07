@@ -2,6 +2,7 @@
 
 import { api } from "@/lib/axios";
 import { ConfirmEmailType, ConfirmEmail } from "@/schemas/confirm-email.schema";
+import { cookies } from "next/headers";
 
 export async function confirmEmail(
   formData: ConfirmEmailType,
@@ -17,6 +18,7 @@ export async function confirmEmail(
       .catch((error) => error.response);
 
     if (response.status === 200) {
+      cookies().set("token", response.data.accessToken);
       return {
         success: true,
         message: "Email confirmado com sucesso",

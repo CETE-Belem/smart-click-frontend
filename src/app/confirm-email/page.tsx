@@ -23,7 +23,7 @@ import { confirmEmail } from "@/action/confirm-email.action";
 import { resendConfirmationCode } from "@/action/resend-confirmation-code.action";
 import { Routes } from "@/enums/Routes.enum";
 import { useCookies } from "next-client-cookies";
-import { ChevronLeftIcon } from "lucide-react";
+import { ChevronLeftIcon, Route } from "lucide-react";
 
 export default function ConfirmEmail() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,7 +57,6 @@ export default function ConfirmEmail() {
     });
 
     if (response.success) {
-      cookies.remove("token");
       toast({
         title: "Sucesso",
         description: response?.message,

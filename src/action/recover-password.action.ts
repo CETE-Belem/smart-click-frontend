@@ -10,9 +10,11 @@ export async function sendEmailToRecoverPassword(formData: RecoverPasswordEmailS
         const result = RecoverPasswordEmailSchema.safeParse(formData)
         const newFormData = result.data!
 
-        const response = await api.patch(`/users/${newFormData.email}/send-recover-code`).then(response => response).catch(error => error.response.data)
+        const response = await api.patch(`/users/${newFormData.email}/send-recover-code`)
+            .then(response => response)
+            .catch(error => error.response)
 
-        if(response.status === 200) {
+        if (response.status === 200) {
             return {
                 success: true,
                 message: "Código de recuperação de senha enviado"
@@ -31,14 +33,16 @@ export async function sendEmailToRecoverPassword(formData: RecoverPasswordEmailS
     }
 }
 
-export async function recoverPassword(formData: RecoverPasswordSchemaType, email: string): Promise<{success: boolean; message: string}> {
+export async function recoverPassword(formData: RecoverPasswordSchemaType, email: string): Promise<{ success: boolean; message: string }> {
     try {
         const result = RecoverPasswordSchemaTransformed.safeParse(formData)
         const newFormData = result.data!
 
-        const response = await api.patch(`/users/${email}/recover-password`, newFormData).then(response => response).catch(error => error.response.data)
+        const response = await api.patch(`/users/${email}/recover-password`, newFormData)
+        .then(response => response)
+        .catch(error => error.response)
 
-        if(response.status === 200) {
+        if (response.status === 200) {
             return {
                 success: true,
                 message: "Senha alterada com sucesso"

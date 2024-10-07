@@ -16,6 +16,8 @@ import { recoverPassword } from "@/action/recover-password.action";
 import { resendConfirmationCode } from "@/action/resend-confirmation-code.action";
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@radix-ui/react-tooltip";
 import { CiCircleInfo } from "react-icons/ci";
+import { Routes } from "@/enums/Routes.enum";
+import { Route } from "lucide-react";
 
 export default function RecoverPassword() {
     const [loading, setLoading] = useState<boolean>(false);
@@ -39,9 +41,9 @@ export default function RecoverPassword() {
     }, [setFocus]);
 
     async function onSubmit(data: RecoverPasswordSchemaType) {
-        router.prefetch("/login");
+        router.prefetch(Routes.Login);
         setLoading(true);
-        if (!email) return router.push("/login");
+        if (!email) return router.push(Routes.Login);
 
         const response = await recoverPassword(data, email).finally(() => {
             setLoading(false)
@@ -53,7 +55,7 @@ export default function RecoverPassword() {
                 description: response?.message,
                 variant: "success"
             })
-            router.push("/login")
+            router.push(Routes.Login)
         } else {
             toast({
                 title: "Erro",

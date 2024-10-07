@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import NewUserImage from "public/images/new-user-image.svg";
 import Image from "next/image";
 import useUserStore from "@/store/user.store";
+import { Role } from "@/enums/Role.enum";
 
 export default function EditProfileForm({
   data,
@@ -32,7 +33,8 @@ export default function EditProfileForm({
   const router = useRouter();
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const setUser  = useUserStore(state => state.setUser);
+  const setUser = useUserStore(state => state.setUser);
+  const user = useUserStore((state) => state.user);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -71,7 +73,9 @@ export default function EditProfileForm({
       });
       setUser(response.data);
       router.refresh();
-      setTimeout(() => router.push(Routes.Users), 500);
+      if (user?.perfil === Role.ADMIN) {
+        router.push(Routes.Users)
+      }
     } else {
       toast({
         title: "Erro",
