@@ -12,25 +12,25 @@ const noNeedAuth = [
   "/recover-password/password",
 ];
 
-const AdminPages = [
-  Routes.EquipmentsNew,
-  Routes.Concessionaires,
-  Routes.Concessionaire,
-  Routes.ConcessionaireEdit,
-  Routes.ConcessionaireNew,
-  Routes.ConsumerUnitNew,
-  Routes.ConsumerUnitEdit,
-  Routes.Users,
-  Routes.User,
-  Routes.UserEdit,
-  Routes.AdminNew,
-  Routes.User,
-  Routes.Rates,
-  Routes.ConcessionaireRates,
-  Routes.Rate,
-  Routes.RateNew,
-  Routes.RateEdit,
-];
+// const AdminPages = [
+//   Routes.EquipmentsNew,
+//   Routes.Concessionaires,
+//   Routes.Concessionaire,
+//   Routes.ConcessionaireEdit,
+//   Routes.ConcessionaireNew,
+//   Routes.ConsumerUnitNew,
+//   Routes.ConsumerUnitEdit,
+//   Routes.Users,
+//   Routes.User,
+//   Routes.UserEdit,
+//   Routes.AdminNew,
+//   Routes.User,
+//   Routes.Rates,
+//   Routes.ConcessionaireRates,
+//   Routes.Rate,
+//   Routes.RateNew,
+//   Routes.RateEdit,
+// ];
 
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
@@ -65,16 +65,13 @@ export async function middleware(request: NextRequest) {
     }
 
     // Verifica permissões de administrador para páginas administrativas
-    if (
-      (request.nextUrl.pathname.includes("/admin") ||
-        AdminPages.includes(
-          request.nextUrl.pathname.replace(
-            /[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i,
-            "[id]"
-          ) as Routes
-        )) &&
-      verified.role !== Role.ADMIN
-    ) {
+    const adminPageRegex = new RegExp(
+      "^(/admin|/concessionaires|/rates|/users)(/[^/]+)?(/edit|/new)?$",
+      "i"
+    );
+    const isProtectedAdminPage = adminPageRegex.test(request.nextUrl.pathname);
+
+    if (isProtectedAdminPage && verified.role !== Role.ADMIN) {
       return Response.redirect(new URL("/no-permission", request.url));
     }
   }
