@@ -47,7 +47,7 @@ export default function NewRatesPage() {
   });
 
   async function onSubmit(values: NewRateSchemaType) {
-    router.prefetch(Routes.ConcessionaireRates);
+    router.prefetch(Routes.ConcessionaireRates.replace("[id]", id.toString()));
     setLoading(true);
     toast({
       title: "Criando...",
@@ -64,7 +64,7 @@ export default function NewRatesPage() {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["Concessionaire-rates"] });
+      queryClient.invalidateQueries({ queryKey: ["concessionaires-rates"] });
       router.push(Routes.ConcessionaireRates.replace("[id]", id.toString()));
     } else {
       toast({
@@ -91,7 +91,9 @@ export default function NewRatesPage() {
           <span className="text-solaris-primary">Cadastrar</span> nova tarifa
         </h1>
         <pre className="mt-2 rounded-md bg-slate-950 p-4 w-full">
-          <code className="text-white">{JSON.stringify(form.watch(), null, 2)}</code>
+          <code className="text-white">
+            {JSON.stringify(form.watch(), null, 2)}
+          </code>
         </pre>
         <Form {...form}>
           <form
@@ -113,7 +115,9 @@ export default function NewRatesPage() {
                           placeholder="R$ 0,00"
                           className="w-full"
                           type="number"
-                          onChange={(e) => field.onChange(Number(e.target.value))}
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
                       <FormMessage>
@@ -252,9 +256,13 @@ export default function NewRatesPage() {
                           <Input
                             label="Valor do intervalo"
                             placeholder="R$ 0,00"
-                            {...form.register(`intervalos_tarifas.${index}.valor`, {
-                              setValueAs: (value) => value === "" ? undefined : Number(value), // Converte a string para número
-                            })}
+                            {...form.register(
+                              `intervalos_tarifas.${index}.valor`,
+                              {
+                                setValueAs: (value) =>
+                                  value === "" ? undefined : Number(value), // Converte a string para número
+                              }
+                            )}
                             disabled={loading}
                             className="w-full"
                             type="number"

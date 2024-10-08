@@ -131,7 +131,10 @@ export const ratesTableColumn: ColumnDef<Rates>[] = [
               })
               .then(() => {
                 queryClient.invalidateQueries({
-                  queryKey: ["rates"],
+                  queryKey: [
+                    "concessionaires-rates",
+                    row.original.cod_concessionaria,
+                  ],
                 });
                 toast({
                   title: "Tarifa excluída com sucesso",
@@ -205,7 +208,7 @@ export const ratesCardColumns: CardColumnDef<Rates>[] = [
         <div className="mb-4 min-w-[200px] gap-4 w-full flex flex-col items-center">
           <div className="w-full flex flex-row justify-between items-center">
             <p className="text-xs">
-              {dayjs(data.dt_tarifa).format("DD/MM/yyyy")}
+              {dayjs(data.dt_tarifa).format("DD/MM/YYYY")}
             </p>
             <p className="text-xs font-semibold">R${data.valor}</p>
             <p className="text-xs">{data.subgrupo}</p>

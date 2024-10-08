@@ -48,7 +48,7 @@ export default function ConcessionairesRates() {
   const query = searchParams.get("query") ?? "";
 
   const { data, isLoading } = useQuery<GetRatesResponse>({
-    queryKey: ["rates", id, pageIndex, perPage, query],
+    queryKey: ["concessionaires-rates", id, pageIndex, perPage, query],
     queryFn: async () => {
       const token = cookies.get("token");
       const response = await apiClient.get<GetRatesResponse>(
@@ -87,7 +87,9 @@ export default function ConcessionairesRates() {
           },
         })
         .then(() => {
-          queryClient.invalidateQueries({ queryKey: ["rates"] });
+          queryClient.invalidateQueries({
+            queryKey: ["concessionaires-rates", id, pageIndex, perPage, query],
+          });
           toast({
             title: "Tarifa excluída com sucesso",
             description: `A tarifa para o subgrupo ${data.subgrupo} foi excluída com sucesso`,
