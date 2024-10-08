@@ -36,3 +36,10 @@ export function convertMinutesToTimeString(minutes: number): string {
 
   return timeString; // Devolver o tempo no formato HH:mm
 }
+
+// Trata o valor recebido para o formato de dinheiro:
+// Ex.:
+// 24.000000 -> 24.00
+export function formatMoney(value: number): number {
+  return parseFloat(value.toFixed(2));
+}

@@ -2,7 +2,11 @@
 import { editRateAction } from "@/action/edit-rate.action";
 import Image from "next/image";
 import { useToast } from "@/components/ui/use-toast";
-import { NewRateSchema, NewRateSchemaType } from "@/schemas/new-rates.schema";
+import {
+  NewRateSchema,
+  NewRateSchemaType,
+  IntervalRateSchemaType,
+} from "@/schemas/new-rates.schema";
 import { IntervalosTarifa, Rates } from "@/types/rates";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -30,7 +34,7 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import NewRateImage from "@/../public/images/new-rates-image.svg";
-import { convertMinutesToTimeString } from "@/lib/utils";
+import { convertMinutesToTimeString, formatMoney } from "@/lib/utils";
 import useMask from "@/hooks/useMask";
 
 export default function EditRateEdit({ data }: { data: Rates }) {
@@ -133,7 +137,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                           className="w-full"
                           type="number"
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(formatMoney(Number(e.target.value)))
                           }
                         />
                       </FormControl>

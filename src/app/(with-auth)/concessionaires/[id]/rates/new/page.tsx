@@ -30,6 +30,7 @@ import { X } from "lucide-react";
 import { Routes } from "@/enums/Routes.enum";
 import { newRateAction } from "@/action/new-rate.action";
 import useMask from "@/hooks/useMask";
+import { formatMoney } from "@/lib/utils";
 
 export default function NewRatesPage() {
   const router = useRouter();
@@ -116,7 +117,7 @@ export default function NewRatesPage() {
                           className="w-full"
                           type="number"
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(formatMoney(Number(e.target.value)))
                           }
                         />
                       </FormControl>
@@ -222,6 +223,7 @@ export default function NewRatesPage() {
                             {...form.register(`intervalos_tarifas.${index}.de`)}
                             disabled={loading}
                             className="w-full"
+                            maxLength={5}
                             onInput={handleChange}
                           />
                           <FormMessage>
@@ -241,6 +243,7 @@ export default function NewRatesPage() {
                             )}
                             disabled={loading}
                             className="w-full"
+                            maxLength={5}
                             onInput={handleChange}
                           />
                           <FormMessage>
@@ -256,15 +259,21 @@ export default function NewRatesPage() {
                           <Input
                             label="Valor do intervalo"
                             placeholder="R$ 0,00"
+                            // {...form.register(`intervalos_tarifas.${index}.valor`, {
+                            //   setValueAs: (value) => value === "" ? undefined : Number(value), // Converte a string para número
+                            // })}
                             {...form.register(
-                              `intervalos_tarifas.${index}.valor`,
-                              {
-                                setValueAs: (value) =>
-                                  value === "" ? undefined : Number(value), // Converte a string para número
-                              }
+                              `intervalos_tarifas.${index}.valor`
                             )}
+                            onChange={(e) =>
+                              form.setValue(
+                                `intervalos_tarifas.${index}.valor`,
+                                formatMoney(Number(e.target.value))
+                              )
+                            }
                             disabled={loading}
                             className="w-full"
+                            step="0.01"
                             type="number"
                           />
                           <FormMessage>
