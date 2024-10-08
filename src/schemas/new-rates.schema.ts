@@ -31,6 +31,7 @@ export const IntervalRateSchema = z.array(
         return convertTimeToMinutes(value, "HH:mm");
       }),
     valor: z
+      .coerce
       .number({
         required_error: "O valor é obrigatório",
       })
