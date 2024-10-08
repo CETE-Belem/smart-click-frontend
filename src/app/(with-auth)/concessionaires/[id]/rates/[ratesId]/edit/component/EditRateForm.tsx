@@ -84,8 +84,10 @@ export default function EditRateEdit({ data }: { data: Rates }) {
         description: response.message,
         variant: "success",
       });
-      queryClient.invalidateQueries({ queryKey: ["rates", params.id] });
-      queryClient.invalidateQueries({ queryKey: ["rates-interval", data.cod_tarifa] });
+      queryClient.invalidateQueries({ queryKey: ["concessionaires-rates"] });
+      queryClient.invalidateQueries({
+        queryKey: ["rates-interval", data.cod_tarifa],
+      });
       router.push(
         Routes.ConcessionaireRates.replace("[id]", params.id.toString())
       );
@@ -120,7 +122,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                 <FormField
                   control={form.control}
                   name="valor"
-                  render={({ field }) => (
+                  render={({ field, fieldState }) => (
                     <FormItem>
                       <FormControl>
                         <Input
@@ -130,9 +132,14 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                           disabled={loading}
                           className="w-full"
                           type="number"
+                          onChange={(e) =>
+                            field.onChange(Number(e.target.value))
+                          }
                         />
                       </FormControl>
-                      <FormMessage />
+                      <FormMessage>
+                        {fieldState.error ? fieldState.error.message : null}
+                      </FormMessage>
                     </FormItem>
                   )}
                 />
