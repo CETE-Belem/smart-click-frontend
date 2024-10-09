@@ -36,10 +36,13 @@ import { X } from "lucide-react";
 import NewRateImage from "@/../public/images/new-rates-image.svg";
 import { convertMinutesToTimeString, formatMoney } from "@/lib/utils";
 import useMask from "@/hooks/useMask";
+import { useAlert } from "@/providers/alert.provider";
+import AlertNoIntervals from "@/app/(with-auth)/concessionaires/[id]/rates/components/alertNoIntervals";
 
 export default function EditRateEdit({ data }: { data: Rates }) {
   const router = useRouter();
   const { toast } = useToast();
+  const { openAlert } = useAlert();
   const queryClient = useQueryClient();
   const params = useParams();
   const { handleChange } = useMask({
@@ -47,6 +50,11 @@ export default function EditRateEdit({ data }: { data: Rates }) {
   });
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleCloseAlert = () => {
+    setIsOpen(false);
+  };
 
   const form = useForm<NewRateSchemaType>({
     defaultValues: {
@@ -66,6 +74,11 @@ export default function EditRateEdit({ data }: { data: Rates }) {
   });
 
   async function onSubmit(values: NewRateSchemaType) {
+    if (values.intervalos_tarifas.length === 0) {
+      setIsOpen(true);
+      return;
+    }
+
     router.prefetch(
       Routes.ConcessionaireRates.replace("[id]", params.id.toString())
     );
@@ -115,6 +128,9 @@ export default function EditRateEdit({ data }: { data: Rates }) {
         <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
           <span className="text-solaris-primary">Edição</span> de tarifa
         </h1>
+
+        <AlertNoIntervals open={isOpen} onClose={handleCloseAlert} />
+
         <Form {...form}>
           <form
             className="flex flex-col gap-5 w-full max-w-[500px]"
@@ -127,7 +143,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                   control={form.control}
                   name="valor"
                   render={({ field, fieldState }) => (
-                    <FormItem>
+                    <FormItem className="w-full">
                       <FormControl>
                         <Input
                           label="Valor Convencional (R$)"
