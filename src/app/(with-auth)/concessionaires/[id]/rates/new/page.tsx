@@ -31,6 +31,7 @@ import { Routes } from "@/enums/Routes.enum";
 import { newRateAction } from "@/action/new-rate.action";
 import useMask from "@/hooks/useMask";
 import { formatMoney } from "@/lib/utils";
+import AlertNoIntervals from "../components/alertNoIntervals";
 
 export default function NewRatesPage() {
   const router = useRouter();
@@ -42,12 +43,22 @@ export default function NewRatesPage() {
   });
 
   const [loading, setLoading] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  const handleCloseAlert = () => {
+    setIsOpen(false);
+  };
 
   const form = useForm<NewRateSchemaType>({
     resolver: zodResolver(NewRateSchema),
   });
 
   async function onSubmit(values: NewRateSchemaType) {
+    if (values.intervalos_tarifas.length === 0) {
+      setIsOpen(true);
+      return;
+    }
+
     router.prefetch(Routes.ConcessionaireRates.replace("[id]", id.toString()));
     setLoading(true);
     toast({
@@ -91,11 +102,9 @@ export default function NewRatesPage() {
         <h1 className="hidden lg:block text-3xl font-bold text-secondary-foreground">
           <span className="text-solaris-primary">Cadastrar</span> nova tarifa
         </h1>
-        <pre className="mt-2 rounded-md bg-slate-950 p-4 w-full">
-          <code className="text-white">
-            {JSON.stringify(form.watch(), null, 2)}
-          </code>
-        </pre>
+
+        <AlertNoIntervals open={isOpen} onClose={handleCloseAlert} />
+
         <Form {...form}>
           <form
             className="flex flex-col gap-5 w-full max-w-[500px]"
@@ -191,7 +200,6 @@ export default function NewRatesPage() {
                   />
                 </div>
               </div>
-
               {/* Intervalos Tarifas */}
               <FormField
                 control={form.control}
@@ -325,7 +333,6 @@ export default function NewRatesPage() {
                   </div>
                 )}
               />
-
               <Button
                 onClick={() =>
                   append({
