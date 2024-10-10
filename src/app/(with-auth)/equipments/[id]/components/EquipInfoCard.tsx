@@ -11,6 +11,7 @@ interface EquipmentCardInfoProps {
     V: number | null,
     I: number | null,
     Pr: number | null,
+    Fp: number | null,
   };
   phase?: string;
 }
@@ -33,6 +34,10 @@ export default function EquipmentCardInfo(props: EquipmentCardInfoProps) {
             <div className="flex flex-col items-center justify-center">
               <p className="text-2xl">{props.value.Pr?.toFixed(2) ?? '-'}</p>
               <p className="text-2xs">Potência Real (W)</p>
+            </div>
+            <div className="flex flex-col items-center justify-center">
+              <p className="text-2xl">{props.value.Fp?.toFixed(2) ?? '-'}</p>
+              <p className="text-2xs">Fator de Potência</p>
             </div>
           </div>
         </CardDescription>

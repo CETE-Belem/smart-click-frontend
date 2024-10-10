@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --solaris-primary: #1C5790;
+    --solaris-primary: #1c5790;
 
     --background-drop-profile: #212428;
 
@@ -74,17 +74,34 @@
   * {
     @apply border-border;
   }
-  
+
   body {
     @apply bg-background text-foreground;
+  }
+
+  /* Chrome, Safari, Edge, Opera */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  input[type="number"] {
+    -moz-appearance: textfield;
   }
 }
 
 @layer utilities {
   .solaris-background {
-    background: linear-gradient(243deg, #F6B042 -0.32%, #96B562 48.62%, #1C5790 100.35%);
+    background: linear-gradient(
+      243deg,
+      #f6b042 -0.32%,
+      #96b562 48.62%,
+      #1c5790 100.35%
+    );
   }
   .solaris-background-header {
-    background: linear-gradient(225deg, #F6B042 -0.32%, #96B562 100.35%);
+    background: linear-gradient(225deg, #f6b042 -0.32%, #96b562 100.35%);
   }
 }

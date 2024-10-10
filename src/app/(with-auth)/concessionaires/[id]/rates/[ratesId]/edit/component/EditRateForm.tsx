@@ -299,9 +299,11 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                               `intervalos_tarifas.${index}.valor`
                             )}
                             disabled={loading}
-                            defaultValue={field.valor ?? ""} // Corrigido para `field.valor`
+                            defaultValue={field.valor ?? ""}
                             className="w-full"
                             type="number"
+                            step={0.000001}
+                            onWheel={(e) => e.currentTarget.blur()}
                           />
                           <FormMessage>
                             {

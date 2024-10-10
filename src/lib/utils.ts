@@ -43,3 +43,16 @@ export function convertMinutesToTimeString(minutes: number): string {
 export function formatMoney(value: number): number {
   return parseFloat(value.toFixed(2));
 }
+
+// Trata o valor recebido para o formato de dinheiro:
+// Ex.:
+// 24.000000 -> R$ 24,00
+export function formatCurrency(value) {
+  if (!value) return "";
+
+  const numberValue = parseFloat(value.toString().replace(/[^\d]/g, ""));
+  return numberValue.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  });
+}

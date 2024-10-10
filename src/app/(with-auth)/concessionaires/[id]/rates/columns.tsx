@@ -259,7 +259,7 @@ function RatesInfoDialog({
   return (
     <AlertDialog open={open} onOpenChange={setOpen}>
       <AlertDialogTrigger>{children}</AlertDialogTrigger>
-      <AlertDialogContent className="max-w-72 sm:max-w-96 flex flex-col gap-8 items-center justify-center p-9 overflow-hidden border-none rounded-[1.25rem]">
+      <AlertDialogContent className="flex flex-col gap-8 items-center justify-center p-9 overflow-hidden border-none rounded-[1.25rem]">
         <div className="w-full flex justify-between">
           <AlertDialogTitle className="text-3xl font-bold text-secondary-foreground text-center items-stretch">
             Horários
@@ -270,12 +270,17 @@ function RatesInfoDialog({
             </Button>
           </AlertDialogCancel>
         </div>
-        <div className="w-full h-fit">
+        <div className="w-fit h-fit">
           {data && data.length > 0 ? (
-            <ChartContainer config={chartConfig} className="min-h-72 w-full">
+            <ChartContainer config={chartConfig} className="min-h-72">
               <BarChart
                 accessibilityLayer
-                data={data?.map((item: any) => ({
+                data={data?.map((item: {
+                  de: number;
+                  ate: number;
+                  valor: number;
+                  tipo: string;
+                }) => ({
                   name: `${convertMinutesToHourLabel(item.de)} - ${convertMinutesToHourLabel(item.ate)}`,
                   valor: item.valor,
                   tipo: item.tipo,
@@ -283,9 +288,9 @@ function RatesInfoDialog({
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                <XAxis dataKey="name" tick={{ fontSize: 10 }} tickMargin={1} />
                 <YAxis
-                  tickFormatter={(value) => `R$${value}`}
+                  tickFormatter={(value: number) => `R$${value.toLocaleString("pt-BR")}`}
                   tick={{ fontSize: 12 }}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />
@@ -320,7 +325,7 @@ function RatesInfoDialog({
                           textAnchor="middle"
                           fill={props.fill}
                         >
-                          {`R$${props.value}`}
+                          {`R$${props.value.toLocaleString("pt-BR")}`}
                         </text>
                       );
                     }}
