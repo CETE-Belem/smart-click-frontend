@@ -25,7 +25,7 @@ interface CardViewProps<T extends Record<string, any>> {
   isLoading?: boolean;
   canDelete?: boolean;
   canEdit?: boolean;
-  editRoute?: string;
+  editRoute?: ((item: T) => string) | string;
   handleDelete?: (data: T) => void;
   customMobileActions?: (data: T) => JSX.Element;
 }
@@ -74,7 +74,16 @@ export default function CardView<T extends Record<string, any>>({
                       <DropdownMenuLabel>Ações</DropdownMenuLabel>
                       {customMobileActions && customMobileActions(item)}
                       {canEdit && (
-                        <Link href={editRoute?.replace("[id]", item[accessorKey]) ?? ""}>
+                        <Link
+                          href={
+                            typeof editRoute === "function"
+                              ? editRoute(item)
+                              : (editRoute?.replace(
+                                  "[id]",
+                                  item[accessorKey]
+                                ) ?? "")
+                          }
+                        >
                           <DropdownMenuItem>
                             <Edit size={16} className="mr-2" />
                             Editar
@@ -92,7 +101,6 @@ export default function CardView<T extends Record<string, any>>({
                           </span>
                         </DropdownMenuItem>
                       )}
-                      
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
