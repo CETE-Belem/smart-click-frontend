@@ -141,7 +141,12 @@ export default function ConcessionairesRates() {
           columns={ratesCardColumns}
           isLoading={isLoading}
           canEdit={user?.perfil === Role.ADMIN}
-          editRoute={Routes.ConcessionaireEdit}
+          editRoute={(item: Rates) =>
+            Routes.RateEdit.replace("[id]", id as string).replace(
+              "[id-rates]",
+              item.cod_tarifa.toString()
+            )
+          }
           canDelete={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
