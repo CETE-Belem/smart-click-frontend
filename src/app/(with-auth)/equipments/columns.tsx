@@ -75,74 +75,6 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      function Delete() {
-        const { openAlert } = useAlert();
-        const { toast } = useToast();
-        const cookies = useCookies();
-        const queryClient = useQueryClient();
-        const user = useUserStore((state) => state.user);
-
-        async function handleDelete() {
-          try {
-            const confirmed = await openAlert({
-              title: "Excluir equipamento",
-              description: `Tem certeza que deseja excluir o equipamento ${row.original.nome}?`,
-              confirmText: "Sim",
-              cancelText: "Não",
-            });
-
-            if (!confirmed) return;
-
-            // toast({
-            //   title: "Excluindo...",
-            //   description: `O equipamento ${row.original.nome} está sendo excluído`,
-            //   variant: "loading",
-            // });
-
-            await apiClient
-              .delete(`/equipments/${row.original.cod_equipamento}`, {
-                headers: {
-                  Authorization: `Bearer ${cookies.get("token")}`,
-                },
-              })
-              .then(() => {
-                queryClient.invalidateQueries({ queryKey: ["equipments"] });
-                toast({
-                  title: "Equipamento excluído com sucesso",
-                  description: `O equipamento ${row.original.nome} foi excluído com sucesso`,
-                  variant: "success",
-                });
-              })
-              .catch((error) => {
-                toast({
-                  title: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
-                  description: error.response.data.message,
-                  variant: "destructive",
-                });
-              });
-          } catch (error) {
-            console.log(error);
-            toast({
-              title: "Erro ao excluir equipamento",
-              description: `Ocorreu um erro ao excluir o equipamento ${row.original.nome}`,
-              variant: "destructive",
-            });
-          }
-        }
-
-        return user?.perfil === Role.ADMIN ? (
-          <DropdownMenuItem onClick={handleDelete}>
-            <Trash2
-              size={16}
-              className="mr-2 text-red-600 hover:text-red-600"
-            />
-            <span className="text-red-600 hover:text-red-600">Excluir</span>
-          </DropdownMenuItem>
-        ) : (
-          <></>
-        );
-      }
-
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -159,8 +91,13 @@ export const equipmentsTableColumn: ColumnDef<Equipments>[] = [
                 Editar
               </DropdownMenuItem>
             </Link>
-            <Delete />
-            <Link href={`/equipments/${row.original.cod_equipamento}/constants`}>
+            <Delete
+              nomeEquipamento={row.original.nome}
+              cod_equipamento={row.original.cod_equipamento}
+            />
+            <Link
+              href={`/equipments/${row.original.cod_equipamento}/constants`}
+            >
               <DropdownMenuItem>
                 <NotebookText size={16} className="mr-2" />
                 Assistente de Calibração
@@ -206,3 +143,85 @@ export const equipmentsCardColumns: CardColumnDef<Equipments>[] = [
     ),
   },
 ];
+
+export const customMobileActions = function (data: Equipments) {
+  return (
+    <Link href={`/equipments/${data.cod_equipamento}/constants`}>
+      <DropdownMenuItem>
+        <NotebookText size={16} className="mr-2" />
+        Assistente de Calibração
+      </DropdownMenuItem>
+    </Link>
+  );
+};
+
+function Delete({
+  nomeEquipamento,
+  cod_equipamento,
+}: {
+  nomeEquipamento: string;
+  cod_equipamento: string;
+}) {
+  const { openAlert } = useAlert();
+  const { toast } = useToast();
+  const cookies = useCookies();
+  const queryClient = useQueryClient();
+  const user = useUserStore((state) => state.user);
+
+  async function handleDelete() {
+    try {
+      const confirmed = await openAlert({
+        title: "Excluir equipamento",
+        description: `Tem certeza que deseja excluir o equipamento ${nomeEquipamento}?`,
+        confirmText: "Sim",
+        cancelText: "Não",
+      });
+
+      if (!confirmed) return;
+
+      // toast({
+      //   title: "Excluindo...",
+      //   description: `O equipamento ${row.original.nome} está sendo excluído`,
+      //   variant: "loading",
+      // });
+
+      await apiClient
+        .delete(`/equipments/${cod_equipamento}`, {
+          headers: {
+            Authorization: `Bearer ${cookies.get("token")}`,
+          },
+        })
+        .then(() => {
+          queryClient.invalidateQueries({ queryKey: ["equipments"] });
+          toast({
+            title: "Equipamento excluído com sucesso",
+            description: `O equipamento ${nomeEquipamento} foi excluído com sucesso`,
+            variant: "success",
+          });
+        })
+        .catch((error) => {
+          toast({
+            title: `Ocorreu um erro ao excluir o equipamento ${nomeEquipamento}`,
+            description: error.response.data.message,
+            variant: "destructive",
+          });
+        });
+    } catch (error) {
+      console.log(error);
+      toast({
+        title: "Erro ao excluir equipamento",
+        description: `Ocorreu um erro ao excluir o equipamento ${nomeEquipamento}`,
+        variant: "destructive",
+      });
+    }
+  }
+
+  return user?.perfil === Role.ADMIN ? (
+    <DropdownMenuItem onClick={handleDelete}>
+      <Trash2 size={16} className="mr-2 text-red-600 hover:text-red-600" />
+      <span className="text-red-600 hover:text-red-600">Excluir</span>
+    </DropdownMenuItem>
+  ) : (
+    <></>
+  );
+}

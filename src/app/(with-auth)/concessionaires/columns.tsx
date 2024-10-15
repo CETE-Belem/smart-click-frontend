@@ -15,7 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { Trash2, MoreHorizontal, Edit } from "lucide-react";
+import { Trash2, MoreHorizontal, Edit, NotepadText } from "lucide-react";
 import { CardColumnDef } from "@/components/card-view";
 import Link from "next/link";
 import { Routes } from "@/enums/Routes.enum";
@@ -135,6 +135,17 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Ações</DropdownMenuLabel>
+            <Link
+              href={Routes.ConcessionaireRates.replace(
+                "[id]",
+                row.original.cod_concessionaria
+              )}
+            >
+              <DropdownMenuItem>
+                <NotepadText size={16} className="mr-2" />
+                Tarifas
+              </DropdownMenuItem>
+            </Link>
             <Link
               href={Routes.ConcessionaireEdit.replace(
                 "[id]",

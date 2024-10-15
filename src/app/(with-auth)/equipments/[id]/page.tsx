@@ -49,6 +49,9 @@ export default function EquipmentInfo() {
   const [prA, setPrA] = useState<number | null>(null);
   const [prB, setPrB] = useState<number | null>(null);
   const [prC, setPrC] = useState<number | null>(null);
+  const [fpA, setFpA] = useState<number | null>(null);
+  const [fpB, setFpB] = useState<number | null>(null);
+  const [fpC, setFpC] = useState<number | null>(null);
   const [phaseNumber, setPhaseNumber] = useState<number>(1);
   const [selectedFilter, setSelectedFilter] = useState<string>("hoje");
   const [date, setDate] = useState<DateRange>({
@@ -65,7 +68,6 @@ export default function EquipmentInfo() {
   >({
     queryKey: ["equipment-chart", params.id, date.to, date.from],
     queryFn: async () => {
-      console.log(date)
       const token = cookies.get("token");
       const response = await apiClient.get(`/sensor-data/${params.id}/chart`, {
         headers: {
@@ -84,7 +86,6 @@ export default function EquipmentInfo() {
     useQuery<EquipmentSchemaType>({
       queryKey: ["equipment", params.id],
       queryFn: async () => {
-        console.log(date.from, date.to);
         const token = cookies.get("token");
         const response = await apiClient.get(`/equipments/${params.id}`, {
           headers: {
@@ -152,6 +153,19 @@ export default function EquipmentInfo() {
       socket.on(`${data.mac}/smartclick/prfc`, (res) => {
         setPrC(res.data);
       });
+
+      /**
+       * Fator de Potência
+       */
+      socket.on(`${data.mac}/smartclick/fpfa`, (res) => {
+        setFpA(res.data);
+      });
+      socket.on(`${data.mac}/smartclick/fpfb`, (res) => {
+        setFpB(res.data);
+      });
+      socket.on(`${data.mac}/smartclick/fpfc`, (res) => {
+        setFpC(res.data);
+      });
     }
   }, [data, token]);
 
@@ -194,9 +208,24 @@ export default function EquipmentInfo() {
       setScale("month");
     }
     if (selectedFilter === "personalizado") {
-      setScale("month");
+      setDate({
+        from: dayjs(month).startOf("month").toDate(),
+        to: dayjs(month).endOf("month").toDate(),
+      });
+      
+      const diff = dayjs(month).endOf("month").diff(dayjs(month).startOf("month"), "day");
+
+      if(diff < 7){
+        setScale("hour");
+      } else if(diff < 30){
+        setScale("day");
+      } else if(diff < 365){
+        setScale("month");
+      } else {
+        setScale("year");
+      }
     }
-  }, [selectedFilter]);
+  }, [selectedFilter, month]);
 
   return (
     <div>
@@ -223,20 +252,20 @@ export default function EquipmentInfo() {
           {isLoading ? (
             <EquipmentCardInfoSkeleton />
           ) : (
-            <EquipmentCardInfo value={{ V: vA, I: iA, Pr: prA }} phase="A" />
+            <EquipmentCardInfo value={{ V: vA, I: iA, Pr: prA, Fp: fpA }} phase="A" />
           )}
           {phaseNumber > 1 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo value={{ V: vB, I: iB, Pr: prB }} phase="B" />
+              <EquipmentCardInfo value={{ V: vB, I: iB, Pr: prB, Fp: fpB }} phase="B" />
             )
           ) : null}
           {phaseNumber > 2 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo value={{ V: vC, I: iC, Pr: prC }} phase="C" />
+              <EquipmentCardInfo value={{ V: vC, I: iC, Pr: prC, Fp: fpC }} phase="C" />
             )
           ) : null}
         </div>

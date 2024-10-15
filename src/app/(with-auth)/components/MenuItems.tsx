@@ -1,5 +1,11 @@
 import React from "react";
-import { Briefcase, Building, UserRound, Zap } from "lucide-react";
+import {
+  Briefcase,
+  Building,
+  ClipboardList,
+  UserRound,
+  Zap,
+} from "lucide-react";
 import SidebarMenuItem from "./SidebarMenuItem";
 import { Routes } from "@/enums/Routes.enum";
 // Importação sem uso
@@ -21,6 +27,7 @@ export default function MenuItems() {
           <Zap height={24} width={24} />
         </SidebarMenuItem>
       )}
+
       <SidebarMenuItem
         href={Routes.ConsumerUnits}
         label="Unidades Consumidoras"

@@ -55,7 +55,6 @@ export default function EquipmentConstantsPage() {
       },
     });
     socket.on("connect", () => {
-      console.log("connected");
       socket.emit("getConstants", JSON.stringify({ id }));
     });
 
@@ -134,15 +133,15 @@ export default function EquipmentConstantsPage() {
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{ctA ?? "-"}</p>
-                <p className="text-2xs">Constante Fase A - Tensão (V)</p>
+                <p className="text-2xs">Constante Fase A - Tensão</p>
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{ctB ?? "-"}</p>
-                <p className="text-2xs">Constante Fase B - Tensão (V)</p>
+                <p className="text-2xs">Constante Fase B - Tensão</p>
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{ctC ?? "-"}</p>
-                <p className="text-2xs">Constante Fase C - Tensão (V)</p>
+                <p className="text-2xs">Constante Fase C - Tensão</p>
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{iA?.toFixed(2) ?? "-"}</p>
@@ -158,15 +157,15 @@ export default function EquipmentConstantsPage() {
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{ccA ?? "-"}</p>
-                <p className="text-2xs">Constante Fase A - Corrente (A)</p>
+                <p className="text-2xs">Constante Fase A - Corrente</p>
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{ccB ?? "-"}</p>
-                <p className="text-2xs">Constante Fase B - Corrente (A)</p>
+                <p className="text-2xs">Constante Fase B - Corrente</p>
               </div>
               <div className="flex flex-col items-center justify-center">
                 <p className="text-2xl">{ccC ?? "-"}</p>
-                <p className="text-2xs">Constante Fase C - Corrente (A)</p>
+                <p className="text-2xs">Constante Fase C - Corrente</p>
               </div>
             </div>
           </CardDescription>
