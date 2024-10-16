@@ -38,6 +38,7 @@ import { convertMinutesToTimeString, formatMoney } from "@/lib/utils";
 import useMask from "@/hooks/useMask";
 import { useAlert } from "@/providers/alert.provider";
 import AlertNoIntervals from "@/app/(with-auth)/concessionaires/[id]/rates/components/alertNoIntervals";
+import { verifyIfIntervalFillsAllDay } from "../../../utils/verifyIntervals";
 
 export default function EditRateEdit({ data }: { data: Rates }) {
   const router = useRouter();
