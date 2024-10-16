@@ -258,16 +258,11 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             placeholder="00:00"
                             {...form.register(`intervalos_tarifas.${index}.de`)}
                             disabled={loading}
-                            defaultValue={field.de ?? ""} // Corrigido para `field.de`
+                            defaultValue={field.de ?? ""}
                             className="w-full"
                             onInput={handleChange}
                           />
-                          <FormMessage>
-                            {
-                              form.formState.errors.intervalos_tarifas?.[index]
-                                ?.de?.message
-                            }
-                          </FormMessage>
+                          <FormMessage/>
 
                           <p className="text-base text-black/50">até</p>
 
@@ -278,16 +273,11 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                               `intervalos_tarifas.${index}.ate`
                             )}
                             disabled={loading}
-                            defaultValue={field.ate ?? ""} // Corrigido para `field.ate`
+                            defaultValue={field.ate ?? ""}
                             className="w-full"
                             onInput={handleChange}
                           />
-                          <FormMessage>
-                            {
-                              form.formState.errors.intervalos_tarifas?.[index]
-                                ?.ate?.message
-                            }
-                          </FormMessage>
+                          <FormMessage />
                         </div>
 
                         <div className="flex flex-wrap gap-4 items-center">
@@ -305,12 +295,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             step={0.000001}
                             onWheel={(e) => e.currentTarget.blur()}
                           />
-                          <FormMessage>
-                            {
-                              form.formState.errors.intervalos_tarifas?.[index]
-                                ?.valor?.message
-                            }
-                          </FormMessage>
+                          <FormMessage />
 
                           {/* Campo de Tipo */}
                           <FormField
@@ -340,11 +325,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                                     </SelectContent>
                                   </Select>
                                 </FormControl>
-                                <FormMessage>
-                                  {fieldState.error
-                                    ? fieldState.error.message
-                                    : null}
-                                </FormMessage>
+                                <FormMessage />
                               </FormItem>
                             )}
                           />
