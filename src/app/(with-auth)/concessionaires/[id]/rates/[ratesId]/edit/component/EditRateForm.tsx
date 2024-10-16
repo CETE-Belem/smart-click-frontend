@@ -74,6 +74,18 @@ export default function EditRateEdit({ data }: { data: Rates }) {
   });
 
   async function onSubmit(values: NewRateSchemaType) {
+
+    if(!verifyIfIntervalFillsAllDay(values.intervalos_tarifas)) {
+      console.log("Os intervalos de tarifa não cobrem o dia inteiro.");
+      toast({
+        title: "Erro",
+        description: "Os intervalos de tarifa não cobrem o dia inteiro.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    
     if (values.intervalos_tarifas.length === 0) {
       setIsOpen(true);
       return;
