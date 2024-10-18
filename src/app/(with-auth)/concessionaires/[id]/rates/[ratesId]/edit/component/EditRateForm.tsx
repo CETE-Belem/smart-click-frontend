@@ -62,6 +62,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
       dt_tarifa: new Date(data.dt_tarifa),
       subgrupo: data.subgrupo,
       valor: data.valor,
+      // @ts-ignore
       intervalos_tarifas: data.intervalos_tarifas.flatMap((intervalo) => {
         return {
           de: convertMinutesToTimeString(intervalo.de),

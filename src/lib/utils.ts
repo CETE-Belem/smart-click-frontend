@@ -47,7 +47,7 @@ export function formatMoney(value: number): number {
 // Trata o valor recebido para o formato de dinheiro:
 // Ex.:
 // 24.000000 -> R$ 24,00
-export function formatCurrency(value) {
+export function formatCurrency(value: any) {
   if (!value) return "";
 
   const numberValue = parseFloat(value.toString().replace(/[^\d]/g, ""));

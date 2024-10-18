@@ -2,13 +2,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { apiClient } from "@/lib/axios-client";
 import { useAlert } from "@/providers/alert.provider";
 import useUserStore from "@/store/user.store";
-import { Rate } from "@/types/rates";
+import { Rates } from "@/types/rates";
 import { useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
 import { useCookies } from "next-client-cookies";
 import Link from "next/link";
 
-export const ratesTableColumn: ColumnDef<Rate>[] = [
+export const ratesTableColumn: ColumnDef<Rates>[] = [
   {
     accessorKey: "dt_tarifa",
     header: "Data",
