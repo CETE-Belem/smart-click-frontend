@@ -22,7 +22,7 @@ export default function EquipmentCardInfo(props: EquipmentCardInfoProps) {
       <CardHeader className="flex gap-2 space-y-3 border-b py-5 flex-1">
         <CardTitle>Fase {props.phase}</CardTitle>
         <CardDescription>
-          <div className="flex flex-wrap w-full justify-between items-center">
+          <div className="grid grid-cols-2 w-full justify-between items-center">
             <div className="flex flex-col items-center justify-center">
               <p className="text-2xl">{props.value.V?.toFixed(2) ?? '-'}</p>
               <p className="text-2xs">Tensão (V)</p>
