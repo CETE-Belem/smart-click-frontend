@@ -40,7 +40,6 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { saveAs } from "file-saver";
 
 export default function EquipmentInfo() {
   const graphRef = useRef<HTMLDivElement>(null);
