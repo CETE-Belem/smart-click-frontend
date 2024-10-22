@@ -14,9 +14,9 @@ import { cn } from "@/lib/utils";
 import { EquipmentSchemaType } from "@/schemas/equipment.schema";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { Printer, RefreshCw } from "lucide-react";
+import { Printer, RefreshCw, ShareIcon } from "lucide-react";
 import { useCookies } from "next-client-cookies";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { useReactToPrint } from "react-to-print";
@@ -29,6 +29,18 @@ import EquipInfoGraph, {
 import EquipInfoGraphSkeleton from "./components/EquipInfoGraphSkeleton";
 import EquipmentCardInfoSkeleton from "./components/EquipmentCardInfoSkeleton";
 import EquipmentDetailsSkeleton from "./components/EquipmentDetailsSkeleton";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { saveAs } from "file-saver";
 
 export default function EquipmentInfo() {
   const graphRef = useRef<HTMLDivElement>(null);
@@ -62,10 +74,20 @@ export default function EquipmentInfo() {
   const [scale, setScale] = useState<
     "hour" | "day" | "week" | "month" | "year"
   >("hour");
-
-  const { data: chartData, isLoading: isChartLoading, refetch, isRefetching } = useQuery<
-    EquipmentChartData[]
-  >({
+  const [reportDate, setReportDate] = useState<DateRange>({
+    from: dayjs().startOf("month").toDate(),
+    to: dayjs().endOf("month").toDate(),
+  });
+  const [reportMonth, setReportMonth] = useState<Date>(new Date());
+  const [isReportDialogOpen, setIsReportDialogOpen] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const router = useRouter();
+  const {
+    data: chartData,
+    isLoading: isChartLoading,
+    refetch,
+    isRefetching,
+  } = useQuery<EquipmentChartData[]>({
     queryKey: ["equipment-chart", params.id, date.to, date.from],
     queryFn: async () => {
       const token = cookies.get("token");
@@ -82,20 +104,19 @@ export default function EquipmentInfo() {
     },
   });
 
-  const { data, isLoading } =
-    useQuery<EquipmentSchemaType>({
-      queryKey: ["equipment", params.id],
-      queryFn: async () => {
-        const token = cookies.get("token");
-        const response = await apiClient.get(`/equipments/${params.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        return response.data;
-      },
-      placeholderData: keepPreviousData,
-    });
+  const { data, isLoading } = useQuery<EquipmentSchemaType>({
+    queryKey: ["equipment", params.id],
+    queryFn: async () => {
+      const token = cookies.get("token");
+      const response = await apiClient.get(`/equipments/${params.id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    },
+    placeholderData: keepPreviousData,
+  });
 
   const token = cookies.get("token");
   useEffect(() => {
@@ -212,14 +233,16 @@ export default function EquipmentInfo() {
         from: dayjs(month).startOf("month").toDate(),
         to: dayjs(month).endOf("month").toDate(),
       });
-      
-      const diff = dayjs(month).endOf("month").diff(dayjs(month).startOf("month"), "day");
 
-      if(diff < 7){
+      const diff = dayjs(month)
+        .endOf("month")
+        .diff(dayjs(month).startOf("month"), "day");
+
+      if (diff < 7) {
         setScale("hour");
-      } else if(diff < 30){
+      } else if (diff < 30) {
         setScale("day");
-      } else if(diff < 365){
+      } else if (diff < 365) {
         setScale("month");
       } else {
         setScale("year");
@@ -227,15 +250,80 @@ export default function EquipmentInfo() {
     }
   }, [selectedFilter, month]);
 
+  function handleGenerateReport() {
+    setIsGenerating(true);
+    apiClient
+      .get(`/equipments/${params.id}/report`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        responseType: "blob",
+      })
+      .then(async (response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+
+        // Definindo o nome do arquivo
+        link.setAttribute("download", `relatorio-smart-click.xlsx`);
+
+        // Simulando o clique para download
+        document.body.appendChild(link);
+        link.click();
+
+        // Limpando o objeto URL
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      })
+      .finally(() => {
+        setIsGenerating(false);
+      });
+  }
+
   return (
     <div>
-      <div className="w-full flex flex-row justify-end items-center py-4 border border-opacity-20 border-black shadow-lg px-4 rounded-md">
+      <div className="gap-3 w-full flex flex-row justify-end items-center py-4 border border-opacity-20 border-black shadow-lg px-4 rounded-md">
         <button
           onClick={handlePrint}
           className="flex gap-1 text-sm items-center"
         >
           <Printer size={24} /> Imprimir
         </button>
+        <AlertDialog
+          open={isReportDialogOpen}
+          onOpenChange={setIsReportDialogOpen}
+        >
+          <AlertDialogTrigger asChild>
+            <button className="flex gap-1 text-sm items-center">
+              <ShareIcon size={24} /> Gerar Relatório
+            </button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="sm:max-w-[425px]">
+            <AlertDialogHeader>
+              <AlertDialogTitle>Gerar Relatório</AlertDialogTitle>
+              <AlertDialogDescription>
+                Selecione as datas
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <div className="py-4">
+              <RangeDatePicker
+                date={reportDate}
+                setDate={setReportDate}
+                month={reportMonth}
+                setMonth={setReportMonth}
+              />
+            </div>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={handleGenerateReport}
+                disabled={isGenerating || !date?.from || !date?.to}
+              >
+                {isGenerating ? "Gerando..." : "Gerar Relatório"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       <div className="mt-6">
         {data ? (
@@ -252,20 +340,29 @@ export default function EquipmentInfo() {
           {isLoading ? (
             <EquipmentCardInfoSkeleton />
           ) : (
-            <EquipmentCardInfo value={{ V: vA, I: iA, Pr: prA, Fp: fpA }} phase="A" />
+            <EquipmentCardInfo
+              value={{ V: vA, I: iA, Pr: prA, Fp: fpA }}
+              phase="A"
+            />
           )}
           {phaseNumber > 1 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo value={{ V: vB, I: iB, Pr: prB, Fp: fpB }} phase="B" />
+              <EquipmentCardInfo
+                value={{ V: vB, I: iB, Pr: prB, Fp: fpB }}
+                phase="B"
+              />
             )
           ) : null}
           {phaseNumber > 2 ? (
             isLoading ? (
               <EquipmentCardInfoSkeleton />
             ) : (
-              <EquipmentCardInfo value={{ V: vC, I: iC, Pr: prC, Fp: fpC }} phase="C" />
+              <EquipmentCardInfo
+                value={{ V: vC, I: iC, Pr: prC, Fp: fpC }}
+                phase="C"
+              />
             )
           ) : null}
         </div>

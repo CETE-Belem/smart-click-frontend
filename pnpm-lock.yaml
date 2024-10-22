@@ -62,6 +62,9 @@ dependencies:
   dayjs:
     specifier: ^1.11.13
     version: 1.11.13
+  file-saver:
+    specifier: ^2.0.5
+    version: 2.0.5
   jose:
     specifier: ^5.6.3
     version: 5.6.3
@@ -6492,6 +6495,10 @@ packages:
     dependencies:
       flat-cache: 3.2.0
     dev: true
+
+  /file-saver@2.0.5:
+    resolution: {integrity: sha512-P9bmyZ3h/PRG+Nzga+rbdI4OEpNDzAVyy74uVO9ATgzLK6VtAsYybF/+TOCvrc0MO793d6+42lLyZTw7/ArVzA==}
+    dev: false
 
   /filesize@10.1.4:
     resolution: {integrity: sha512-ryBwPIIeErmxgPnm6cbESAzXjuEFubs+yKYLBZvg3CaiNcmkJChoOGcBSrZ6IwkMwPABwPpVXE6IlNdGJJrvEg==}
