@@ -16,7 +16,7 @@ export async function authAction(
 
     if (response.status === 201) {
       cookies().set("token", response.data.accessToken, {
-        maxAge: 60 * 60 * 24 * 15,
+        maxAge: 60 * 60 * 24 * 14,
       });
       return {
         success: true,
