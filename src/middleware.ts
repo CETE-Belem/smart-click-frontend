@@ -35,8 +35,12 @@ const noNeedAuth = [
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("token")?.value;
 
-  // Verifica se o usuário já está logado e tenta acessar a página de login
+  if (request.nextUrl.pathname === Routes.HomePage) {
+    return Response.redirect(new URL(Routes.Login, request.url));
+  }
+
   if (token && request.nextUrl.pathname === "/login") {
+    // Verifica se o usuário já está logado e tenta acessar a página de login
     return Response.redirect(new URL(Routes.MainPage, request.url));
   }
 
