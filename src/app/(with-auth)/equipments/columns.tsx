@@ -207,7 +207,6 @@ function Delete({
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
         title: "Erro ao excluir equipamento",
         description: `Ocorreu um erro ao excluir o equipamento ${nomeEquipamento}`,

@@ -104,7 +104,6 @@ export default function ConcessionairesRates() {
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
         title: "Erro ao excluir tarifa",
         description: `Ocorreu um erro ao excluir a tarifa para o subgrupo ${data.subgrupo}`,

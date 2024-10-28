@@ -103,7 +103,6 @@ export const concessionaireTableColumn: ColumnDef<Concessionaire>[] = [
                 });
               });
           } catch (error) {
-            console.log(error);
             toast({
               title: `Erro ao excluir a concessionária`,
               description: `Ocorreu um erro ao excluir a concessionária ${row.original.nome}`,

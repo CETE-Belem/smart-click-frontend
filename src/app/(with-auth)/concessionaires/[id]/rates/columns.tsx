@@ -150,7 +150,6 @@ export const ratesTableColumn: ColumnDef<Rates>[] = [
                 });
               });
           } catch (error) {
-            console.log(error);
             toast({
               title: `Erro ao excluir a tarifa`,
               description: `Ocorreu um erro ao excluir a tarifa de subgrupo ${row.original.subgrupo}`,
@@ -275,22 +274,26 @@ function RatesInfoDialog({
             <ChartContainer config={chartConfig} className="min-h-72">
               <BarChart
                 accessibilityLayer
-                data={data?.map((item: {
-                  de: number;
-                  ate: number;
-                  valor: number;
-                  tipo: string;
-                }) => ({
-                  name: `${convertMinutesToHourLabel(item.de)} - ${convertMinutesToHourLabel(item.ate)}`,
-                  valor: item.valor,
-                  tipo: item.tipo,
-                }))}
+                data={data?.map(
+                  (item: {
+                    de: number;
+                    ate: number;
+                    valor: number;
+                    tipo: string;
+                  }) => ({
+                    name: `${convertMinutesToHourLabel(item.de)} - ${convertMinutesToHourLabel(item.ate)}`,
+                    valor: item.valor,
+                    tipo: item.tipo,
+                  })
+                )}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} tickMargin={1} />
                 <YAxis
-                  tickFormatter={(value: number) => `R$${value.toLocaleString("pt-BR")}`}
+                  tickFormatter={(value: number) =>
+                    `R$${value.toLocaleString("pt-BR")}`
+                  }
                   tick={{ fontSize: 12 }}
                 />
                 <ChartTooltip content={<ChartTooltipContent />} />

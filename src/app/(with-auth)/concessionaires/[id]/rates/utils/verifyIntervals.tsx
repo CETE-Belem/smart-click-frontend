@@ -1,25 +1,29 @@
 import { NewRateSchemaType } from "@/schemas/new-rates.schema";
 
-export function verifyIfIntervalFillsAllDay(intervals: NewRateSchemaType["intervalos_tarifas"]) {
-  const sortedIntervals = intervals
-  .filter((intervalo) => intervalo.de !== null && intervalo.ate !== null)
-  .sort((a, b) => (a.de || 0) - (b.de || 0));
+const END_OF_DAY_IN_MINUTES = 1439;
 
-let isCompleteDayCovered = true;
-let previousEnd = 0;
+export function verifyIfIntervalFillsAllDay(
+  intervals: NewRateSchemaType["intervalos_tarifas"]
+) {
+  const sortedIntervalsAsc = intervals
+    .filter((intervalo) => intervalo.de !== null && intervalo.ate !== null)
+    .sort((a, b) => (a.de || 0) - (b.de || 0));
 
-for (const intervalo of sortedIntervals) {
-  if (intervalo.de! > previousEnd) {
-    isCompleteDayCovered = false;
-    break;
+  let isCompleteDayCovered = true;
+  let previousEnd = 0;
+
+  for (const intervalo of sortedIntervalsAsc) {
+    if (intervalo.de! > previousEnd) {
+      isCompleteDayCovered = false;
+      break;
+    }
+    previousEnd = intervalo.ate!;
   }
-  previousEnd = intervalo.ate!;
-}
 
-// Verifica se o último intervalo termina exatamente no final do dia (1440 minutos)
-if (previousEnd !== 1440) {
-  isCompleteDayCovered = false;
-}
-console.log(isCompleteDayCovered);
-return isCompleteDayCovered;
+  // Verifica se o último intervalo termina exatamente no final do dia (1439 minutos)
+  if (previousEnd !== END_OF_DAY_IN_MINUTES) {
+    isCompleteDayCovered = false;
+  }
+
+  return isCompleteDayCovered;
 }

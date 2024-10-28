@@ -112,7 +112,6 @@ export default function ConcessionairesPage() {
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
         title: `Erro ao excluir a concessionária`,
         description: `Ocorreu um erro ao excluir a concessionária ${data.nome}`,
@@ -164,8 +163,8 @@ export default function ConcessionairesPage() {
           columns={
             user?.perfil !== Role.ADMIN
               ? concessionaireTableColumn.filter(
-                (column) => column.id !== "actions"
-              )
+                  (column) => column.id !== "actions"
+                )
               : concessionaireTableColumn
           }
           className="hidden sm:table"

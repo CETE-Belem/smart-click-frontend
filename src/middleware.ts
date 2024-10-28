@@ -51,7 +51,7 @@ export async function middleware(request: NextRequest) {
 
   // Se o usuário está logado, verifica as permissões e o e-mail
   if (token) {
-    const verified = await verifyAuth(token).catch((err) => console.log(err));
+    const verified = await verifyAuth(token).catch((err) => console.error(err));
 
     if (!verified) {
       // Redireciona para o login se o token for inválido

@@ -76,9 +76,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
   });
 
   async function onSubmit(values: NewRateSchemaType) {
-
-    if(!verifyIfIntervalFillsAllDay(values.intervalos_tarifas)) {
-      console.log("Os intervalos de tarifa não cobrem o dia inteiro.");
+    if (!verifyIfIntervalFillsAllDay(values.intervalos_tarifas)) {
       toast({
         title: "Erro",
         description: "Os intervalos de tarifa não cobrem o dia inteiro.",
@@ -87,7 +85,6 @@ export default function EditRateEdit({ data }: { data: Rates }) {
       return;
     }
 
-    
     if (values.intervalos_tarifas.length === 0) {
       setIsOpen(true);
       return;
@@ -131,6 +128,14 @@ export default function EditRateEdit({ data }: { data: Rates }) {
     }
   }
 
+  function onSubmitError() {
+    toast({
+      title: "Erro",
+      description: "Verifique os campos e tente novamente.",
+      variant: "destructive",
+    });
+  }
+
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "intervalos_tarifas",
@@ -148,7 +153,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
         <Form {...form}>
           <form
             className="flex flex-col gap-5 w-full max-w-[500px]"
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit, onSubmitError)}
           >
             <div className="flex flex-col space-y-6">
               <div className="flex flex-row flex-wrap gap-12 w-full sm:gap-5">
@@ -166,8 +171,11 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                           disabled={loading}
                           className="w-full"
                           type="number"
+                          step="0.00001"
                           onChange={(e) =>
-                            field.onChange(formatMoney(Number(e.target.value)))
+                            field.onChange(
+                              formatMoney(Number(e.target.value), 5)
+                            )
                           }
                         />
                       </FormControl>
@@ -276,7 +284,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             className="w-full"
                             onInput={handleChange}
                           />
-                          <FormMessage/>
+                          {/* <FormMessage /> */}
 
                           <p className="text-base text-black/50">até</p>
 
@@ -291,7 +299,7 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             className="w-full"
                             onInput={handleChange}
                           />
-                          <FormMessage />
+                          {/* <FormMessage /> */}
                         </div>
 
                         <div className="flex flex-wrap gap-4 items-center">
@@ -306,10 +314,16 @@ export default function EditRateEdit({ data }: { data: Rates }) {
                             defaultValue={field.valor ?? ""}
                             className="w-full"
                             type="number"
-                            step={0.000001}
+                            step={0.00001}
+                            onChange={(e) =>
+                              form.setValue(
+                                `intervalos_tarifas.${index}.valor`,
+                                formatMoney(Number(e.target.value), 5)
+                              )
+                            }
                             onWheel={(e) => e.currentTarget.blur()}
                           />
-                          <FormMessage />
+                          {/* <FormMessage /> */}
 
                           {/* Campo de Tipo */}
                           <FormField

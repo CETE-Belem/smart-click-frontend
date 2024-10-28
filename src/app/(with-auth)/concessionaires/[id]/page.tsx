@@ -101,7 +101,6 @@ export default function ConcessionaireConsumerUnits() {
           });
         })
         .catch((error) => {
-          console.log(error);
           toast({
             title: "Erro ao excluir a unidade consumidora",
             description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,
@@ -109,7 +108,6 @@ export default function ConcessionaireConsumerUnits() {
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
         title: "Erro ao excluir a unidade consumidora",
         description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,

@@ -55,9 +55,7 @@ export default function NewRatesPage() {
   });
 
   async function onSubmit(values: NewRateSchemaType) {
-
-    if(!verifyIfIntervalFillsAllDay(values.intervalos_tarifas)) {
-      console.log("Os intervalos de tarifa não cobrem o dia inteiro.");
+    if (!verifyIfIntervalFillsAllDay(values.intervalos_tarifas)) {
       toast({
         title: "Erro",
         description: "Os intervalos de tarifa não cobrem o dia inteiro.",
@@ -99,6 +97,14 @@ export default function NewRatesPage() {
     }
   }
 
+  function onSubmitError() {
+    toast({
+      title: "Erro",
+      description: "Verifique os campos e tente novamente.",
+      variant: "destructive",
+    });
+  }
+
   const {
     fields: intervalos,
     append,
@@ -120,7 +126,7 @@ export default function NewRatesPage() {
         <Form {...form}>
           <form
             className="flex flex-col gap-5 w-full max-w-[500px]"
-            onSubmit={form.handleSubmit(onSubmit)}
+            onSubmit={form.handleSubmit(onSubmit, onSubmitError)}
           >
             <div className="flex flex-col space-y-6">
               <div className="flex flex-row flex-wrap gap-12 w-full sm:gap-5">
@@ -137,8 +143,11 @@ export default function NewRatesPage() {
                           placeholder="R$ 0,00"
                           className="w-full"
                           type="number"
+                          step="0.00001"
                           onChange={(e) =>
-                            field.onChange(formatMoney(Number(e.target.value)))
+                            field.onChange(
+                              formatMoney(Number(e.target.value), 5)
+                            )
                           }
                         />
                       </FormControl>
@@ -234,55 +243,63 @@ export default function NewRatesPage() {
 
                         <div className="flex gap-4 items-center">
                           {/* Campo de "De" */}
-                          <Input
-                            placeholder="00:00"
-                            {...form.register(`intervalos_tarifas.${index}.de`)}
-                            disabled={loading}
-                            className="w-full"
-                            maxLength={5}
-                            onInput={handleChange}
-                          />
-                          <FormMessage />
+                          <div className="flex flex-col gap-1">
+                            <Input
+                              placeholder="00:00"
+                              {...form.register(
+                                `intervalos_tarifas.${index}.de`
+                              )}
+                              disabled={loading}
+                              className="w-full"
+                              maxLength={5}
+                              onInput={handleChange}
+                            />
+                            {/* <FormMessage /> */}
+                          </div>
 
                           <p className="text-base text-black/50">até</p>
 
                           {/* Campo de "Até" */}
-                          <Input
-                            placeholder="00:00"
-                            {...form.register(
-                              `intervalos_tarifas.${index}.ate`
-                            )}
-                            disabled={loading}
-                            className="w-full"
-                            maxLength={5}
-                            onInput={handleChange}
-                          />
-                          <FormMessage />
+                          <div className="flex flex-col gap-1">
+                            <Input
+                              placeholder="00:00"
+                              {...form.register(
+                                `intervalos_tarifas.${index}.ate`
+                              )}
+                              disabled={loading}
+                              className="w-full"
+                              maxLength={5}
+                              onInput={handleChange}
+                            />
+                            {/* <FormMessage /> */}
+                          </div>
                         </div>
 
                         <div className="flex flex-wrap gap-4 items-center">
                           {/* Campo de Valor do Intervalo */}
-                          <Input
-                            label="Valor do intervalo"
-                            placeholder="R$ 0,00"
-                            // {...form.register(`intervalos_tarifas.${index}.valor`, {
-                            //   setValueAs: (value) => value === "" ? undefined : Number(value), // Converte a string para número
-                            // })}
-                            {...form.register(
-                              `intervalos_tarifas.${index}.valor`
-                            )}
-                            onChange={(e) =>
-                              form.setValue(
-                                `intervalos_tarifas.${index}.valor`,
-                                formatMoney(Number(e.target.value))
-                              )
-                            }
-                            disabled={loading}
-                            className="w-full"
-                            step="0.01"
-                            type="number"
-                          />
-                          <FormMessage />
+                          <div className="flex flex-col gap-1">
+                            <Input
+                              label="Valor do intervalo"
+                              placeholder="R$ 0,00"
+                              // {...form.register(`intervalos_tarifas.${index}.valor`, {
+                              //   setValueAs: (value) => value === "" ? undefined : Number(value), // Converte a string para número
+                              // })}
+                              {...form.register(
+                                `intervalos_tarifas.${index}.valor`
+                              )}
+                              onChange={(e) =>
+                                form.setValue(
+                                  `intervalos_tarifas.${index}.valor`,
+                                  formatMoney(Number(e.target.value), 5)
+                                )
+                              }
+                              disabled={loading}
+                              className="w-full"
+                              step="0.00001"
+                              type="number"
+                            />
+                            {/* <FormMessage /> */}
+                          </div>
 
                           {/* Campo de Tipo */}
                           <FormField

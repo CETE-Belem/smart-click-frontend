@@ -107,7 +107,6 @@ export default function ConsumerUnitEquipments() {
           });
         })
         .catch((error) => {
-          console.log(error);
           toast({
             title: `Ocorreu um erro ao excluir o equipamento ${data.nome}`,
             description: error.response.data.message,
@@ -115,7 +114,6 @@ export default function ConsumerUnitEquipments() {
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
         title: `Erro ao excluir a unidade consumidora`,
         description: `Ocorreu um erro ao excluir a unidade consumidora ${data.nome}`,

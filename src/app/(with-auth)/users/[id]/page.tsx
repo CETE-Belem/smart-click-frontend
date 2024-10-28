@@ -69,7 +69,6 @@ export default function UserConsumerUnit() {
           },
         }
       );
-      console.log(response.data);
       return response.data;
     },
     placeholderData: keepPreviousData,
@@ -114,7 +113,6 @@ export default function UserConsumerUnit() {
           });
         });
     } catch (error) {
-      console.log(error);
       toast({
         title: `Erro ao excluir a unidade consumidora`,
         description: `Ocorreu um erro ao excluir a unidade consumidora ${data.numero}`,

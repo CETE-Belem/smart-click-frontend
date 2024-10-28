@@ -89,7 +89,6 @@ export const ratesTableColumn: ColumnDef<Rates>[] = [
                 });
               });
           } catch (error) {
-            console.log(error);
             toast({
               title: "Erro ao excluir a tarifa",
               description: `Ocorreu um erro ao excluir a tarifa ${row.original.cod_tarifa}`,

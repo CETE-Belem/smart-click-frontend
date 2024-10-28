@@ -101,7 +101,6 @@ export const usersTableColumn: ColumnDef<IUser>[] = [
                 });
               });
           } catch (error) {
-            console.log(error);
             toast({
               title: "Erro ao deletar usuário",
               description: `Ocorreu um erro ao deletar o usuário ${row.original.nome}`,

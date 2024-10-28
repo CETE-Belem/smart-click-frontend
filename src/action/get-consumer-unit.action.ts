@@ -28,17 +28,17 @@ export async function getConsumerUnitEquipmentsAction(
   query: string
 ): Promise<GetEquipmentsResponse | any> {
   const token = cookies().get("token")?.value;
-  const data = await api.get<GetEquipmentsResponse>(`/consumer-units/${id}/equipments`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: {
-      page,
-      limit,
-      query
-    },
-  }).catch((error) =>{
-    console.log(error.response.data);
-  })
+  const data = await api
+    .get<GetEquipmentsResponse>(`/consumer-units/${id}/equipments`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        page,
+        limit,
+        query,
+      },
+    })
+    .catch((error) => {});
   return data;
 }
