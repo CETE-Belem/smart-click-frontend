@@ -365,7 +365,7 @@ export default function EquipmentInfo() {
             )
           ) : null}
         </div>
-        <div className="flex flex-row-reverse w-full gap-5">
+        <div className="flex flex-row-reverse w-full gap-5 hide-on-print">
           <Button
             className="p-0 m-0"
             disabled={isRefetching}

@@ -90,6 +90,12 @@
   input[type="number"] {
     -moz-appearance: textfield;
   }
+
+  @media print {
+    .hide-on-print {
+      display: none !important;
+    }
+  }
 }
 
 @layer utilities {
