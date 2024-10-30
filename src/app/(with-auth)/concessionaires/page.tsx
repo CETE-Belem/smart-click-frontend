@@ -157,6 +157,7 @@ export default function ConcessionairesPage() {
           canEdit={user?.perfil === Role.ADMIN}
           editRoute={Routes.ConcessionaireEdit}
           canDelete={user?.perfil === Role.ADMIN}
+          accessRates={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
@@ -164,8 +165,8 @@ export default function ConcessionairesPage() {
           columns={
             user?.perfil !== Role.ADMIN
               ? concessionaireTableColumn.filter(
-                (column) => column.id !== "actions"
-              )
+                  (column) => column.id !== "actions"
+                )
               : concessionaireTableColumn
           }
           className="hidden sm:table"
