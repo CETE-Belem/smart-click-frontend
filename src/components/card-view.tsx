@@ -4,6 +4,7 @@ import {
   Edit,
   LoaderCircle,
   MoreHorizontal,
+  NotepadText,
   PenBoxIcon,
   Trash2,
 } from "lucide-react";
@@ -28,6 +29,7 @@ interface CardViewProps<T extends Record<string, any>> {
   editRoute?: ((item: T) => string) | string;
   handleDelete?: (data: T) => void;
   customMobileActions?: (data: T) => JSX.Element;
+  accessRates?: boolean;
 }
 
 export interface CardColumnDef<T> {
@@ -44,6 +46,7 @@ export default function CardView<T extends Record<string, any>>({
   canDelete = false,
   handleDelete = () => {},
   customMobileActions,
+  accessRates = false,
 }: CardViewProps<T>) {
   return (
     <div className="flex flex-col w-full sm:hidden gap-3">
@@ -73,6 +76,19 @@ export default function CardView<T extends Record<string, any>>({
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Ações</DropdownMenuLabel>
                       {customMobileActions && customMobileActions(item)}
+                      {accessRates && (
+                        <Link
+                          href={Routes.ConcessionaireRates.replace(
+                            "[id]",
+                            item[accessorKey]
+                          )}
+                        >
+                          <DropdownMenuItem>
+                            <NotepadText size={16} className="mr-2" />
+                            Tarifas
+                          </DropdownMenuItem>
+                        </Link>
+                      )}
                       {canEdit && (
                         <Link
                           href={

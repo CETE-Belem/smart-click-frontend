@@ -156,6 +156,7 @@ export default function ConcessionairesPage() {
           canEdit={user?.perfil === Role.ADMIN}
           editRoute={Routes.ConcessionaireEdit}
           canDelete={user?.perfil === Role.ADMIN}
+          accessRates={user?.perfil === Role.ADMIN}
           handleDelete={handleDelete}
         />
 
