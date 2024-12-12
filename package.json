@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "env-cmd -f ./.env.development next dev -p 3001",
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",
@@ -62,6 +62,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "env-cmd": "^10.1.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "eslint-plugin-storybook": "^0.8.0",
